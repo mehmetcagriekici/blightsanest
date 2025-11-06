@@ -23,18 +23,37 @@ Clients save the results to the database
 - Ability to compare multiple assets
 - Ability to filter the assets on desired credentials
 
-### Roadmap - V0
-1) Server - Fetch and publish raw data with filtering ability
-. Fetch live crypto data - to be published crypto feeds - from the public APIs
-. Filter the data into the request struct
-. Publish the filtered data
-
 2) Client
 . Subscribe to the publishing servers
 
 ### Structure - V0
 . Server 
 . Client
+
+### Roadmap - V0
+# API
+. CoinGecko
+
+# Ranking & Leaderboards:
+. Top Gainers/Losers List
+. Market Cap Tiering
+. Scarcity Ranking
+
+# Filtering & Search Options:
+. Custom Filters
+. Category-Based Search
+. Risk Filters
+
+# Alerts & Notifications:
+. Price Threshold Alerts
+. ATH Proximity Alerts
+. Supply Change Warnings
+
+# Analytics & Insights
+. Volatility Calculator
+. Upside Potential Estimator
+. Liquidity Scoring
+. Trend Strength Index
 
 ### V1: - first release -
 - Authentication
