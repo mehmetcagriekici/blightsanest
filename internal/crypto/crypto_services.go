@@ -19,6 +19,7 @@ type MarketData struct{
       TotalVolume               float64 `json:"total_volume"`
       High24H                   float64 `json:"high_24h"`
       Low24H                    float64 `json:"low_24h"`
+      ATH                       float64 `json:"ath"`
       PriceChangePercentage1H   float64 `json:"price_change_percentage_1h"`
       PriceChangePercentage24H  float64 `json:"price_change_percentage_24h"`
       PriceChangePercentage7D   float64 `json:"price_change_percentage_7d"`
@@ -40,12 +41,12 @@ const (
 // Price Change Percentage Available timeframes
 type AvailableTimeframes string
 const (
-        PCP_HOUR        AvailableTimeframes = "1h"
-	PCP_DAY         AvailableTimeframes = "24h"
-	PCP_WEEK        AvailableTimeframes = "7d"
-	PCP_MONTH       AvailableTimeframes = "30d"
-	PCP_TWO_HUNDRED AvailableTimeframes = "200d"
-	PCP_YEAR        AvailableTimeframes = "1y"
+        PCP_HOUR        AvailableTimeframes = "1H"
+	PCP_DAY         AvailableTimeframes = "24H"
+	PCP_WEEK        AvailableTimeframes = "7D"
+	PCP_MONTH       AvailableTimeframes = "30D"
+	PCP_TWO_HUNDRED AvailableTimeframes = "200D"
+	PCP_YEAR        AvailableTimeframes = "1Y"
 )
 
 // function to fetch top gainers/losers in any timeframe

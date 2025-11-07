@@ -55,6 +55,9 @@ Clients save the results to the database
 . Liquidity Scoring
 . Trend Strength Index
 
+# CLI Presentation
+. Comparison
+
 ### V1: - first release -
 - Authentication
 - Database to record the assets, transactions
