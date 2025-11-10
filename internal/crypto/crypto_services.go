@@ -16,6 +16,7 @@ type MarketData struct{
       CurrentPrice              float64 `json:"current_price"`
       MarketCap                 float64 `json:"market_cap"`
       MarketCapRank             int     `json:"market_cap_rank"`
+      MarketCapChangePercentage float64 `json:"marke_cap_change_percentage_24h"`
       TotalVolume               float64 `json:"total_volume"`
       High24H                   float64 `json:"high_24h"`
       Low24H                    float64 `json:"low_24h"`

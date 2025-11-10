@@ -1,17 +1,87 @@
 package crypto
 
-// function to compute daily range percentage using high_24h, low_24h and current_price
-func ComputeDailyRange() {
+import(
+        "errors"
+)
+
+// function to watch daily price swing
+func CalcCoinVolatility(maxRisk float64, coins []MarketData) []MarketData {
+        // slice to store low risk coins
+        lowRiskCoins := []MarketData{}
+
+        // iterate over the coins and calc volatility if lower append it to the low risk coins
+        for coin := range coins {
+	        if coin.CurrentPrice == 0 {
+		        continue
+		}
+		
+	        volatility := (coin.High24H - coin.Low24H) / coin.CurrentPrice
+		if volatility < maxRisk {
+		        lowRiskCoins = append(lowRiskCoins, coin)
+		}
+	}
+
+        // return the low risk coins
+	return lowRiskCoins
 }
 
-// function to calculate potential gain to ATH as (ath - current_price) / current_price * 100, using ath and current_price. Filter by market_cap_rank to focus on realistic ones
-func CalcPotentialGain() {
+// function to calculate potential growth
+func EstimateCoinUpsidePotential(minPotential float, maxMarketRank int, coins []MarketData) []MarketData {
+        // slice to store high potential coins
+        highPotentialCoins := []MarketData{}
+
+        // iterate over the coins and get the high potential ones
+	for coin := range coins {
+	        if coin.CurrentPrice == 0 {
+		        continue
+		}
+		
+	        if coin.MarketCapRank < maxMarketRank && (coin.ATH - coin.CurrentPrice) / coin.CurrentPrice * 100 > minPotential {
+		        highPotentialCoins = append(highPOtentialCoins, coin)
+		}
+	}
+
+        // return the high potential coins
+	return highPotentialCoins
 }
 
-// function to create liquidity score using total_volume / market_cap
-func CreateLiquidityScore() {
+// function to calculate liquidty score
+func CalcCoinLiquidity(minLiquidity float64, coins []MarketData) []MarketData {
+        // slice to store high liquidity coins
+	highLiquidityCoins := []MarketData{}
+
+        // iterate over the coins and get the coins with high liquidity score
+	for coin := range coins {
+	        if coin.MarketCap == 0 {
+		        continue
+		}
+
+                if coin.TotalVolume / coin.MarketCap > minLiquidity {
+		        highLiquidityCoins = append(highLiquidityCoins, coin)
+		}
+	}
+
+        // return the high liquidity coins
+	return highLiquidityCoins
 }
 
-// function to confirm if a move is real
-func CaldTrendStrength() {
+// function to see if a coind is real trend or fame pump
+func CheckRealTrend(timeframe AvailableTimeframes, coins []MarketData) ([]MarketData, error) {
+        // slice to store real trend coins
+	realTrendCoins := []MarketData{}
+
+        // only available for 24H timeframe
+	if timeframe != PCP_DAY {
+	        return realTrendCoins, errors.New("This feature is available only for the 24H timeframe")
+	}
+        
+        // iterate over the coins and find the real trending ones
+	for coin := range coins {
+	        if coin.PriceChangePercentage24H > 0 && coin.MarketCapChangePercentage > 0 {
+		        realTrendCoins = append(realTrendCoins, coin)
+		}
+	}
+
+        // return the real trend coins
+	return realTrendCoins, nil
 }
