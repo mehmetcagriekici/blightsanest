@@ -20,15 +20,18 @@ func CoinsNewHigh(oldCoins, newCoins []MarketData) []MarketData {
 	})
 	
 	// compare the slices
-	newCoins := []MarketData{}
-	for coin, i := range cloneNew {
-	        if oldCoin, ok := cloneOld[i]; ok && coin.High24H > oldCoin.High24H {
-		        newCoins = append(newCoins, coin)
+	filtered := []MarketData{}
+	for i, coin := range cloneNew {
+	        if coin.Name != cloneOld[i].Name {
+		        continue
+		}
+	        if coin.High24H > cloneOld[i].High24H {
+		        filtered = append(filtered, coin)
 		}
 	}
 	
 	// return the new slice
-	return newCoins
+	return filtered
 }
 
 // function to get the coins that have a treshold price spike
@@ -36,14 +39,14 @@ func CoinsHighPriceSpike(tresholdRate float64, timeframe AvailableTimeframes, co
         // copy the coins
 	clone := slices.Clone(coins)
 
-        // delete the coins under the treshold rate
-	clone = slices.DeleteFunc(clone, func(coin) bool {
+        // delete the coins under the treshold rate - filter higher or equal
+	clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
 	        priceChange := GetPriceChange(coin, timeframe)
 		return priceChange < tresholdRate
 	})
 
         // return the copy
-	return copy
+	return clone
 }
 
 // function to get the coins that reached a percentage of their aths
@@ -52,7 +55,7 @@ func CoinsGetCloseAthChange(maxAthChange float64, coins []MarketData) []MarketDa
 	clone := slices.Clone(coins)
 
         // delete the coins with high ath changes
-	clone = slices.DeleteFunc(clone, func(coin) bool {
+	clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
 	        return coin.AthChangePercentage > maxAthChange
 	})
 
@@ -67,7 +70,7 @@ func CoinsHighCirculatingSupply(alertMarketRank int, alertValue float64, ignoreC
 
        // delete the ignored coins
        clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
-               return coin.MarketCapRank > alertMarketRank || coin.CurrentPrice * coin.CirculatingSupply > alertValue || slices.Contains(ignoreCoins, coin.Name)
+               return coin.MarketCapRank > alertMarketRank || coin.CurrentPrice * coin.CirculatingSupply < alertValue || slices.Contains(ignoreCoins, coin.Name)
        })
 
        // return the copy

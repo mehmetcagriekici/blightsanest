@@ -1,6 +1,7 @@
 package crypto
 
 import(
+        "log"
         "fmt"
 	"reflect"
 	"strings"
@@ -10,7 +11,11 @@ import(
 func GetPriceChange(coin MarketData, timeframe AvailableTimeframes) float64 {
         field := fmt.Sprintf("PriceChangePercentage%s", timeframe)
 	r := reflect.ValueOf(coin)
-	return reflet.Indirect(r).FieldByName(field)
+	val := reflect.Indirect(r).FieldByName(field)
+	if !val.CanFloat() {
+	        log.Fatal("Invalid price percentage value - must be type float64")
+	}
+	return val.Float()
 }
 
 

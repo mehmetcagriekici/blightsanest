@@ -24,7 +24,7 @@ func CreateCryptoCache(interval time.Duration) *CryptoCache {
         c := &CryptoCache{
 	        Market:   make(map[string]cryptoEntry),
 		interval: interval,
-		stopCh:   make(chan struct{})
+		stopCh:   make(chan struct{}),
 	}
 
         // start a goroutine to delete the old entries
@@ -49,7 +49,7 @@ func (c *CryptoCache) Add(key string, market []MarketData) {
 }
 
 // Get an entry from the cache
-func (c *CryptoCache) Get(key string) (MarketData[], bool) {
+func (c *CryptoCache) Get(key string) ([]MarketData, bool) {
         // lock the cache
 	c.mu.RLock()
 
@@ -70,8 +70,8 @@ func (c *CryptoCache) Get(key string) (MarketData[], bool) {
 		c.mu.Lock()
 
                 // re-check in case another goroutine updated it
-		if e2, ok2 := c.market[key]; ok2 && time.Since(e2.createdAt) > c.interval {
-		        delete(c.market, key)
+		if e2, ok2 := c.Market[key]; ok2 && time.Since(e2.createdAt) > c.interval {
+		        delete(c.Market, key)
 		}
 		c.mu.Unlock()
 		return nil, false
@@ -84,27 +84,22 @@ func (c *CryptoCache) Get(key string) (MarketData[], bool) {
 
 // remove old entries
 func (c *CryptoCache) reapLoop() {
-        // set a ticker
-	ticker := time.NewTicker(c.interval)
+        ticker := time.NewTicker(c.interval)
 	defer ticker.Stop()
-	
-        // go
-	for {
+
+        for {
 	        select {
 		case <-ticker.C:
-	                // lock the cache
 		        c.mu.Lock()
-		        // iterate over the cache entries and delete the expired entries			                    for k, m := range c.Market {
+			for k, m := range c.Market {
 			        if time.Since(m.createdAt) > c.interval {
 				        delete(c.Market, k)
-			        }
-		        }
-		        // unlock the cache
-		        c.mu.Unlock()
+				}
+			}
+			c.mu.Unlock()
 		case <-c.stopCh:
-		        // exit the loop
 		        return
-	        }
+		}
 	}
 }
 

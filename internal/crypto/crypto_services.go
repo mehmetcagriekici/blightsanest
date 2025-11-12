@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"strings"
+	"slices"
 )
 
 // market type
@@ -54,32 +55,40 @@ const (
 // currency=usd
 // order=market_cap_{ORDER}
 // price_change_percentage={TIMEFRAME}
-func CryptoFetchMarket(order AvailableOrders, timeframes AvailableTimeframes[], key string) ([]MarketData, error) {
+func CryptoFetchMarket(order AvailableOrders, timeframes []AvailableTimeframes, key string) ([]MarketData, error) {
         client := &http.Client{}
+	
+	// convert timeframes to type string
+        urlFrames := []string{}
+	for timeframe := range slices.Values(timeframes) {
+	        urlFrames = append(urlFrames, string(timeframe))
+	}
+	
         // api url
-	url := fmt.Sprintf("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=%s&price_change_percentage=%s", baseURL, order, strings.Join(timeframes, ","))
+	url := fmt.Sprintf("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=%s&price_change_percentage=%s", order, strings.Join(urlFrames, ","))
+	
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-	        return []MarketData, err
+	        return []MarketData{}, err
 	}
 
         // api header
-	req.Header.Add("x-cg-pro-api-key: <api-key>")
+	req.Header.Add("x-cg-pro-api-key", key)
 	resp, err := client.Do(req)
 	if err != nil {
-	        return []MarketData, err
+	        return []MarketData{}, err
 	}
 
         bytes, err := io.ReadAll(resp.Body)
 	if err != nil{
-	        return []MarketData, err
+	        return []MarketData{}, err
 	}
         resp.Body.Close()
 
         // decode the response body
 	var market []MarketData
 	if err := json.Unmarshal(bytes, &market); err != nil{
-	        return []MarketData, err
+	        return []MarketData{}, err
 	}
 
         return market, nil

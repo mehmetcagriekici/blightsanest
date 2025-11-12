@@ -75,11 +75,11 @@ func SearchCoin(name string, coins []MarketData) (MarketData, bool) {
 	}
 
         // search for the coin
-	coin, found := slices.BinarySearch(names, strings.ToLower(name))
+	i, found := slices.BinarySearch(names, strings.ToLower(name))
 	if !found {
 	        return MarketData{}, false 
 	}
-	return coin, true
+	return clone[i], true
 }
 
 // function to flag high-risk with ath_change_percentage near 0% or low total_volume
@@ -97,13 +97,13 @@ func FlagRiskCoins(maxAthChange, minVolume float64, coins []MarketData) []Market
 }
 
 // function to flag safe coins
-func FlagSafeCoins(minMarketRank int, maxPriceChange float64, timeframe AvailableTimeframes, coins []MarketData) []MarketData {
+func FlagSafeCoins(maxMarketRank int, maxPriceChange float64, timeframe AvailableTimeframes, coins []MarketData) []MarketData {
         // clone coins
 	clone := slices.Clone(coins)
 
         // delete the high risk coins
 	clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
-	        return coin.MarketCapRank < minMarketRank || GetPriceChange(coin, timeframe) > maxPriceChange
+	        return coin.MarketCapRank > maxMarketRank || GetPriceChange(coin, timeframe) > maxPriceChange
 	})
 
         // return the clone

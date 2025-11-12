@@ -76,7 +76,7 @@ func (cs *CryptoServerState) UpdateMaxRank(newRank int) {
 }
 
 // update price range
-func (cs *CryptoServerState) UpdatePriceRange(min, max int) {
+func (cs *CryptoServerState) UpdatePriceRange(min, max float64) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	newRange := PriceRange{
