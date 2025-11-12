@@ -9,6 +9,7 @@ import(
 // total volume
 func TestFilterCoinVolume(t *testing.T) {
         minVolume := 2.12345
+	maxVolume := 4.12345
 	coin1 := MarketData{
 	        TotalVolume: 1.12345,
 	}
@@ -18,9 +19,12 @@ func TestFilterCoinVolume(t *testing.T) {
 	coin3 := MarketData{
 	        TotalVolume: 3.12345,
 	}
+	coin4 := MarketData{
+	        TotalVolume: 5.12345,
+	}
 
         expected := []MarketData{coin2, coin3}
-	result := FilterCoinVolume(minVolume, []MarketData{coin1, coin2, coin3})
+	result := FilterCoinVolume(minVolume, maxVolume, []MarketData{coin1, coin2, coin3, coin4})
 
         if !reflect.DeepEqual(expected, result) {
 	        t.Errorf("expected: %v, got: %v", expected, result)
@@ -31,6 +35,7 @@ func TestFilterCoinVolume(t *testing.T) {
 // market cap
 func TestFilterCoinCap(t *testing.T) {
         minCap := 2.12345
+	maxCap := 3.12345
 	coin1 := MarketData{
 	        MarketCap: 1.12345,
 	}
@@ -40,9 +45,12 @@ func TestFilterCoinCap(t *testing.T) {
 	coin3 := MarketData{
 	        MarketCap: 3.12345,
 	}
+	coin4 := MarketData{
+	        MarketCap: 4.12345,
+	}
 
         expected := []MarketData{coin2, coin3}
-	result := FilterCoinCap(minCap, []MarketData{coin1, coin2, coin3})
+	result := FilterCoinCap(minCap, maxCap, []MarketData{coin1, coin2, coin3, coin4})
 
         if !reflect.DeepEqual(expected, result) {
 	        t.Errorf("expected: %v, got: %v", expected, result)
@@ -53,6 +61,7 @@ func TestFilterCoinCap(t *testing.T) {
 // price change
 func TestFilterCoinPriceChange(t *testing.T) {
         minChange := 2.12345
+	maxChange := 3.12345
 	coin1 := MarketData{
 	        PriceChangePercentage24H: 1.12345,
 	}
@@ -62,9 +71,12 @@ func TestFilterCoinPriceChange(t *testing.T) {
 	coin3 := MarketData{
 	        PriceChangePercentage24H: 3.12345,
 	}
+	coin4 := MarketData{
+	        PriceChangePercentage24H: 4.12345,
+	}
 
         expected := []MarketData{coin2, coin3}
-	result := FilterCoinPriceChange(minChange, PCP_DAY, []MarketData{coin1, coin2, coin3})
+	result := FilterCoinPriceChange(minChange, PCP_DAY, []MarketData{coin1, coin2, coin3, coin4})
 
         if !reflect.DeepEqual(expected, result) {
 	        t.Errorf("expected: %v, got: %v", expected, result)
@@ -75,22 +87,27 @@ func TestFilterCoinPriceChange(t *testing.T) {
 // high24h
 // low24h
 func TestFindWildSwingCoins(t *testing.T) {
-        minSwing := 3.12345 / 2.12345
+        minSwing := 3.0
+	maxSwing := 5.0
 	coin1 := MarketData{
-	        High24H: 4.12345,
-		Low24H: 1.12345,
+	        High24H: 4,
+		Low24H: 1,
 	}
 	coin2 := MarketData{
-	        High24H: 3.12345,
-		Low24H: 2.12345,
+	        High24H: 3,
+		Low24H: 1,
 	}
 	coin3 := MarketData{
-	        High24H: 2.12345,
-		Low24H: 2.12345,
+	        High24H: 2,
+		Low24H: 1,
+	}
+	coin4 := MarketData{
+	        High24H: 7,
+		Low24H: 1,
 	}
 
         expected := []MarketData{coin1, coin2}
-	result := FindWildSwingCoins(minSwing, []MarketData{coin1, coin2, coin3})
+	result := FindWildSwingCoins(minSwing, []MarketData{coin1, coin2, coin3, coin4})
 
         if !reflect.DeepEqual(expected, result) {
 	        t.Errorf("expected: %v, got: %v", expected, result)
@@ -143,7 +160,7 @@ func TestSearchCoinNegative(t *testing.T) {
 // total volume
 func TestFlagRiskCoins(t *testing.T) {
         maxAthChange := 2.12345
-	minVolume := 3.12345
+	maxVolume := 3.12345
 	coin1 := MarketData{
 	        AthChangePercentage: 1.12345,
 		TotalVolume: 4.12345,
@@ -162,7 +179,7 @@ func TestFlagRiskCoins(t *testing.T) {
 	}
 
         expected := []MarketData{coin1, coin2}
-        result := FlagRiskCoins(maxAthChange, minVolume, []MarketData{coin1, coin2, coin3, coin4})
+        result := FlagRiskCoins(maxAthChange, maxVolume, []MarketData{coin1, coin2, coin3, coin4})
 
         if !reflect.DeepEqual(expected, result) {
 	        t.Errorf("expected: %v, got: %v", expected, result)

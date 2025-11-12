@@ -6,52 +6,54 @@ import(
 )
 
 // functions to let users filter by tresholds like total_colume, market_cap, price_change_percentage
-func FilterCoinVolume(minVolume float64, coins []MarketData) []MarketData {
+func FilterCoinVolume(minVolume, maxVolume float64, coins []MarketData) []MarketData {
         // clone coins
 	clone := slices.Clone(coins)
 
         // delete the undesired coins
 	clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
-	        return coin.TotalVolume < minVolume
+	        return coin.TotalVolume < minVolume || coin.TotalVolume > maxVolume
 	})
 
         // return the clone
 	return clone
 }
 
-func FilterCoinCap(minCap float64, coins []MarketData) []MarketData {
+func FilterCoinCap(minCap, maxCap float64, coins []MarketData) []MarketData {
         // clone coins
 	clone := slices.Clone(coins)
 
         // delete the undesired coins
 	clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
-	        return coin.MarketCap < minCap
+	        return coin.MarketCap < minCap || coin.MarketCap > maxCap
 	})
 
         // return the clone
 	return clone
 }
 
-func FilterCoinPriceChange(minChange float64, timeframe AvailableTimeframes, coins []MarketData) []MarketData {
+func FilterCoinPriceChange(minChange, maxChange float64, timeframe AvailableTimeframes, coins []MarketData) []MarketData {
         // clone coins
 	clone := slices.Clone(coins)
 
         // delete the undesired coins
 	clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
-	        return GetPriceChange(coin, timeframe) < minChange
+	        priceChange := GetPriceChange(coin, timeframe)
+	        return priceChange < minChange || priceChange > maxChange 
 	})
 
         // return the clone
 	return clone
 }
 
-func FindWildSwingCoins(minRate float64, coins []MarketData) []MarketData {
+func FindWildSwingCoins(minRate, maxRate float64, coins []MarketData) []MarketData {
         // clone coins
 	clone := slices.Clone(coins)
 
         // delete the lower swinging coins
 	clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
-	        return coin.High24H / coin.Low24H < minRate
+	        swingScore := coin.High24H / coin.Low24H
+	        return swingScore < minRate || swingScore > maxRate
 	})
 
         // return the clone
@@ -83,13 +85,13 @@ func SearchCoin(name string, coins []MarketData) (MarketData, bool) {
 }
 
 // function to flag high-risk with ath_change_percentage near 0% or low total_volume
-func FlagRiskCoins(maxAthChange, minVolume float64, coins []MarketData) []MarketData {
+func FlagRiskCoins(maxAthChange, maxVolume float64, coins []MarketData) []MarketData {
         // clone coins
 	clone := slices.Clone(coins)
 
         // delete the low risk coins
         clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
-                return coin.AthChangePercentage > maxAthChange || coin.TotalVolume < minVolume
+                return coin.AthChangePercentage > maxAthChange || coin.TotalVolume < maxVolume
         }) 
 
         // return the clone

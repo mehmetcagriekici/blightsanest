@@ -1,5 +1,5 @@
 # omit publishing environment variables
 .env
 
-# omit emacs configration
+# omit emacs
 .emacs

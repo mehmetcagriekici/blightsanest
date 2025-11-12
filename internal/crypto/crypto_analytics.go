@@ -4,9 +4,9 @@ import(
         "errors"
 	"slices"
 )
-
+	
 // function to watch daily price swing
-func CalcCoinVolatility(maxRisk float64, coins []MarketData) []MarketData {
+func CalcCoinVolatility(maxVolatility float64, coins []MarketData) []MarketData {
         // slice to store low risk coins
         lowRiskCoins := []MarketData{}
 
@@ -17,7 +17,7 @@ func CalcCoinVolatility(maxRisk float64, coins []MarketData) []MarketData {
 		}
 		
 	        volatility := (coin.High24H - coin.Low24H) / coin.CurrentPrice
-		if volatility <= maxRisk {
+		if volatility <= maxVolatility {
 		        lowRiskCoins = append(lowRiskCoins, coin)
 		}
 	}

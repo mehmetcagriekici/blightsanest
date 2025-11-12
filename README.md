@@ -55,8 +55,8 @@ Clients save the results to the database
 . Liquidity Scoring
 . Trend Strength Index
 
-# CLI Presentation
-. Comparison
+# Caching and Server State
+.
 
 ### V1: - first release -
 - Authentication

@@ -5,7 +5,7 @@ import(
         "slices"
 )
 
-// function to get the coins that hit a new high of the day
+// functions to get the coins that hit a new high/low of the day
 func CoinsNewHigh(oldCoins, newCoins []MarketData) []MarketData {
         // copy the slices
 	cloneOld := slices.Clone(oldCoins)
@@ -26,6 +26,34 @@ func CoinsNewHigh(oldCoins, newCoins []MarketData) []MarketData {
 		        continue
 		}
 	        if coin.High24H > cloneOld[i].High24H {
+		        filtered = append(filtered, coin)
+		}
+	}
+	
+	// return the new slice
+	return filtered
+}
+
+func CoinsNewLow(oldCoins, newCoins []MarketData) []MarketData {
+        // copy the slices
+	cloneOld := slices.Clone(oldCoins)
+	cloneNew := slices.Clone(newCoins)
+	
+	// sort the slices by the current prices descending order
+	sort.Slice(cloneOld, func(i, j int) bool {
+	        return SortCoinNames(cloneOld, i, j)
+	})
+	sort.Slice(cloneNew, func(i, j int) bool {
+	        return SortCoinNames(cloneNew, i, j)
+	})
+	
+	// compare the slices
+	filtered := []MarketData{}
+	for i, coin := range cloneNew {
+	        if coin.Name != cloneOld[i].Name {
+		        continue
+		}
+	        if coin.Low24H < cloneOld[i].Low24H {
 		        filtered = append(filtered, coin)
 		}
 	}
