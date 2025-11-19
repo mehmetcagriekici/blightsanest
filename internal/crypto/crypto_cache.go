@@ -16,7 +16,7 @@ type CryptoCache struct {
         Market   map[string]cryptoEntry
 	mu       sync.RWMutex
 	interval time.Duration
-	stopCh   chan struct{}
+        stopCh   chan struct{}
 }
 
 // create a new cache

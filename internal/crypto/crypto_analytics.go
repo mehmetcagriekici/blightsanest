@@ -78,7 +78,7 @@ func CheckRealTrend(timeframe AvailableTimeframes, coins []MarketData) ([]Market
         
         // iterate over the coins and find the real trending ones
 	for coin := range slices.Values(coins) {
-	        if coin.PriceChangePercentage24H > 0 && coin.MarketCapChangePercentage > 0 {
+	        if coin.PriceChangePercentage24h > 0 && coin.MarketCapChangePercentage > 0 {
 		        realTrendCoins = append(realTrendCoins, coin)
 		}
 	}

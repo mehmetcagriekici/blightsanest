@@ -9,10 +9,7 @@ type PriceRange struct {
 	Max float64
 }
 
-// API Queries to cache
-// Data to be published
-// Server filters
-type CryptoServerState struct {
+type CryptoState struct {
         Order         AvailableOrders
 	Timeframes    []AvailableTimeframes
 	CoinsList     []MarketData
@@ -25,9 +22,9 @@ type CryptoServerState struct {
 	mu            sync.RWMutex
 }
 
-// function to create a new crypto server state with default values
-func NewCryptoServerState(list []MarketData) *CryptoServerState {
-        return &CryptoServerState{
+// function to create a new crypt state with default values
+func NewCryptoState(list []MarketData) *CryptoState {
+        return &CryptoState{
 	        Order:         MARKET_CAP_DESC,
 		Timeframes:    []AvailableTimeframes{PCP_DAY},
 		CoinsList:     list,
@@ -41,42 +38,42 @@ func NewCryptoServerState(list []MarketData) *CryptoServerState {
 }
 
 // update order
-func (cs *CryptoServerState) UpdateOrder(newOrder AvailableOrders) {
+func (cs *CryptoState) UpdateOrder(newOrder AvailableOrders) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.Order = newOrder
 }
 
 // update timeframes
-func (cs *CryptoServerState) UpdateTimeframes(newFrames []AvailableTimeframes) {
+func (cs *CryptoState) UpdateTimeframes(newFrames []AvailableTimeframes) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()	
 	cs.Timeframes = append([]AvailableTimeframes(nil), newFrames...)
 }
 
 // update min volume
-func (cs *CryptoServerState) UpdateMinVolume(newVolume float64) {
+func (cs *CryptoState) UpdateMinVolume(newVolume float64) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.MinVolume = newVolume
 }
 
 // update min change
-func (cs *CryptoServerState) UpdateMinChange(newChange float64) {
+func (cs *CryptoState) UpdateMinChange(newChange float64) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.MinChange = newChange
 }
 
 // update max rank
-func (cs *CryptoServerState) UpdateMaxRank(newRank int) {
+func (cs *CryptoState) UpdateMaxRank(newRank int) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.MaxRank = newRank
 }
 
 // update price range
-func (cs *CryptoServerState) UpdatePriceRange(min, max float64) {
+func (cs *CryptoState) UpdatePriceRange(min, max float64) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	newRange := PriceRange{
@@ -87,27 +84,22 @@ func (cs *CryptoServerState) UpdatePriceRange(min, max float64) {
 }
 
 // update supply cap preference
-func (cs *CryptoServerState) UpdateSupplyCap(newPreference bool) {
+func (cs *CryptoState) UpdateSupplyCap(newPreference bool) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.SupplyCap = newPreference
 }
  
 // update exclude stable preference
-func (cs *CryptoServerState) UpdateExcludeStable(newPreference bool) {
+func (cs *CryptoState) UpdateExcludeStable(newPreference bool) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.ExcludeStable = newPreference
 }
 
 // update the coins list
-func (cs *CryptoServerState) UpdateCoinsList(newList []MarketData){
+func (cs *CryptoState) UpdateCoinsList(newList []MarketData) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.CoinsList = newList
-}
-
-// serve the coins list with preferences
-func (cs *CryptoServerState) GetList() []MarketData {
-        return cs.CoinsList
 }

@@ -90,7 +90,7 @@ func buildCoinsNewHigh(name string, high24h float64) MarketData {
 
 func buildCoinsHighPriceSpike(priceChange float64) MarketData {
         return MarketData{
-	        PriceChangePercentage24H: priceChange,
+	        PriceChangePercentage24h: priceChange,
 	}
 }
 

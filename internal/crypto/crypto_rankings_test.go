@@ -10,13 +10,13 @@ import(
 func TestRankCoinsASC(t *testing.T) {
         order := MARKET_CAP_ASC
 	coin1 := MarketData{
-	        PriceChangePercentage24H: 1.12345,
+	        PriceChangePercentage24h: 1.12345,
 	}
 	coin2 := MarketData{
-	        PriceChangePercentage24H: 2.12345,
+	        PriceChangePercentage24h: 2.12345,
 	}
 	coin3 := MarketData{
-	        PriceChangePercentage24H: 3.12345,
+	        PriceChangePercentage24h: 3.12345,
 	}
 
         expected := []MarketData{coin1, coin2, coin3}
@@ -30,13 +30,13 @@ func TestRankCoinsASC(t *testing.T) {
 func TestRankCoinsDESC(t *testing.T) {
         order := MARKET_CAP_DESC
 	coin1 := MarketData{
-	        PriceChangePercentage24H: 1.12345,
+	        PriceChangePercentage24h: 1.12345,
 	}
 	coin2 := MarketData{
-	        PriceChangePercentage24H: 2.12345,
+	        PriceChangePercentage24h: 2.12345,
 	}
 	coin3 := MarketData{
-	        PriceChangePercentage24H: 3.12345,
+	        PriceChangePercentage24h: 3.12345,
 	}
 
         expected := []MarketData{coin3, coin2, coin1}

@@ -102,7 +102,7 @@ func buildEstimateCoinUpsidePotential(currentPrice, ath float64, marketRank int)
 
 func buildCheckRealTrend(priceChange, marketCapChange float64) MarketData {
         return MarketData{
-	        PriceChangePercentage24H: priceChange,
+	        PriceChangePercentage24h: priceChange,
 		MarketCapChangePercentage: marketCapChange,
 	}
 }

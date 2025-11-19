@@ -5,11 +5,11 @@ import(
 )
 
 func PrintCryptoOptions() {
-	fmt.Println("Server Crypto Features:")
+	fmt.Println("Available Crypto Features:")
 	fmt.Println("1) Rankings and Leaderboards:")
 	fmt.Println("1.1) To see the biggest risers: * rankcoins asc <timeframe>")
 	fmt.Println("1.2) To see the biggest fallers: * rankcoins desc <timeframe>")
-	fmt.Println("1.3) To see the coins between market cap ranks and filter out the low-liquidity ones: * groupcoins <min rank> <max rank> <min volume>)
+	fmt.Println("1.3) To see the coins between market cap ranks and filter out the low-liquidity ones: * groupcoins <min rank> <max rank> <min volume>")
 	fmt.Println("1.4) To identify scarce assets and to find undervalued gems near their lows (circulating_supply / max_supply = scarcity_score): * scarcecoins <circulating supply> <max supply> <ath change percentage>")
 	fmt.Println("2) Filtering and Search Options:")
 	fmt.Println("2.1) To filter the coins by total volume: * filtercoins total_volume <min volume> <max volume>")
@@ -29,4 +29,14 @@ func PrintCryptoOptions() {
 	fmt.Println("4.1) To calculate daily range (volatility = (high_24 - low_24) / current_price) - only works with 24H timeframe -: * calccoins daily_range <max volatility>")
 	fmt.Println("4.2) To calculate the coin liquidity (turnover_ratio = total_volume / market_cap): * calccoins liquidity <min liquidity>")
 	fmt.Println("4.3) To calculate the trend strength index - only available for 24H timeframe - (price change and market cap change > 0): * calccoins trend_strength <timeframe>")
+}
+
+func PrintAvailableCryptoTimeframes() {
+        fmt.Println("Available timeframes:")
+	fmt.Println("One hour: 1h")
+	fmt.Println("One day: 24h")
+	fmt.Println("One week: 7d")
+	fmt.Println("One month: 30d")
+	fmt.Println("Two hundred days: 200d")
+	fmt.Println("One year: 1d")
 }

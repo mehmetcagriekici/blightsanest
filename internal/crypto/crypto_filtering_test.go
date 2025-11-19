@@ -63,20 +63,20 @@ func TestFilterCoinPriceChange(t *testing.T) {
         minChange := 2.12345
 	maxChange := 3.12345
 	coin1 := MarketData{
-	        PriceChangePercentage24H: 1.12345,
+	        PriceChangePercentage24h: 1.12345,
 	}
 	coin2 := MarketData{
-	        PriceChangePercentage24H: 2.12345,
+	        PriceChangePercentage24h: 2.12345,
 	}
 	coin3 := MarketData{
-	        PriceChangePercentage24H: 3.12345,
+	        PriceChangePercentage24h: 3.12345,
 	}
 	coin4 := MarketData{
-	        PriceChangePercentage24H: 4.12345,
+	        PriceChangePercentage24h: 4.12345,
 	}
 
         expected := []MarketData{coin2, coin3}
-	result := FilterCoinPriceChange(minChange, PCP_DAY, []MarketData{coin1, coin2, coin3, coin4})
+	result := FilterCoinPriceChange(minChange, maxChange, PCP_DAY, []MarketData{coin1, coin2, coin3, coin4})
 
         if !reflect.DeepEqual(expected, result) {
 	        t.Errorf("expected: %v, got: %v", expected, result)
@@ -107,7 +107,7 @@ func TestFindWildSwingCoins(t *testing.T) {
 	}
 
         expected := []MarketData{coin1, coin2}
-	result := FindWildSwingCoins(minSwing, []MarketData{coin1, coin2, coin3, coin4})
+	result := FindWildSwingCoins(minSwing, maxSwing, []MarketData{coin1, coin2, coin3, coin4})
 
         if !reflect.DeepEqual(expected, result) {
 	        t.Errorf("expected: %v, got: %v", expected, result)
@@ -194,15 +194,15 @@ func TestFlagSafeCoins(t *testing.T) {
 	maxPriceChange := 2.12345
 	coin1 := MarketData{
 	        MarketCapRank: 1,
-		PriceChangePercentage24H: 1.12345,
+		PriceChangePercentage24h: 1.12345,
 	}
         coin2 := MarketData{
 	        MarketCapRank: 2,
-		PriceChangePercentage24H: 3.12345,
+		PriceChangePercentage24h: 3.12345,
 	}
 	coin3 := MarketData{
 	        MarketCapRank: 4,
-		PriceChangePercentage24H: 1.12345,
+		PriceChangePercentage24h: 1.12345,
 	}
 
         expected := []MarketData{coin1}
