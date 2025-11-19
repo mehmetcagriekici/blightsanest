@@ -45,6 +45,5 @@ func SubscribeCrypto(ctx context.Context, conn *amqp.Connection, queueName, exch
 	        return err
 	}
 
-        log.Println(q)
-	return nil
+        // consume the queue
 }

@@ -126,10 +126,6 @@ func main() {
 					}
 					if err := pubsub.PublishCrypto(ctx,
 					                               conn,
-								       routing.CryptoExchange,
-								       routing.BlightCrypto,
-								       routing.BlightTopic,
-								       routing.BlightDurable,
 								       cryptoExchangeMessage); err != nil {
 					        log.Fatal("An error occured while trying to publish cached crypto data to the crypto channel.", err)
 					}
@@ -155,10 +151,6 @@ func main() {
                                 // publish the new list on the crypto channel
 				if err := pubsub.PublishCrypto(ctx,
 				                               conn,
-							       routing.CryptoExchange,
-							       routing.BlightCrypto,
-							       routing.BlightTopic,
-							       routing.BlightDurable,
 							       cryptoExchangeMessage); err != nil {
 				        log.Fatal("Couldn't publish the new crypto list to the crypto channel" ,err)
 				}
