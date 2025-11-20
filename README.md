@@ -1,7 +1,7 @@
 # BlightSanest - Stable Insights CLI
 
 ## What is BlightSanest?
-    BlightSanest is a CLI tool that allows users to fetch finance assets and run operations on them. It uses the publisher/subscriber architecture to separate data and functionality by fetching the raw data from the server and publishing it to the clients. This way you can run various operations on any finance asset simultaniously from multiple terminals.
+BlightSanest is a CLI tool that allows users to fetch finance assets and run operations on them. It uses the publisher/subscriber architecture to separate data and functionality by fetching the raw data from the server and publishing it to the clients. This way you can run various operations on any finance asset simultaniously from multiple terminals.
 
 ## Available Finance Assets:
 
@@ -67,4 +67,4 @@
 	        **make sure are operating on a list that has 24h timeframe**
 		> `calc crypto trend_strength`
 
--------------------------------------Initial Relase Version------------------------------------------------------
+-------------------------------------Initial Relase Version-----------------------------------------------------
