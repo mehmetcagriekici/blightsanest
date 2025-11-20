@@ -6,7 +6,7 @@ import(
 )
 	
 // function to watch daily price swing
-func CalcCoinVolatility(maxVolatility float64, coins []MarketData) []MarketData {
+func CalcCoinVolatility(minVolatility, maxVolatility float64, coins []MarketData) []MarketData {
         // slice to store low risk coins
         lowRiskCoins := []MarketData{}
 
@@ -17,7 +17,7 @@ func CalcCoinVolatility(maxVolatility float64, coins []MarketData) []MarketData 
 		}
 		
 	        volatility := (coin.High24H - coin.Low24H) / coin.CurrentPrice
-		if volatility <= maxVolatility {
+		if volatility <= maxVolatility && volatility >= minVolatility {
 		        lowRiskCoins = append(lowRiskCoins, coin)
 		}
 	}
@@ -37,7 +37,9 @@ func EstimateCoinUpsidePotential(minPotential float64, maxMarketRank int, coins 
 		        continue
 		}
 		
-	        if coin.MarketCapRank <= maxMarketRank && (coin.ATH - coin.CurrentPrice) / coin.CurrentPrice * 100 >= minPotential {
+                // potential growth score
+                pgs := (coin.ATH - coin.CurrentPrice) / coin.CurrentPrice * float64(100)
+	        if coin.MarketCapRank <= maxMarketRank && pgs >= minPotential {
 		        highPotentialCoins = append(highPotentialCoins, coin)
 		}
 	}

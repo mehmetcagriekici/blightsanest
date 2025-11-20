@@ -14,7 +14,7 @@ import(
 func Subscribe[T any](conn *amqp.Connection,
                       queueType routing.QueueType,
 		      queueName,
-		      exchangeKey,
+		      routingKey,
 		      exchangeName string,
 		      handler func(T)) error {
         // create a channel from the connection
@@ -52,7 +52,7 @@ func Subscribe[T any](conn *amqp.Connection,
 
         // bind the queue to the exchange
 	if err := ch.QueueBind(queueName,
-	                       exchangeKey,
+	                       routingKey,
 			       exchangeName,
 			       false,
 			       nil); err != nil {
@@ -80,7 +80,7 @@ func Subscribe[T any](conn *amqp.Connection,
 			        log.Printf("Couldn't decode the delivery body: %v\n", err)
 			}
 			// use the decoded data on the handler function
-			handler(T)
+			handler(val)
                         // remove the delivery from the queue
 			if err := dl.Ack(false); err != nil {
 			        log.Printf("ack error: %v\n", err)

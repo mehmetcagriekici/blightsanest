@@ -2,6 +2,7 @@ package pubsub
 
 import(
         "context"
+	"fmt"
 	
         amqp "github.com/rabbitmq/amqp091-go"
 	
@@ -12,12 +13,13 @@ import(
 func PublishCrypto(ctx context.Context,
                    conn *amqp.Connection,
 		   cryptoData routing.CryptoExchangeBody) error {
+		   routingKey := fmt.Sprintf("%s*", routing.BlightCrypto)
         if err := Publish(ctx,
 	                  conn,
 			  routing.BlightDurable,
 			  routing.CryptoExchange,
 			  routing.BlightTopic,
-			  routing.BlightCrypto,
+			  routingKey,
 			  cryptoData); err != nil {
 	        return err
 	}

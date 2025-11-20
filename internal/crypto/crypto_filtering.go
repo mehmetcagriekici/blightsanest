@@ -91,7 +91,7 @@ func FlagRiskCoins(maxAthChange, maxVolume float64, coins []MarketData) []Market
 
         // delete the low risk coins
         clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
-                return coin.AthChangePercentage > maxAthChange || coin.TotalVolume < maxVolume
+                return coin.AthChangePercentage > maxAthChange || coin.TotalVolume > maxVolume
         }) 
 
         // return the clone

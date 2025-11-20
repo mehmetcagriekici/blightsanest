@@ -37,8 +37,8 @@ func main() {
 	}
 	defer conn.Close()
 
-        // create the server crypto cache
-        cryptoCache := crypto.CreateCryptoCache(5 * time.Hour)
+        // create the server crypto cache with 3 hours reaping interval
+        cryptoCache := crypto.CreateCryptoCache(3 * time.Hour)
 	defer cryptoCache.Close()
 	
         //REPL
@@ -115,20 +115,9 @@ func main() {
 				cck := crypto.CreateCryptoCacheKey(frames, time.Now().Unix()) 
 				
                                 // check if exists in the cache
-                                if cryptoList, ok := cryptoCache.Get(cck); ok {
-		                        // fetched data already exists
-					log.Println("Crypto data already exists in the server cache...")
-
-                                        cryptoExchangeMessage := routing.CryptoExchangeBody{
-					        ID:        cck,
-						CreatedAt: time.Now(),
-						Payload:   cryptoList,
-					}
-					if err := pubsub.PublishCrypto(ctx,
-					                               conn,
-								       cryptoExchangeMessage); err != nil {
-					        log.Fatal("An error occured while trying to publish cached crypto data to the crypto channel.", err)
-					}
+                                if _, ok := cryptoCache.Get(cck); ok {
+		                        // fetched data already exists and published on the crypto channel
+					log.Println("Crypto data already exists on the server cache...")
 					continue
 				}
 				

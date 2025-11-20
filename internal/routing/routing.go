@@ -5,7 +5,7 @@ const (
 	CryptoExchange  = "crypto_topic"
 )
 
-// exchange keys
+// routing keys
 const (
         BlightCrypto = "crypto"
 )

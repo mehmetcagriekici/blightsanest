@@ -9,13 +9,14 @@ import(
 //current price
 // high_24h, low_4h
 func TestCalcCoinVolatility(t *testing.T) {
+        minRisk := 0
         maxRisk := (3.12345 - 1.12345) / 2.12345
 	coin1 := buildCalcCoinVolatility(2.12345, 3.12345, 1.12345)
 	coin2 := buildCalcCoinVolatility(0, 0, 0)
 	coin3 := buildCalcCoinVolatility(0.12345, 9.12345, 1.12345)
 
         expected := []MarketData{coin1}
-	result := CalcCoinVolatility(maxRisk, []MarketData{coin1, coin2, coin3})
+	result := CalcCoinVolatility(minRisk, maxRisk, []MarketData{coin1, coin2, coin3})
 
         if !reflect.DeepEqual(expected, result) {
 	        t.Errorf("expected: %v, got: %v", expected, result)

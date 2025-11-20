@@ -15,7 +15,7 @@ func Publish[T any](ctx context.Context,
 		    queueType routing.QueueType,
 		    exchangeName,
 		    exchangeType,
-		    exchangeKey string,
+		    routingKey string,
 		    val T) error {
         // create a channel from the connection
 	ch, err := conn.Channel()
