@@ -23,11 +23,11 @@ type CryptoState struct {
 }
 
 // function to create a new crypt state with default values
-func NewCryptoState(list []MarketData) *CryptoState {
+func NewCryptoState() *CryptoState {
         return &CryptoState{
 	        Order:         MARKET_CAP_DESC,
-		Timeframes:    []AvailableTimeframes{PCP_DAY},
-		CoinsList:     list,
+		Timeframes:    []AvailableTimeframes{},
+		CoinsList:     []MarketData{},
 		MinVolume:     1000000,
 		MinChange:     0,
 		MaxRank:       250,

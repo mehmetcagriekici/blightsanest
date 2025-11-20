@@ -16,6 +16,11 @@ const (
 	BlightDirect = "direct"
 )
 
+// queue names
+const (
+        CryptoGet = "crypto_get"
+)
+
 // queue types
 type QueueType string
 const (

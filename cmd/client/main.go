@@ -4,9 +4,12 @@ import(
         "os"
 	"log"
 	"context"
-	"github.com/joho/godotenv"
 	
+	"github.com/joho/godotenv"
 	amqp "github.com/rabbitmq/amqp091-go"
+
+        "github.com/mehmetcagriekici/blightsanest/internal/crypto"
+	"github.com/mehmetcagriekici/blightsanest/internal/routing"
 )
 
 func main() {
@@ -28,5 +31,16 @@ func main() {
 	}
 	defer conn.Close()
 
-        
+        // create a new crypto state
+	cryptoState := crypto.NewCryptoState()
+
+        // Client REPL
+        for {
+	}
+}
+
+// handler function to get crypto data from the server
+func handleFetchCrypto(cs *CryptoState) {
+        retrun func(val routing.CryptoExchangeBody) {
+	}
 }
