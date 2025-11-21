@@ -11,21 +11,18 @@ BlightSanest is a CLI tool that allows users to fetch finance assets and run ope
 
 From the [CoinGecko API](https://www.coingecko.com/en/api) BlightSanest Server can fetch the coins with related market data from the API [endpoint](https://docs.coingecko.com/reference/coins-markets) with the server command "fetch" with the arguments "crypto" and one or multiple timeframes (1h, 24h, 7d, 30d, 200d, 1y)
 
-####server examples
+Server Examples:
 
-    `fetch crypto 1h 24h`
-    
-    `fetch crypto 1h`
+    `fetch crypto 1h 24h
+     fetch crypto 1h`
 
 After fetching the crypto data from the server, you also need to get it from the client. BlightSanest does not perform initial calls to any APIs on the server neither on the client not to produce undesired results and not to be a burden on the API.
 
-####client examples
+Client Examples:
 
-    `get crypto`        <sup>gets all crypto lists from the publisher</sup>
-    
-    `get crypto 1h`     <sup>gets a specific crypto list from the publisher if exists</sup>
-    
-    `get cryoto 1h 24h` <sup>gets a specific crypto list from the publisher if exists</sup>
+    `get crypto        # gets all crypto lists from the publisher
+     get crypto 1h     # gets a specific crypto list from the publisher if exists
+     get cryoto 1h 24h # gets a specific crypto list from the publisher if exists`
 
 From the clients that has the crypto list/lists, you can perform these operations:
 
