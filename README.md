@@ -11,7 +11,7 @@ BlightSanest is a CLI tool that allows users to fetch finance assets and run ope
 
 From the [CoinGecko API](https://www.coingecko.com/en/api) BlightSanest Server can fetch the coins with related market data from the API [endpoint](https://docs.coingecko.com/reference/coins-markets) with the server command "fetch" with the arguments "crypto" and one or multiple timeframes (1h, 24h, 7d, 30d, 200d, 1y)
 
-<sub>server examples</sub>
+####server examples
 
     `fetch crypto 1h 24h`
     
@@ -19,17 +19,17 @@ From the [CoinGecko API](https://www.coingecko.com/en/api) BlightSanest Server c
 
 After fetching the crypto data from the server, you also need to get it from the client. BlightSanest does not perform initial calls to any APIs on the server neither on the client not to produce undesired results and not to be a burden on the API.
 
-<sub>client examples</sub>
+####client examples
 
-    `get crypto`        ><sup>gets all crypto lists from the publisher</sup>
+    `get crypto`        <sup>gets all crypto lists from the publisher</sup>
     
-    `get crypto 1h`     ><sup>gets a specific crypto list from the publisher if exists</sup>
+    `get crypto 1h`     <sup>gets a specific crypto list from the publisher if exists</sup>
     
-    `get cryoto 1h 24h` ><sup>gets a specific crypto list from the publisher if exists</sup>
+    `get cryoto 1h 24h` <sup>gets a specific crypto list from the publisher if exists</sup>
 
 From the clients that has the crypto list/lists, you can perform these operations:
 
-<sub><ins>**After each operation if you want to update the crypto list on the client enter the command and the argument `mutate crypto` on the client terminal. Otherwise the operations will not affect the crypto list and you will run the next operation on the original list. __Mutating the list on a client will not affect the lists on the other clients nor the lists on the server__**</ins></sub>
+**After each operation if you want to update the crypto list on the client enter the command and the argument `mutate crypto` on the client terminal. Otherwise the operations will not affect the crypto list and you will run the next operation on the original list. __Mutating the list on a client will not affect the lists on the other clients nor the lists on the server__**
 
 1. You can see the biggest risers/fallers by sorting the coins in ascending/descending order
 
@@ -56,7 +56,9 @@ From the clients that has the crypto list/lists, you can perform these operation
 
     `filter crypto price_change_percentage <min_change float64> <max_change float64> <timeframe>`
 
-7. You can filter the coins by their volatility by their swing rate (rate = highest_price_24h / lowest_price_24h)
+7. You can filter the coins by their volatility by their swing rate
+
+    >rate = highest_price_24h / lowest_price_24h
 
     `filter crypto volatile <min_rate float64> <max_rate float64>`
 
