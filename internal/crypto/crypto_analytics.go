@@ -68,7 +68,7 @@ func CalcCoinLiquidity(minLiquidity float64, coins []MarketData) []MarketData {
 	return highLiquidityCoins
 }
 
-// function to see if a coind is real trend or fame pump
+// function to see if a coind is real trend or fake pump
 func CheckRealTrend(timeframe AvailableTimeframes, coins []MarketData) ([]MarketData, error) {
         // slice to store real trend coins
 	realTrendCoins := []MarketData{}

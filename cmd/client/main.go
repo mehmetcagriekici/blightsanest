@@ -48,6 +48,19 @@ func main() {
 		}
 
                 // invalid commands
+		if words[0] != "manual" &&
+		   words[0] != "help"   &&
+		   words[0] != "mutate" &&
+		   words[0] != "get"    &&
+		   words[0] != "rank"   &&
+		   words[0] != "group"  &&
+		   words[0] != "filter" &&
+		   words[0] != "find"   &&
+		   words[0] != "calc" {
+		           log.Println("Invalid Command!")
+			   clientlogic.PrintClientHelp()
+			   continue
+		   }
 
                 // print client manual
 		if words[0] == "manual" {
@@ -68,8 +81,12 @@ func main() {
 			log.Println("----------")
 			continue
 		}
+
+                // mutate client state
+		if words[0] == "mutate" {
+		}
 		
-	        // Get crypto data from the server
+	        // Get data from the server
 		if words[0] == "get" {
 		        // get requires at least one more argument
 			if len(words) < 2 {
@@ -77,6 +94,26 @@ func main() {
 				log.Println("* get crypto")
 				continue
 			}
+		}
+
+                // ranking features
+                if words[0] == "rank" {
+		}
+
+                // grouping features
+		if words[0] == "group" {
+		}
+
+                // filtering features
+		if words[0] == "filter" {
+		}
+
+                // searcing features
+		if words[0] == "find" {
+		}
+
+                // calculating features
+		if words[0] == "calc" {
 		}
 	}
 }
