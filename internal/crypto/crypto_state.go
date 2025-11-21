@@ -23,7 +23,7 @@ type CryptoState struct {
 }
 
 // function to create a new crypt state with default values
-func NewCryptoState() *CryptoState {
+func CreateCryptoState() *CryptoState {
         return &CryptoState{
 	        Order:         MARKET_CAP_DESC,
 		Timeframes:    []AvailableTimeframes{},

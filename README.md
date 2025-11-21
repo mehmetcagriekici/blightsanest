@@ -25,7 +25,6 @@ Client Examples:
 
 ```
 get crypto        # gets all crypto lists from the publisher
-
 get crypto 1h     # gets a specific crypto list from the publisher if exists
 
 get cryoto 1h 24h # gets a specific crypto list from the publisher if exists

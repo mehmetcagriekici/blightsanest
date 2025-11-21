@@ -6,6 +6,7 @@ import(
 	"time"
 	"slices"
 	"context"
+	"strconv"
 	
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/serverlogic"
@@ -26,6 +27,7 @@ func main() {
         // environment variables
 	cryptoAPIKey := os.Getenv("COIN_GECKO_KEY")
 	rabbitURL := os.Getenv("RABBIT_CONNECTION_STRING")
+	cacheInterval := os.Getenv("CACHE_INTERVAL")
 
         // create a context for the server
 	ctx := context.Background()
@@ -38,7 +40,11 @@ func main() {
 	defer conn.Close()
 
         // create the server crypto cache with 3 hours reaping interval
-        cryptoCache := crypto.CreateCryptoCache(3 * time.Hour)
+	interval, err := strconv.ParseFloat(cacheInterval)
+	if err != nil {
+	        log.Fatal(err)
+	}
+        cryptoCache := crypto.CreateCryptoCache(time.Duration(interval) * time.Hour)
 	defer cryptoCache.Close()
 	
         //REPL
