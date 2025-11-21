@@ -13,16 +13,23 @@ From the [CoinGecko API](https://www.coingecko.com/en/api) BlightSanest Server c
 
 Server Examples:
 
-`fetch crypto 1h 24h
-fetch crypto 1h`
+`
+fetch crypto 1h 24h
+
+fetch crypto 1h
+`
 
 After fetching the crypto data from the server, you also need to get it from the client. BlightSanest does not perform initial calls to any APIs on the server neither on the client not to produce undesired results and not to be a burden on the API.
 
 Client Examples:
 
-`get crypto        # gets all crypto lists from the publisher
+`
+get crypto        # gets all crypto lists from the publisher
+
 get crypto 1h     # gets a specific crypto list from the publisher if exists
-get cryoto 1h 24h # gets a specific crypto list from the publisher if exists`
+
+get cryoto 1h 24h # gets a specific crypto list from the publisher if exists
+`
 
 From the clients that has the crypto list/lists, you can perform these operations:
 
