@@ -40,7 +40,7 @@ func main() {
 	defer conn.Close()
 
         // create the server crypto cache with 3 hours reaping interval
-	interval, err := strconv.ParseFloat(cacheInterval)
+	interval, err := strconv.ParseFloat(cacheInterval, 64)
 	if err != nil {
 	        log.Fatal(err)
 	}
@@ -96,28 +96,7 @@ func main() {
 
                                 // get the timeframe queries for price_change_percentage
 				frames := words[2:]
-				inputTimeframes := []crypto.AvailableTimeframes{}
-				for frame := range slices.Values(frames) {
-				        switch frame {
-					case "1h":
-					        inputTimeframes = append(inputTimeframes, crypto.PCP_HOUR)
-					case "24h":
-					        inputTimeframes = append(inputTimeframes, crypto.PCP_DAY)
-					case "7d":
-					        inputTimeframes = append(inputTimeframes, crypto.PCP_WEEK)
-					case "30d":
-					        inputTimeframes = append(inputTimeframes, crypto.PCP_MONTH)
-					case "200d":
-					        inputTimeframes = append(inputTimeframes, crypto.PCP_TWO_HUNDRED)
-					case "1y":
-					        inputTimeframes = append(inputTimeframes, crypto.PCP_YEAR)
-					default:
-					        log.Println("Invalid timeframe")
-						crypto.PrintAvailableCryptoTimeframes()
-						continue
-					}
-				}
-			        
+				inputTimeframes := crypto.GetInputTimeframes(frames)
 				cck := crypto.CreateCryptoCacheKey(frames, time.Now().Unix()) 
 				
                                 // check if exists in the cache

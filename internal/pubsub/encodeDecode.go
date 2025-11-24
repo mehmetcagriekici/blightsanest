@@ -14,10 +14,9 @@ func Encode[T any](val T) ([]byte, error) {
 	return network.Bytes(), nil
 }
 
-func Decode[T any](encodedData []byte) (T, error) {
+func Decode[T any](encodedData []byte, val T) (T, error) {
         network := bytes.NewBuffer(encodedData)
 	dec := gob.NewDecoder(network)
-	var val T
 	if err := dec.Decode(&val); err != nil {
 	        var noop T
 		return noop, err

@@ -61,7 +61,7 @@ func Publish[T any](ctx context.Context,
         // publish the message
 	if err := ch.PublishWithContext(ctx,
 	                                exchangeName,
-					exchangeKey,
+					routingKey,
 					false,
 					false,
 					msg); err != nil {

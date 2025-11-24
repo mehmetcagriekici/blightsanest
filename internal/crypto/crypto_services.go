@@ -37,8 +37,8 @@ type MarketData struct{
 // Available orders
 type AvailableOrders string
 const (
-        MARKET_CAP_DESC AvailableOrders = "market_cap_desc"
-	MARKET_CAP_ASC AvailableOrders  = "market_cap_asc"
+        CRYPTO_DESC AvailableOrders = "desc"
+	CRYPTO_ASC AvailableOrders  = "asc"
 )
 
 // Price Change Percentage Available timeframes

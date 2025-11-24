@@ -6,6 +6,7 @@ import(
 	"reflect"
 	"strings"
 	"math"
+	"slices"
 )
 
 // function to get a fieldname vy its name - price_percentage_change_{TIMEFRAME} multiple possible fields depending on the input
@@ -41,10 +42,34 @@ func GetCryptoCacheHour(unix int64) float64 {
        return math.Floor(u - reminder) / d
 }
 
-// function to createa crypto cache key
+// function to create crypto cache key
 func CreateCryptoCacheKey(timeframes []string, unix int64) string {
         frames := strings.Join(timeframes, "-")
 	createdAt := GetCryptoCacheHour(unix)
 	
-        return fmt.Sprintf("crypto__frames-%s_created_at-%.0f", frames, createdAt)
+        return fmt.Sprintf("cryptoFrames_%s__createdAt-%.0f", frames, createdAt)
+}
+
+// function to get timeframes array
+func GetInputTimeFrames(frames []string) []AvailableTimeframes {
+        timeframes := []AvailableTimeframes{}
+	for frame := range slices.Values(frames) {
+	        switch frame {
+		case "1h":
+		        timeframes = append(timeframes, PCP_HOUR)
+		case "24h":
+		        timeframes = append(timeframes, PCP_DAY)
+		case "7d":
+		        timeframes = append(timeframes, PCP_WEEK)
+		case "30d":
+		        timeframes = append(timeframes, PCP_MONTH)
+		case "200d":
+		        timeframes = append(timeframes, PCP_TWO_HUNDRED)
+		case "1y":
+		        timeframes = append(timeframes, PCP_YEAR)
+		default:
+		        log.Println("Invalid timeframe! (1h, 24h, 7d, 30d, 200d, 1y)")
+			continue
+		}
+	}
 }

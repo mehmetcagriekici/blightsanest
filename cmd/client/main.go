@@ -104,19 +104,16 @@ func main() {
 			log.Println("To see the use of commands for a specific asset: help <asset_name>")
 			log.Println("* help crypto: will print the crypto part of the manual.")
 			log.Println("")
-			if len(words) == 1 {
-			        continue
+
+                        if words[1] == "crypto" {
+			        clientlogic.PrintCryptoHelp()
 			}
+			continue
 		}
 
                 // feature commands requires at least one more argument
 		if !controlFeatureCommands(words) {
 		        continue
-		}
-
-                // print assets help
-		if words[0] == "help" && words[1] == "crypto" {
-		        clientlogic.PrintCryptoHelp()
 		}
 
                 // mutate client state
@@ -133,14 +130,28 @@ func main() {
 		
 	        // Get data from the server
 		if words[0] == "get" {
+		        if words[1] == "crypto" {
+			        frames := words[2:]
+				handleCryptoGet(cryptoCache, cryptoState, frames)
+				crypto.PrintCryptoList(cryptoState.CurrentList,
+				                       cryptoState.CurrentListID,
+						       cryptoState.ClientTimeframes)
+                                continue
+			}
 		}
 
                 // ranking features
                 if words[0] == "rank" {
+		        if words[1] == "crypto" {
+			        handleCryptoRank(cryptoState, words[2], words[3])
+				continue
+			}
 		}
 
                 // grouping features
 		if words[0] == "group" {
+		        if words[1] == "crypto" {
+			}
 		}
 
                 // filtering features
@@ -154,5 +165,6 @@ func main() {
                 // calculating features
 		if words[0] == "calc" {
 		}
+
 	}
 }

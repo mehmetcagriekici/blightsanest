@@ -12,10 +12,10 @@ func RankCoins(timeframe AvailableTimeframes, order AvailableOrders, coins []Mar
 
         // sort the clone
 	sort.Slice(clone, func(i, j int) bool {
-	        if order == MARKET_CAP_DESC {
+	        if order == CRYPTO_DESC {
 	                return GetPriceChange(clone[i], timeframe) >  GetPriceChange(clone[j], timeframe)
 		}
-		if order == MARKET_CAP_ASC {
+		if order == CRYPTO_ASC {
 		        return GetPriceChange(clone[i], timeframe) < GetPriceChange(clone[j], timeframe)
 		}
 		return GetPriceChange(clone[i], timeframe) == GetPriceChange(clone[j], timeframe)

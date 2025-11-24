@@ -51,7 +51,7 @@ func Subscribe[T any](conn *amqp.Connection,
 	}
 
         // bind the queue to the exchange
-	if err := ch.QueueBind(queueName,
+	if err := ch.QueueBind(q.Name,
 	                       routingKey,
 			       exchangeName,
 			       false,
@@ -60,7 +60,7 @@ func Subscribe[T any](conn *amqp.Connection,
 	}
         
         // start delivering messages from the queue
-	deliveries, err := ch.Consume(queueName,
+	deliveries, err := ch.Consume(q.Name,
 	                              "",
 				      false,
 				      false,
@@ -74,8 +74,9 @@ func Subscribe[T any](conn *amqp.Connection,
         // range over the deliveries
 	go func() {
 	        for dl := range deliveries {
-		        // decode the delivery bpdy
-			val, err := Decode(dl.Body)
+		        // decode the delivery body
+		        var buff T
+			val, err := Decode(dl.Body, buff)
 			if err != nil {
 			        log.Printf("Couldn't decode the delivery body: %v\n", err)
 			}
@@ -87,4 +88,6 @@ func Subscribe[T any](conn *amqp.Connection,
 			}
 		}
 	}()
+
+        return nil
 }
