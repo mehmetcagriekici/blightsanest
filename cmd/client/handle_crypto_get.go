@@ -3,7 +3,6 @@ package main
 import(
         "time"
 	"log"
-	"errors"
 	
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
@@ -12,11 +11,12 @@ import(
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func handleCryptoGet(cc *crypto.CryptoCache,
-                     cs *crypto.CryptoState,
+func handleCryptoGet(cc     *crypto.CryptoCache,
+                     cs     *crypto.CryptoState,
+		     conn   *amqp.Connection,
 		     frames []string) {
         // create a key from passed frames
-	key := crypto.CreateCryptoKey(frames, time.Now().Unix())
+	key := crypto.CreateCryptoCacheKey(frames, time.Now().Unix())
 
         // check if the key exists in the cache
 	list, ok := cc.Get(key)
@@ -42,25 +42,23 @@ func handleCryptoGet(cc *crypto.CryptoCache,
 	return
 }
 
-func subscriber(cc *crypto.CryptoCache, cs *crypto.CryptoState, key string) func(routing.CryptoExchageBody) error {
-        return func(delivery routing.CryptoExchangeBody) error {
+func subscriber(cc *crypto.CryptoCache, cs *crypto.CryptoState, key string) func(routing.CryptoExchangeBody) {
+        return func(delivery routing.CryptoExchangeBody) {
 	        list := delivery.Payload
 		id   := delivery.ID
 
                 // if there is no id or no list or id is not a match
 		if id == "" || len(list) == 0 {
-		        return errors.New("No Crypto List found on the server!")
+		        log.Fatal("No Crypto List found on the server!")
 		}
 		
 		if key != id {
-		        return errors.New("Requested Crypto Key does not match the server key")
+		        log.Fatal("Requested Crypto Key does not match the server key")
 		}
 
                 // add list to the cache and to the state
 		cc.Add(id, list)
 		cs.UpdateCurrentList(id, list)
 		log.Println("New Crypto List successfully added to the client")
-		
-		return nil
 	}
 }

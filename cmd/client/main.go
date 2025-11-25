@@ -29,6 +29,7 @@ func main() {
 
         // create a context for the client
 	ctx := context.Background()
+	ctx = ctx
 
         // create a connection to the rabbitmq for the client
 	conn, err := amqp.Dial(rabbitURL)
@@ -38,7 +39,7 @@ func main() {
 	defer conn.Close()
 
         // create a new crypto state
-	// cryptoState := crypto.CreateCryptoState()
+	cryptoState := crypto.CreateCryptoState()
 
         // create a crypto cache for the client
 	interval, err := strconv.ParseFloat(cacheInterval, 64)
@@ -118,6 +119,7 @@ func main() {
 
                 // mutate client state
 		if words[0] == "mutate" {
+		        // update the client state list with the result of the operation
 		}
 
                 // switch between cached data
@@ -126,13 +128,14 @@ func main() {
 
                 // save the asset on the cache
 		if words[0] == "save" {
+		        // to save the current list on the state in the cache and to the docker volume
 		}
 		
 	        // Get data from the server
 		if words[0] == "get" {
 		        if words[1] == "crypto" {
 			        frames := words[2:]
-				handleCryptoGet(cryptoCache, cryptoState, frames)
+				handleCryptoGet(cryptoCache, cryptoState, conn, frames)
 				crypto.PrintCryptoList(cryptoState.CurrentList,
 				                       cryptoState.CurrentListID,
 						       cryptoState.ClientTimeframes)
@@ -143,19 +146,50 @@ func main() {
                 // ranking features
                 if words[0] == "rank" {
 		        if words[1] == "crypto" {
-			        handleCryptoRank(cryptoState, words[2], words[3])
+			        handleCryptoRank(cryptoState, words[2], words[3], words[4])
 				continue
 			}
 		}
 
                 // grouping features
 		if words[0] == "group" {
+		        if !controlFeatureSub(words) {
+			        continue
+			}
+			
 		        if words[1] == "crypto" {
+			        switch words[2] {
+				case "liquidity":
+			                controlLiquiityArguments(cryptoState, words[3:])
+					handleCryptoLiquidity(cryptoState)
+				case "scarcity":
+				        controlScarcityArguments(cryptoState, words[3:])
+					handleCryptoScarcity(cryptoState)
+				default:
+				        log.Println("Invalid crypto grouping option. Available: <liquidity> <scarcity>")
+				}
+				continue
 			}
 		}
 
                 // filtering features
 		if words[0] == "filter" {
+		        if !controlFeatureSub(words) {
+			        continue
+			}
+
+                        switch words[2] {
+			        case "total_volume":
+				        controlFilterTotalVolume(cryptoState, words[3:])
+					handleCryptoFilterTotalVolume(cryptoState)
+			        case "market_cap":
+				case "price_change_percentage":
+				case "volatile":
+				case "high_risk":
+				case "low_risk"
+				default:
+				        log.Println("Invalid crypto filtering option. Available: <total_volume> <market_cap> <price_change_percentage> <volatile> <high_risk> <low_risk>")
+			}
 		}
 
                 // searcing features

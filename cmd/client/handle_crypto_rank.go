@@ -18,7 +18,7 @@ func handleCryptoRank(cs *crypto.CryptoState, order string, timeframe string) {
 	}
 
         // get the timeframe using the user input
-	frames := crypto.GetInputTimeFrames([]string{timeframe})
+	frames := crypto.GetInputTimeframes([]string{timeframe})
 	if len(frames) != 1 {
 	        log.Fatal("To rank the coins bu price change percentage, an exsisting timeframe needed to be based on.")
 	}
@@ -26,8 +26,7 @@ func handleCryptoRank(cs *crypto.CryptoState, order string, timeframe string) {
         sorted := crypto.RankCoins(frames[0], sortingOrder, cs.CurrentList)
 	log.Printf("Sorting successfully completed in %s order by price change percentage %s\n", order, timeframe)
 	log.Println("")
-	log.Printf("To update the list with the sorded one: mutate rank crypto %s %s\n", order, timeframe)
-	log.Printf("To save the list in the client cache and to the docker volume with a key: save crypto <your key>\n")
+	log.Printf("To update the list with the sorted one: mutate rank crypto %s %s\n", order, timeframe)
 	log.Println("")
 	log.Println("")
 	log.Println("")
