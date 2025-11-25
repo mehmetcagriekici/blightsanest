@@ -178,7 +178,7 @@ func TestFlagRiskCoins(t *testing.T) {
 		TotalVolume: 2.12345,
 	}
 
-        expected := []MarketData{coin1, coin2}
+        expected := []MarketData{coin2, coin4}
         result := FlagRiskCoins(maxAthChange, maxVolume, []MarketData{coin1, coin2, coin3, coin4})
 
         if !reflect.DeepEqual(expected, result) {

@@ -9,7 +9,7 @@ import(
 //current price
 // high_24h, low_4h
 func TestCalcCoinVolatility(t *testing.T) {
-        minRisk := 0
+        minRisk := 0.0
         maxRisk := (3.12345 - 1.12345) / 2.12345
 	coin1 := buildCalcCoinVolatility(2.12345, 3.12345, 1.12345)
 	coin2 := buildCalcCoinVolatility(0, 0, 0)

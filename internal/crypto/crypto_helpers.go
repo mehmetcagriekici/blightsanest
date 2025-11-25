@@ -9,7 +9,14 @@ import(
 	"slices"
 )
 
-// function to get a fieldname vy its name - price_percentage_change_{TIMEFRAME} multiple possible fields depending on the input
+// function to get a field of a coin
+func GetCoinField[T any](field string, coin MarketData) T {
+        r := reflect.ValueOf(coin)
+	val := reflect.Indirect(r).FieldByName(field)
+	return val
+}
+
+// function to get a fieldname by its name - price_percentage_change_{TIMEFRAME} multiple possible fields depending on the input
 func GetPriceChange(coin MarketData, timeframe AvailableTimeframes) float64 {
         field := fmt.Sprintf("PriceChangePercentage%s", timeframe)
 	r := reflect.ValueOf(coin)
@@ -51,7 +58,7 @@ func CreateCryptoCacheKey(timeframes []string, unix int64) string {
 }
 
 // function to get timeframes array
-func GetInputTimeFrames(frames []string) []AvailableTimeframes {
+func GetInputTimeframes(frames []string) []AvailableTimeframes {
         timeframes := []AvailableTimeframes{}
 	for frame := range slices.Values(frames) {
 	        switch frame {
@@ -72,4 +79,5 @@ func GetInputTimeFrames(frames []string) []AvailableTimeframes {
 			continue
 		}
 	}
+	return timeframes
 }

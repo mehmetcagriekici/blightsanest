@@ -8,7 +8,7 @@ import(
 // test rank coins
 // price change percentage
 func TestRankCoinsASC(t *testing.T) {
-        order := MARKET_CAP_ASC
+        order := CRYPTO_ASC
 	coin1 := MarketData{
 	        PriceChangePercentage24h: 1.12345,
 	}
@@ -28,7 +28,7 @@ func TestRankCoinsASC(t *testing.T) {
 }
 
 func TestRankCoinsDESC(t *testing.T) {
-        order := MARKET_CAP_DESC
+        order := CRYPTO_DESC
 	coin1 := MarketData{
 	        PriceChangePercentage24h: 1.12345,
 	}
