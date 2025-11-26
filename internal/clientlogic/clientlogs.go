@@ -8,6 +8,7 @@ func PrintClientIntroduction() {
         fmt.Println("Welcome to the BlightSanest Client...")
 	fmt.Println("To see the client manual:      * manual")
 	fmt.Println("To see the available commands: * help")
+	fmt.Println("To quit:                       * quit")
 }
 
 func PrintClientHelp() {

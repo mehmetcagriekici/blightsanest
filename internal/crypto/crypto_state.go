@@ -12,35 +12,89 @@ type PriceRange struct {
 }
 
 type CryptoState struct {
-	CurrentList                   []MarketData
-	CurrentListID                 string
-	ClientTimeframes              []string
-	CurrentMinRank                int
-	CurrentMaxRank                int
-	CurrentMinVolume              float64
-	CurrentMaxVolume              float64
-	CurrentMinCirculatingSupply   float64
-	CurrentMaxCirculatingSupply   float64
-	CurrentMaxATHChangePercentage float64
-	CurrentMinATHCHangePercentage float64
-	mu                            sync.RWMutex
+	CurrentList                     []MarketData
+	CurrentListID                   string
+	ClientTimeframes                []string
+	CurrentTimeframe                AvailableTimeframes
+	CurrentMinRank                  int
+	CurrentMaxRank                  int
+	CurrentMinVolume                float64
+	CurrentMaxVolume                float64
+	CurrentMinCirculatingSupply     float64
+	CurrentMaxCirculatingSupply     float64
+	CurrentMaxATHChangePercentage   float64
+	CurrentMinATHChangePercentage   float64
+	CurrentMinMarketCap             float64
+	CurrentMaxMarketCap             float64
+	CurrentMaxPriceChangePercentage float64
+	CurrentMinPriceChangePercentage float64
+	CurrentOrder                    AvailableOrders
+	CurrentMinSwingScore            float64
+	CurrentMaxSwingScore            float64
+	mu                              sync.RWMutex
 }
 
 // function to create a new crypt state with default values
 func CreateCryptoState() *CryptoState {
         return &CryptoState{
-	        CurrentList:                   []MarketData{},
-		CurrentListID:                 "",
-		ClientTimeframes:              []string{},
-		CurrentMinRank:                0,
-		CurrentMaxRank:                250,
-		CurrentMinVolume:              math.Inf(-1),
-		CurrentMaxVolume:              math.Inf(+1),
-		CurrentMinCirculatingSupply:   math.Inf(-1),
-		CurrentMaxCirculatingSupply:   math.Inf(+1),
-		CurrentMaxATHChangePercentage: math.Inf(+1),
-		CurrentMinATHCHangePercentage: math.Inf(-1),
+	        CurrentList:                     []MarketData{},
+		CurrentListID:                   "",
+		ClientTimeframes:                []string{},
+		CurrentTimeframe:                PCP_DAY,
+		CurrentMinRank:                  0,
+		CurrentMaxRank:                  250,
+		CurrentMinVolume:                math.Inf(-1),
+		CurrentMaxVolume:                math.Inf(+1),
+		CurrentMinCirculatingSupply:     math.Inf(-1),
+		CurrentMaxCirculatingSupply:     math.Inf(+1),
+		CurrentMaxATHChangePercentage:   math.Inf(+1),
+		CurrentMinATHChangePercentage:   math.Inf(-1),
+		CurrentMinMarketCap:             math.Inf(-1),
+		CurrentMaxMarketCap:             math.Inf(+1),
+		CurrentMinPriceChangePercentage: math.Inf(-1),
+		CurrentMaxPriceChangePercentage: math.Inf(+1),
+		CurrentOrder:                    CRYPTO_ASC,
+		CurrentMinSwingScore:            math.Inf(-1),
+		CurrentMaxSwingScore:            math.Inf(+1),
 	}
+}
+
+// update current swing score
+func (cs *CryptoState) UpdateCurrentSwingScore(minScore, maxScore float64) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentMinSwingScore = minScore
+	cs.CurrentMaxSwingScore = maxScore
+}
+
+// update current timeframe
+func (cs *CryptoState) UpdateCurrentTimeframe(timeframe AvailableTimeframes) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentTimeframe = timeframe
+}
+
+// update order
+func (cs *CryptoState) UpdateOrder(order AvailableOrders) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentOrder = order
+}
+
+// update price change percentage
+func (cs *CryptoState) UpdatePriceChangePercentage(minChange, maxChange float64) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentMinPriceChangePercentage = minChange
+	cs.CurrentMaxPriceChangePercentage = maxChange
+} 
+
+// update market cap
+func (cs *CryptoState) UpdateMarketCap(minCap, maxCap float64) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentMinMarketCap = minCap
+	cs.CurrentMaxMarketCap = maxCap
 }
 
 // update circulating supply
@@ -72,13 +126,13 @@ func (cs *CryptoState) SetTimeframes(key string) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	// get the timeframes from the key
-	parts := strings.Split(key, "__")
-	frames := strings.Split(parts[0], "_")
+	keyParts := strings.Split(key, "__")
+	frames := strings.Split(keyParts[0], "_")
 	cs.ClientTimeframes = strings.Split(frames[1], "-")
 }
 
-// update market cap preferences
-func (cs *CryptoState) UpdateMarketCap(minRank, maxRank int) {
+// update market cap rank preferences
+func (cs *CryptoState) UpdateMarketRank(minRank, maxRank int) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.CurrentMinRank = minRank

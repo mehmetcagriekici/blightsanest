@@ -8,7 +8,7 @@ import(
 )
 
 func handleCryptoLiquidity(cs *crypto.CryptoState) {
-        highCoins := crypto.GetHighLiquidityCoins(cs.CurrentMinRank, cs.CurrentMaxRank, cs.CurrentMinVolume)
+        highCoins := crypto.GroupHighLiquidityCoins(cs.CurrentMinRank, cs.CurrentMaxRank, cs.CurrentMinVolume, cs.CurrentList)
 	log.Println("")
 	log.Println("Successfully grouped the coins with high liquidity...")
 	log.Println("")
@@ -16,13 +16,13 @@ func handleCryptoLiquidity(cs *crypto.CryptoState) {
 	fields := []string{"MarketCapRank", "TotalVolume"}
 	crypto.PrintCryptoList(highCoins, cs.CurrentListID, cs.ClientTimeframes, fields)
         log.Println("")
-        log.Printf("To update the list with the result: mutate group crypto liquidity %d %d %f", cs.CurrentMinRank, cs.CurrentMaxRank, cs.CurrentMinVolume)
+        log.Println("To update the list with the result: mutate group crypto liquidity")
 }
 
 // min market rank int
 // max market rank int
 // min total volume float64
-func controlLiquidityArguments(cs *crypto.CryptoState, args ...string) {
+func controlLiquidityArguments(cs *crypto.CryptoState, args []string) {
         switch len(args) {
 	case 0:
 	        log.Println("No arguments are passed, using the ones from the client state:")
@@ -43,7 +43,7 @@ func controlLiquidityArguments(cs *crypto.CryptoState, args ...string) {
 		}
 		
 		log.Println("Updating the client state, min market cap value...")
-		cs.UpdateMarketCap(minRank, cs.CurrentMaxRank)
+		cs.UpdateMarketRank(minRank, cs.CurrentMaxRank)
 	case 2:
 	        log.Println("Two arguments are passed. Using the new min and max market rank values. Using the min volume value from the client state.")
 		log.Printf("min volume: %f\n", cs.CurrentMinVolume)
@@ -55,7 +55,7 @@ func controlLiquidityArguments(cs *crypto.CryptoState, args ...string) {
 		if err != nil {
 		        log.Fatal(err)
 		}
-		cs.UpdateMarketCap(minRank, maxRank)
+		cs.UpdateMarketRank(minRank, maxRank)
 	case 3:
 	        minRank, err := strconv.Atoi(args[0])
 		if err != nil {
@@ -69,7 +69,7 @@ func controlLiquidityArguments(cs *crypto.CryptoState, args ...string) {
 		if err != nil {
 		        log.Fatal(err)
 		}
-		cs.UpdateMarketCap(minRank, maxRank)
+		cs.UpdateMarketRank(minRank, maxRank)
 		cs.UpdateVolume(minVolume, cs.CurrentMaxVolume)
 	        log.Println("Client state min and max market ranks, and min volume values are updated with the passed arguments.")
 		default:

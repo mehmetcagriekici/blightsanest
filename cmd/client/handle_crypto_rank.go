@@ -23,14 +23,17 @@ func handleCryptoRank(cs *crypto.CryptoState, order string, timeframe string) {
 	        log.Fatal("To rank the coins bu price change percentage, an exsisting timeframe needed to be based on.")
 	}
 
+        cs.UpdateOrder(sortingOrder)
+        cs.UpdateCurrentTimeframe(frames[0])
         sorted := crypto.RankCoins(frames[0], sortingOrder, cs.CurrentList)
 	log.Printf("Sorting successfully completed in %s order by price change percentage %s\n", order, timeframe)
 	log.Println("")
-	log.Printf("To update the list with the sorted one: mutate rank crypto %s %s\n", order, timeframe)
+	log.Println("To update the list with the sorted one: mutate rank crypto")
 	log.Println("")
 	log.Println("")
 	log.Println("")
+	
 	// print the sorted list
 	sortedID := fmt.Sprintf("%s__sorted-%s", cs.CurrentListID, order)
-	crypto.PrintCryptoList(sorted, sortedID, []string{timeframe})
+	crypto.PrintCryptoList(sorted, sortedID, []string{timeframe}, []string{})
 }

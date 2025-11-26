@@ -3,10 +3,10 @@ package crypto
 import(
         "fmt"
 	"slices"
-	"regex"
+	"regexp"
 )
 
-func PrintCryptoList(list []MarketData, id string, timeframes []string, fields ...string) {
+func PrintCryptoList(list []MarketData, id string, timeframes []string, fields []string) {
         frames := GetInputTimeframes(timeframes)
 	
         fmt.Println("##########")

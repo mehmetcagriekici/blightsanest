@@ -10,7 +10,7 @@ import(
 )
 
 // function to get a field of a coin
-func GetCoinField[T any](field string, coin MarketData) T {
+func GetCoinField(field string, coin MarketData) reflect.Value {
         r := reflect.ValueOf(coin)
 	val := reflect.Indirect(r).FieldByName(field)
 	return val

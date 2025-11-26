@@ -8,7 +8,7 @@ import (
 )
 
 func handleCryptoFilterTotalVolume(cs *crypto.CryptoState) {
-        list := crypto.FiterCoinVolume(cs.CurrentMinVolume, cs.CurrentMaxVolume, cs.CurrentList)
+        list := crypto.FilterCoinVolume(cs.CurrentMinVolume, cs.CurrentMaxVolume, cs.CurrentList)
 	log.Println("")
 	log.Println("Successfully filtered the coins by their volumes with.")
 	log.Println("")
@@ -16,13 +16,13 @@ func handleCryptoFilterTotalVolume(cs *crypto.CryptoState) {
 	fields := []string{"TotalVolume"}
 	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Printf("To update the list with the result: mutate filter crypto total_volume %f %f\n", cs.CurrentMinVolume, cs.CurrentMaxVolume)
+	log.Println("To update the list with the result: mutate filter crypto total_volume")
         log.Println("")
 }
 
 // min_volume
 // max_volume
-func controlFilterTotalVolume(cs *crypto.CryptoState, args ...string) {
+func controlFilterTotalVolume(cs *crypto.CryptoState, args []string) {
         switch len(args) {
         case 0:
 	        log.Println("No arguments are passed, using the ones from the client state:")

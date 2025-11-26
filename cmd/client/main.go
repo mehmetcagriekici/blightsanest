@@ -138,7 +138,8 @@ func main() {
 				handleCryptoGet(cryptoCache, cryptoState, conn, frames)
 				crypto.PrintCryptoList(cryptoState.CurrentList,
 				                       cryptoState.CurrentListID,
-						       cryptoState.ClientTimeframes)
+						       cryptoState.ClientTimeframes,
+						       []string{})
                                 continue
 			}
 		}
@@ -146,7 +147,7 @@ func main() {
                 // ranking features
                 if words[0] == "rank" {
 		        if words[1] == "crypto" {
-			        handleCryptoRank(cryptoState, words[2], words[3], words[4])
+			        handleCryptoRank(cryptoState, words[2], words[3])
 				continue
 			}
 		}
@@ -160,7 +161,7 @@ func main() {
 		        if words[1] == "crypto" {
 			        switch words[2] {
 				case "liquidity":
-			                controlLiquiityArguments(cryptoState, words[3:])
+			                controlLiquidityArguments(cryptoState, words[3:])
 					handleCryptoLiquidity(cryptoState)
 				case "scarcity":
 				        controlScarcityArguments(cryptoState, words[3:])
@@ -177,27 +178,72 @@ func main() {
 		        if !controlFeatureSub(words) {
 			        continue
 			}
-
-                        switch words[2] {
+			
+                        if words[1] == "crypto" {
+                                switch words[2] {
 			        case "total_volume":
 				        controlFilterTotalVolume(cryptoState, words[3:])
 					handleCryptoFilterTotalVolume(cryptoState)
 			        case "market_cap":
+				        controlFilterMarketCap(cryptoState, words[3:])
+					handleCryptoFilterMarketCap(cryptoState)
 				case "price_change_percentage":
+				        controlFilterPriceChangePercentage(cryptoState, words[3:])
+					handleCryptoFilterPriceChangePercentage(cryptoState)
 				case "volatile":
+				        controlFilterVolatile(cryptoState, words[3:])
+					handleCryptoFilterVolatile(cryptoState)
 				case "high_risk":
-				case "low_risk"
+				        controlFilterHighRisk(cryptoState, words[3:])
+					handleCryptoFilterHighRisk(cryptoState)
+				case "low_risk":
+				        controlFilterLowRisk(cryptoState, words[3:])
+					handleCryptoFilterLowRisk(cryptoState)
 				default:
 				        log.Println("Invalid crypto filtering option. Available: <total_volume> <market_cap> <price_change_percentage> <volatile> <high_risk> <low_risk>")
-			}
+			        }
+			continue
+		        }
 		}
 
                 // searcing features
 		if words[0] == "find" {
+		        if !controlFeatureSub(words) {
+			        continue
+			}
+
+                        if words[1] == "crypto" {
+			        switch words[2] {
+				case "name":
+				case "new_high_price":
+				case "new_low_price":
+				case "high_price_spike":
+				case "potential_rally":
+				case "coin_inflation":
+				default:
+				        log.Println("Invalid crypto search command. Available: <name>, <new_high_price>, <high_price_spike>, <potential_rally>, <coin_inflation>")
+				}
+				continue
+			}
 		}
 
                 // calculating features
 		if words[0] == "calc" {
+		        if !controlFeatureSub(words) {
+			        continue
+			}
+
+                        if words[1] == "crypto" {
+			        switch words[2] {
+				case "volatility":
+				case "growth_potential":
+				case "liquidity":
+				case "trend_strength":
+				default:
+				        log.Println("Invalid crypto calculation command. Available: <volatility>, <growth_potential>, <liquidity>, <trend_strength>")
+				}
+				continue
+			}
 		}
 
 	}

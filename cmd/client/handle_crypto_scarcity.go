@@ -17,12 +17,12 @@ func handleCryptoScarcity(cs *crypto.CryptoState) {
 	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
 	log.Println("")
-	log.Printf("To update the client state list with the result: mutate group crypto scarcity %f %f", cs.CurrentMinCirculatingSupply, cs.CurrentMaxATHChangePercentage)
+	log.Println("To update the client state list with the result: mutate group crypto scarcity")
 }
 
 // min circulatin supply
 // max ath change percentage
-func controlScarcityArguments(cs *crypto.CryptoState, args ...string) {
+func controlScarcityArguments(cs *crypto.CryptoState, args []string) {
         switch len(args) {
 	case 0:
 	        log.Println("No arguments are passed. Using the values from the current client state.")
