@@ -31,6 +31,11 @@ type CryptoState struct {
 	CurrentOrder                    AvailableOrders
 	CurrentMinSwingScore            float64
 	CurrentMaxSwingScore            float64
+	CurrentMinSupply                float64
+	CurrentMaxSupply                float64
+	CurrentIgnoredCoins             []string
+	CurrentMinVolatility            float64
+	CurrentMaxVolatility            float64
 	mu                              sync.RWMutex
 }
 
@@ -56,7 +61,35 @@ func CreateCryptoState() *CryptoState {
 		CurrentOrder:                    CRYPTO_ASC,
 		CurrentMinSwingScore:            math.Inf(-1),
 		CurrentMaxSwingScore:            math.Inf(+1),
+		CurrentMinSupply:                math.Inf(-1),
+		CurrentMaxSupply:                math.Inf(+1),
+		CurrentIgnoredCoins:             []string{},
+		CurrentMinVolatility:            math.Inf(-1),
+		CurrentMaxVolatility:            math.Inf(+1),
 	}
+}
+
+// update current volatility
+func (cs *CryptoState) UpdateCurrentVolatility(minVolatility, maxVolatility float64) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentMinVolatility = minVolatility
+	cs.CurrentMaxVolatility = maxVolatility
+}
+
+// update current ignored coins
+func (cs *CryptoState) UpdateIgnoredCoins(ignoredCoins []string) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentIgnoredCoins = ignoredCoins
+}
+
+// update current potential coin supply
+func (cs *CryptoState) UpdateSupply(minSupply, maxSupply float64) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentMinSupply = minSupply
+	cs.CurrentMaxSupply = maxSupply
 }
 
 // update current swing score

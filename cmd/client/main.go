@@ -215,11 +215,20 @@ func main() {
                         if words[1] == "crypto" {
 			        switch words[2] {
 				case "name":
+				        handleCryptoFindName(cryptoState, words[3])
 				case "new_high_price":
+				        handleCryptoNewHighPrice(cryptoState, cryptoCache)
 				case "new_low_price":
+				        handleCryptoNewLowPrice(cryptoState, cryptoCache)
 				case "high_price_spike":
+				        controlHighPriceSpike(cryptoState, words[3:])
+					handleCryptoNewPriceSpike(cryptoState)
 				case "potential_rally":
+				        controlFindPotentialRally(cryptoState, words[3:])
+					handleCryptoFindPotentialRally(cryptoState)
 				case "coin_inflation":
+				        controlFindCoinInflation(cryptoState, words[3:])
+					handleCryptoFindCoinInflation(cryptoState)
 				default:
 				        log.Println("Invalid crypto search command. Available: <name>, <new_high_price>, <high_price_spike>, <potential_rally>, <coin_inflation>")
 				}
@@ -236,6 +245,8 @@ func main() {
                         if words[1] == "crypto" {
 			        switch words[2] {
 				case "volatility":
+				        controlCryptoCalcVolatility(cryptoState, words[3:])
+				        handleCryptoCalcVolatility(cryptoState)
 				case "growth_potential":
 				case "liquidity":
 				case "trend_strength":
