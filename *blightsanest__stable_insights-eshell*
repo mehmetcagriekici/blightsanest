@@ -1,0 +1,108 @@
+Welcome to the Emacs shell
+
+~/boot_dev/blightsanest__stable_insights $ mv internal/crypto/crypto_client_subscriber.go cmd/client/crypto_client_subscriber.go
+~/boot_dev/blightsanest__stable_insights $ ls internal/crypto/
+crypto_alerts.go       crypto_analytics_test.go  crypto_filtering_test.go  crypto_rankings.go       crypto_state.go
+crypto_alerts_test.go  crypto_cache.go           crypto_helpers.go         crypto_rankings_test.go  
+crypto_analytics.go    crypto_filtering.go       crypto_logs.go            crypto_services.go       
+~/boot_dev/blightsanest__stable_insights $ cat cmd/client/crypto_client_subscriber.go 
+package main
+
+import(
+        "log"
+
+	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
+	"github.com/mehmetcagriekici/blightsanest/internal/routing"
+)
+
+func subscriberClient(cc *crypto.CryptoCache) {
+        return func(delivery routing.CryptoExchangeBody) {
+	        list := delivery.Payload
+		id := delivery.ID
+		if id == "" || len(list) == 0 {
+		        log.Println("No lists from other clients")
+			return
+		}
+		cc.Add(id, list)
+		log.Printf("List %s is successfully added to the current client cache.\n", id)
+	}
+}
+~/boot_dev/blightsanest__stable_insights $ go run ./cmd/server/
+# github.com/mehmetcagriekici/blightsanest/internal/pubsub
+internal/pubsub/publishCrypto.go:40:6: undefined: cryptoData
+~/boot_dev/blightsanest__stable_insights $ go run ./cmd/server/
+Welcome to the BlightSanest Server! Your local publisher...
+Available Server Features and Commands:
+--- To quit the current session: * quit
+--- To fetch crypto data with custom queries: * fetch crypto <1h/24h/7d/30d/200d/1y - one or many with one space>
+> quit
+2025/11/30 18:52:44 Exiting the BlightSanest server...
+~/boot_dev/blightsanest__stable_insights $ go run ./cmd/client/
+# github.com/mehmetcagriekici/blightsanest/cmd/client
+cmd/client/handle_crypto_save.go:18:20: undefined: amqp.Connextion
+cmd/client/handle_crypto_switch.go:15:15: undefined: amqp.Connextion
+cmd/client/handle_crypto_switch.go:22:67: not enough arguments in call to subscriber
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, string)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, string)
+cmd/client/crypto_client_subscriber.go:11:16: too many return values
+	have (func(delivery routing.CryptoExchangeBody))
+	want ()
+cmd/client/handle_crypto_list.go:10:2: "github.com/mehmetcagriekici/blightsanest/internal/routing" imported and not used
+cmd/client/handle_crypto_list.go:21:67: not enough arguments in call to subscriber
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, string)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, string)
+cmd/client/main.go:161:28: not enough arguments in call to handleCryptoList
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *amqp091.Connection)
+~/boot_dev/blightsanest__stable_insights $ go run ./cmd/client/
+# github.com/mehmetcagriekici/blightsanest/cmd/client
+cmd/client/crypto_client_subscriber.go:11:16: too many return values
+	have (func(delivery routing.CryptoExchangeBody))
+	want ()
+cmd/client/handle_crypto_list.go:10:2: "github.com/mehmetcagriekici/blightsanest/internal/routing" imported and not used
+cmd/client/handle_crypto_list.go:21:67: not enough arguments in call to subscriber
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, string)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, string)
+cmd/client/handle_crypto_switch.go:22:63: not enough arguments in call to subscriber
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, string)
+cmd/client/main.go:161:28: not enough arguments in call to handleCryptoList
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *amqp091.Connection)
+~/boot_dev/blightsanest__stable_insights $ go run ./cmd/client/
+# github.com/mehmetcagriekici/blightsanest/cmd/client
+cmd/client/handle_crypto_list.go:10:2: "github.com/mehmetcagriekici/blightsanest/internal/routing" imported and not used
+cmd/client/handle_crypto_list.go:21:67: not enough arguments in call to subscriber
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, string)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, string)
+cmd/client/handle_crypto_switch.go:22:63: not enough arguments in call to subscriber
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, string)
+cmd/client/main.go:161:28: not enough arguments in call to handleCryptoList
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *amqp091.Connection)
+~/boot_dev/blightsanest__stable_insights $ 
+~/boot_dev/blightsanest__stable_insights $ go run ./cmd/client/
+# github.com/mehmetcagriekici/blightsanest/cmd/client
+cmd/client/handle_crypto_list.go:20:67: not enough arguments in call to subscriber
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, string)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, string)
+cmd/client/handle_crypto_switch.go:22:63: not enough arguments in call to subscriber
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, string)
+cmd/client/main.go:161:28: not enough arguments in call to handleCryptoList
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *amqp091.Connection)
+~/boot_dev/blightsanest__stable_insights $ go run ./cmd/client/
+# github.com/mehmetcagriekici/blightsanest/cmd/client
+cmd/client/main.go:161:28: not enough arguments in call to handleCryptoList
+	have (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache)
+	want (*"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoState, *"github.com/mehmetcagriekici/blightsanest/internal/crypto".CryptoCache, *amqp091.Connection)
+~/boot_dev/blightsanest__stable_insights $ go run ./cmd/client/
+Welcome to the BlightSanest Client...
+To see the client manual:      * manual
+To see the available commands: * help
+To quit:                       * quit
+> quit
+2025/11/30 18:57:33 Ending client session...
+~/boot_dev/blightsanest__stable_insights $ 

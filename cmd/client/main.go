@@ -29,7 +29,6 @@ func main() {
 
         // create a context for the client
 	ctx := context.Background()
-	ctx = ctx
 
         // create a connection to the rabbitmq for the client
 	conn, err := amqp.Dial(rabbitURL)
@@ -66,6 +65,7 @@ func main() {
 		   words[0] != "mutate" &&
 		   words[0] != "switch" &&
 		   words[0] != "save"   &&
+		   words[0] != "list"   &&
 		   words[0] != "get"    &&
 		   words[0] != "rank"   &&
 		   words[0] != "group"  &&
@@ -118,21 +118,52 @@ func main() {
 		}
 
                 // mutate client state
-		if words[0] == "mutate" {
+		if words[0] == clientlogic.CLIENT_MUTATE {
+		        // mutate <operation> <asset> <asset_feature>
+			if len(words) < 4 {
+			        log.Println("mutate command usage: mutate <operation> <asset> <feature> <operation_arguments - optional if not provided uses the client preferences ->")
+				log.Println("  Example: mutate group crypto liquidity")
+			        continue 
+			}
+			
 		        // update the client state list with the result of the operation
+			if words[2] == "crypto" {
+			        if words[1] == "rank" {
+				        handleCryptoMutate(cryptoState, cryptoCache, words[1], "", words[3:])
+					continue
+				}
+			        handleCryptoMutate(cryptoState, cryptoCache, words[1], words[3], words[4:])
+				continue
+			}
+			continue
 		}
 
                 // switch between cached data
-		if words[0] == "switch" {
+		if words[0] == clientlogic.CLIENT_SWITCH {
+		        if words[1] == "crypto" {
+				handleCryptoSwitch(cryptoState,
+				                   cryptoCache,
+						   words[2],
+						   conn)
+				continue
+			}
 		}
 
                 // save the asset on the cache
-		if words[0] == "save" {
+		if words[0] == clientlogic.CLIENT_SAVE {
 		        // to save the current list on the state in the cache and to the docker volume
+			handleCryptoSave(cryptoState, cryptoCache, ctx, conn)
+			continue
+		}
+
+                // list the existing lists in the cache
+		if words[0] == "clientlogic.CLIENT_LIST" {
+		        handleCryptoList(cryptoState, cryptoCache, conn)
+			continue
 		}
 		
 	        // Get data from the server
-		if words[0] == "get" {
+		if words[0] == clientlogic.CLIENT_GET {
 		        if words[1] == "crypto" {
 			        frames := words[2:]
 				handleCryptoGet(cryptoCache, cryptoState, conn, frames)
@@ -145,27 +176,25 @@ func main() {
 		}
 
                 // ranking features
-                if words[0] == "rank" {
+                if words[0] == clientlogic.CLIENT_RANK {
 		        if words[1] == "crypto" {
-			        handleCryptoRank(cryptoState, words[2], words[3])
+			        handleCryptoRank(cryptoState, words[2:])
 				continue
 			}
 		}
 
                 // grouping features
-		if words[0] == "group" {
+		if words[0] == clientlogic.CLIENT_GROUP {
 		        if !controlFeatureSub(words) {
 			        continue
 			}
 			
 		        if words[1] == "crypto" {
 			        switch words[2] {
-				case "liquidity":
-			                controlLiquidityArguments(cryptoState, words[3:])
-					handleCryptoLiquidity(cryptoState)
-				case "scarcity":
-				        controlScarcityArguments(cryptoState, words[3:])
-					handleCryptoScarcity(cryptoState)
+				case clientlogic.CRYPTO_GROUP_LIQUIDITY:
+			               	handleCryptoGroupLiquidity(cryptoState, words[3:])
+				case clientlogic.CRYPTO_GROUP_SCARCITY:
+					handleCryptoGroupScarcity(cryptoState, words[3:])
 				default:
 				        log.Println("Invalid crypto grouping option. Available: <liquidity> <scarcity>")
 				}
@@ -174,7 +203,7 @@ func main() {
 		}
 
                 // filtering features
-		if words[0] == "filter" {
+		if words[0] == clientlogic.CLIENT_FILTER {
 		        if !controlFeatureSub(words) {
 			        continue
 			}
@@ -182,23 +211,17 @@ func main() {
                         if words[1] == "crypto" {
                                 switch words[2] {
 			        case "total_volume":
-				        controlFilterTotalVolume(cryptoState, words[3:])
-					handleCryptoFilterTotalVolume(cryptoState)
+					handleCryptoFilterTotalVolume(cryptoState, words[3:])
 			        case "market_cap":
-				        controlFilterMarketCap(cryptoState, words[3:])
-					handleCryptoFilterMarketCap(cryptoState)
+					handleCryptoFilterMarketCap(cryptoState, words[3:])
 				case "price_change_percentage":
-				        controlFilterPriceChangePercentage(cryptoState, words[3:])
-					handleCryptoFilterPriceChangePercentage(cryptoState)
+					handleCryptoFilterPriceChangePercentage(cryptoState, words[3:])
 				case "volatile":
-				        controlFilterVolatile(cryptoState, words[3:])
-					handleCryptoFilterVolatile(cryptoState)
+					handleCryptoFilterVolatile(cryptoState, words[3:])
 				case "high_risk":
-				        controlFilterHighRisk(cryptoState, words[3:])
-					handleCryptoFilterHighRisk(cryptoState)
+					handleCryptoFilterHighRisk(cryptoState, words[3:])
 				case "low_risk":
-				        controlFilterLowRisk(cryptoState, words[3:])
-					handleCryptoFilterLowRisk(cryptoState)
+					handleCryptoFilterLowRisk(cryptoState, words[3:])
 				default:
 				        log.Println("Invalid crypto filtering option. Available: <total_volume> <market_cap> <price_change_percentage> <volatile> <high_risk> <low_risk>")
 			        }
@@ -207,28 +230,25 @@ func main() {
 		}
 
                 // searcing features
-		if words[0] == "find" {
+		if words[0] == clientlogic.CLIENT_FIND {
 		        if !controlFeatureSub(words) {
 			        continue
 			}
 
                         if words[1] == "crypto" {
 			        switch words[2] {
-				case "name":
+				case clientlogic.CRYPTO_FIND_NAME:
 				        handleCryptoFindName(cryptoState, words[3])
-				case "new_high_price":
+				case clientlogic.CRYPTO_FIND_NEW_HIGH_PRICE:
 				        handleCryptoNewHighPrice(cryptoState, cryptoCache)
-				case "new_low_price":
+				case clientlogic.CRYPTO_FIND_NEW_LOW_PRICE:
 				        handleCryptoNewLowPrice(cryptoState, cryptoCache)
-				case "high_price_spike":
-				        controlHighPriceSpike(cryptoState, words[3:])
-					handleCryptoNewPriceSpike(cryptoState)
-				case "potential_rally":
-				        controlFindPotentialRally(cryptoState, words[3:])
-					handleCryptoFindPotentialRally(cryptoState)
-				case "coin_inflation":
-				        controlFindCoinInflation(cryptoState, words[3:])
-					handleCryptoFindCoinInflation(cryptoState)
+				case clientlogic.CRYPTO_FIND_HIGH_PRICE_SPIKE:
+					handleCryptoNewPriceSpike(cryptoState, words[3:])
+				case clientlogic.CRYPTO_FIND_POTENTIAL_RALLY:
+					handleCryptoFindPotentialRally(cryptoState, words[3:])
+				case clientlogic.CRYPTO_FIND_COIN_INFLATION:
+				        handleCryptoFindCoinInflation(cryptoState, words[3:])
 				default:
 				        log.Println("Invalid crypto search command. Available: <name>, <new_high_price>, <high_price_spike>, <potential_rally>, <coin_inflation>")
 				}
@@ -237,19 +257,21 @@ func main() {
 		}
 
                 // calculating features
-		if words[0] == "calc" {
+		if words[0] == clientlogic.CLIENT_CALC {
 		        if !controlFeatureSub(words) {
 			        continue
 			}
 
                         if words[1] == "crypto" {
 			        switch words[2] {
-				case "volatility":
-				        controlCryptoCalcVolatility(cryptoState, words[3:])
-				        handleCryptoCalcVolatility(cryptoState)
-				case "growth_potential":
-				case "liquidity":
-				case "trend_strength":
+				case clientlogic.CRYPTO_CALC_VOLATILITY:
+				        handleCryptoCalcVolatility(cryptoState, words[3:])
+				case clientlogic.CRYPTO_CALC_GROWTH_POTENTIAL:
+					handleCryptoCalcGrowthPotential(cryptoState, words[3:])
+				case clientlogic.CRYPTO_CALC_LIQUIDITY:
+					handleCryptoCalcLiquidity(cryptoState, words[3:])
+				case clientlogic.CRYPTO_CALC_TREND_STRENGTH:
+					handleCryptoCalcTrendStrength(cryptoState, words[3:])
 				default:
 				        log.Println("Invalid crypto calculation command. Available: <volatility>, <growth_potential>, <liquidity>, <trend_strength>")
 				}

@@ -7,7 +7,9 @@ import(
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFindPotentialRally(cs *crypto.CryptoState) {
+func handleCryptoFindPotentialRally(cs *crypto.CryptoState, args []string) {
+        controlFindPotentialRally(cs, args)
+	
         log.Println("Starting to find the coins with large potential upside remaining to their ATH with max ath change percentage preference.")
 	log.Println("")
 

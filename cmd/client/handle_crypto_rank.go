@@ -2,38 +2,52 @@ package main
 
 import(
         "log"
-	"fmt"
 	
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoRank(cs *crypto.CryptoState, order string, timeframe string) {
-        var sortingOrder crypto.AvailableOrders
-        if order == "asc" {
-	        sortingOrder = crypto.CRYPTO_ASC
-	} else if order == "desc" {
-	        sortingOrder = crypto.CRYPTO_DESC
-	} else {
-	        log.Fatal("Invalid sorting order! <asc | desc>")
-	}
-
-        // get the timeframe using the user input
-	frames := crypto.GetInputTimeframes([]string{timeframe})
-	if len(frames) != 1 {
-	        log.Fatal("To rank the coins bu price change percentage, an exsisting timeframe needed to be based on.")
-	}
-
-        cs.UpdateOrder(sortingOrder)
-        cs.UpdateCurrentTimeframe(frames[0])
-        sorted := crypto.RankCoins(frames[0], sortingOrder, cs.CurrentList)
-	log.Printf("Sorting successfully completed in %s order by price change percentage %s\n", order, timeframe)
+func handleCryptoRank(cs *crypto.CryptoState, args []string) {
+        controlCryptoRank(cs, args)
+	
+        sorted := crypto.RankCoins(cs.CurrentTimeframe, cs.CurrentOrder, cs.CurrentList)
+	
 	log.Println("")
 	log.Println("To update the list with the sorted one: mutate rank crypto")
 	log.Println("")
 	log.Println("")
 	log.Println("")
 	
-	// print the sorted list
-	sortedID := fmt.Sprintf("%s__sorted-%s", cs.CurrentListID, order)
-	crypto.PrintCryptoList(sorted, sortedID, []string{timeframe}, []string{})
+	crypto.PrintCryptoList(sorted, cs.CurrentListID, cs.ClientTimeframes, []string{})
+}
+
+// order
+// timeframe
+func controlCryptoRank(cs *crypto.CryptoState, args []string) {
+        switch len(args) {
+	case 0:
+	        log.Println("No arguments are provided. Using the existing client preferences for the order and the timeframe values.")
+		log.Printf("Current Order: %v\n", cs.CurrentOrder)
+		log.Printf("Current Timeframe: %v\n", cs.CurrentTimeframe)
+	case 1:
+	        log.Println("One argument is passed. Using the existing client preference for the current timeframe, and updating the client current order preference...")
+		log.Printf("Current Timeframe: %v\n", cs.CurrentTimeframe)
+		updateOrder(cs, args[0])
+	case 2:
+	        log.Println("Updating the current order and timeframe client preferences...")
+		updateOrder(cs, args[0])
+		timeframes := crypto.GetInputTimeframes([]string{args[1]})
+		cs.UpdateCurrentTimeframe(timeframes[0])
+	default:
+	        log.Println("Invalid use of command. rank crypto <asc|desc> <timeframe>")
+	}
+}
+
+func updateOrder(cs *crypto.CryptoState, order string) {
+	if order == "asc" {
+                cs.UpdateOrder(crypto.CRYPTO_ASC)
+	} else if order == "desc" {
+	        cs.UpdateOrder(crypto.CRYPTO_DESC)
+	} else {
+	        log.Println("Invalid sorting order. Available orders: <desc> <asc>")
+	}
 }

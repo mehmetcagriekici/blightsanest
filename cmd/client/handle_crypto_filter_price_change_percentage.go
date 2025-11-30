@@ -9,7 +9,9 @@ import(
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterPriceChangePercentage(cs *crypto.CryptoState) {
+func handleCryptoFilterPriceChangePercentage(cs *crypto.CryptoState, args []string) {
+        controlFilterPriceChangePercentage(cs, args)
+	
         log.Println("Filtering the crypto list with the client preferences min/max price change percentage and current timeframe")
 	log.Println("")
 	list := crypto.FilterCoinPriceChange(cs.CurrentMinPriceChangePercentage, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe, cs.CurrentList)

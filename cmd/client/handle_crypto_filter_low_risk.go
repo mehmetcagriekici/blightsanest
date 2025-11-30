@@ -9,7 +9,9 @@ import(
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterLowRisk(cs *crypto.CryptoState) {
+func handleCryptoFilterLowRisk(cs *crypto.CryptoState, args []string) {
+        controlFilterLowRisk(cs, args)
+	
         log.Println("Filtering the low risk coins by market cap rank and price change")
 	log.Println("")
 	

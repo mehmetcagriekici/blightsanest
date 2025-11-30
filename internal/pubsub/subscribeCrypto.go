@@ -8,7 +8,7 @@ import(
         amqp "github.com/rabbitmq/amqp091-go"
 )
 
-// function to subscribe to crypto exchanges by declaring and binding queues
+// function to subscribe to crypto data from the server
 func SubscribeCrypto(conn *amqp.Connection,
                      msgID string,
                      handler func(routing.CryptoExchangeBody)) error {
@@ -17,6 +17,22 @@ func SubscribeCrypto(conn *amqp.Connection,
 	if err := Subscribe(conn,
 	                    routing.BlightDurable,
 			    routing.CryptoGet,
+			    routingKey,
+			    routing.CryptoExchange,
+			    handler); err != nil {
+	        return err
+	}
+	return nil
+}
+
+// function to subscribe the crypto data from other clients
+func SubscribeClientCrypto(conn *amqp.Connection,
+                           msgID string,
+			   handler func(routing.CryptoExchangeBody)) error {
+        routingKey := fmt.Sprintf("%s-%s", routing.BlightClientCrypto, msgID)
+	if err := Subscribe(conn,
+	                    routing.BlightTransient,
+			    routing.CryptoClientGet,
 			    routingKey,
 			    routing.CryptoExchange,
 			    handler); err != nil {

@@ -7,7 +7,9 @@ import(
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoLiquidity(cs *crypto.CryptoState) {
+func handleCryptoGroupLiquidity(cs *crypto.CryptoState, args []string) {
+        controlLiquidityArguments(cs, args)
+	
         highCoins := crypto.GroupHighLiquidityCoins(cs.CurrentMinRank, cs.CurrentMaxRank, cs.CurrentMinVolume, cs.CurrentList)
 	log.Println("")
 	log.Println("Successfully grouped the coins with high liquidity...")

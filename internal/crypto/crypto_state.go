@@ -36,6 +36,10 @@ type CryptoState struct {
 	CurrentIgnoredCoins             []string
 	CurrentMinVolatility            float64
 	CurrentMaxVolatility            float64
+	CurrentMinGrowthPotential       float64
+	CurrentMaxGrowthPotential       float64
+	CurrentMinLiquidity             float64
+	CurrentMaxLiquidity             float64
 	mu                              sync.RWMutex
 }
 
@@ -66,7 +70,27 @@ func CreateCryptoState() *CryptoState {
 		CurrentIgnoredCoins:             []string{},
 		CurrentMinVolatility:            math.Inf(-1),
 		CurrentMaxVolatility:            math.Inf(+1),
+		CurrentMinGrowthPotential:       math.Inf(-1),
+		CurrentMaxGrowthPotential:       math.Inf(+1),
+		CurrentMinLiquidity:             math.Inf(-1),
+		CurrentMaxLiquidity:             math.Inf(+1),
 	}
+}
+
+// update current liquidity
+func (cs *CryptoState) UpdateCurrentLiquidity(minLiquidity, maxLiquidity float64) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentMinLiquidity = minLiquidity
+	cs.CurrentMaxLiquidity = maxLiquidity
+}
+
+// update current growth potential
+func (cs *CryptoState) UpdateGrowthPotential(minPotential, maxPotential float64) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentMinGrowthPotential = minPotential
+	cs.CurrentMaxGrowthPotential = maxPotential
 }
 
 // update current volatility

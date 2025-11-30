@@ -38,7 +38,7 @@ func main() {
 	}
 	defer conn.Close()
 
-        // create the server crypto cache with 3 hours reaping interval
+        // create the server crypto cache with 24 hours reaping interval
 	interval, err := strconv.ParseFloat(cacheInterval, 64)
 	if err != nil {
 	        log.Fatal(err)

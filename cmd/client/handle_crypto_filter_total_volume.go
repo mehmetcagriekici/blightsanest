@@ -7,7 +7,9 @@ import (
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterTotalVolume(cs *crypto.CryptoState) {
+func handleCryptoFilterTotalVolume(cs *crypto.CryptoState, args []string) {
+        controlFilterTotalVolume(cs, args)
+	
         list := crypto.FilterCoinVolume(cs.CurrentMinVolume, cs.CurrentMaxVolume, cs.CurrentList)
 	log.Println("")
 	log.Println("Successfully filtered the coins by their volumes with.")

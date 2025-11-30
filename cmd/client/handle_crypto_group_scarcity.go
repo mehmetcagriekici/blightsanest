@@ -7,10 +7,10 @@ import(
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoScarcity(cs *crypto.CryptoState) {
-	list := crypto.RankCoinScarcity(cs.CurrentMinCirculatingSupply,
-	                                cs.CurrentMaxATHChangePercentage,
-	                                cs.CurrentList)
+func handleCryptoGroupScarcity(cs *crypto.CryptoState, args []string) {
+        controlScarcityArguments(cs, args)
+	
+	list := crypto.RankCoinScarcity(cs.CurrentMinCirculatingSupply, cs.CurrentMaxATHChangePercentage, cs.CurrentList)
 	log.Println("Successfully identified scarce coins with limited supply and large darwdowns from ATH.")
 	log.Println("")
 	fields := []string{"ATH", "AthChangePercentage", "CirulatingSupply", "MaxSupply"}

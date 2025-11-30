@@ -7,7 +7,9 @@ import (
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterVolatile(cs *crypto.CryptoState) {
+func handleCryptoFilterVolatile(cs *crypto.CryptoState, args []string) {
+        controlFilterVolatile(cs, args)
+	
         log.Println("Filtering the list by a swing range.")
         log.Println("")
         log.Println("swing_score(rate) = high_24h / low_24h")

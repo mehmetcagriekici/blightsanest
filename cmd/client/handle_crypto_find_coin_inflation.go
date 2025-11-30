@@ -3,13 +3,14 @@ package main
 import(
         "log"
 	"strconv"
-	"slices"
 	"strings"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFindCoinInflation(cs *crypto.CryptoState) {
+func handleCryptoFindCoinInflation(cs *crypto.CryptoState, args []string) {
+        controlFindCoinInflation(cs, args)
+	
         log.Println("Starting to find coins with large supply value and relatively low market cap rank with client preferences.")
 	log.Println("")
 	

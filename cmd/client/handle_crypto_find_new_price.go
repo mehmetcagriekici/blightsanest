@@ -18,7 +18,7 @@ func handleCryptoNewHighPrice(cs *crypto.CryptoState, cc *crypto.CryptoCache) {
         log.Println("Coins with a new high price in the last 24 hours.")
 	log.Println("")
         fields := []string{"High24H"}
-        crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes)
+        crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
 	log.Println("To apply the result to the current state list: mutate find crypto new_high_price")
 }
@@ -35,7 +35,7 @@ func handleCryptoNewLowPrice(cs *crypto.CryptoState, cc *crypto.CryptoCache) {
         log.Println("Coins with a new low price in the last 24 hours.")
 	log.Println("")
         fields := []string{"Low24H"}
-        crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes)
+        crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
 	log.Println("To apply the result to the current state list: mutate find crypto new_low_price")
 }
@@ -49,8 +49,12 @@ func findNewPrice(cs *crypto.CryptoState, cc *crypto.CryptoCache, foo func(oldCo
         // cache holds lists hourly which are fetched within last 24 hours
 	// if the current new high/low is above/below all of the new highs/lows in the cache
 	compared := cs.CurrentList
-	for k, v := range cc.Market { 
-	        log.Printf("---- Comparing list %s with current list %s\n", k, cc.CurrentListID)
+	for k := range cc.Market { 
+	        log.Printf("---- Comparing list %s with current list %s\n", k, cs.CurrentListID)
+		v, ok := cc.Get(k)
+		if !ok {
+		        continue
+		}
 		compared = foo(v, compared)
 	}
 	return compared

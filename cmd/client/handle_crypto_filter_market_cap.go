@@ -7,7 +7,9 @@ import(
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterMarketCap(cs *crypto.CryptoState) {
+func handleCryptoFilterMarketCap(cs *crypto.CryptoState, args []string) {
+        controlFilterMarketCap(cs, args)
+	
         log.Println("")
         log.Println("Filtering the client crypto list by the market cap using a min and max range.")
 

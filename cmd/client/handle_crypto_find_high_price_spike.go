@@ -9,7 +9,9 @@ import(
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoNewPriceSpike(cs *crypto.CryptoState) {
+func handleCryptoNewPriceSpike(cs *crypto.CryptoState, args []string) {
+        controlHighPriceSpike(cs, args)
+	
         log.Println("Finding the coins with a new high price spike with the preferred timeframe...")
 	log.Println("")
 
@@ -36,16 +38,16 @@ func controlHighPriceSpike(cs *crypto.CryptoState, args []string) {
 		if err != nil {
 		        log.Fatal(err)
 		}
-		cs.UpdatePriceChangePercentage(minChange, cs.CurrentMaxPriceChangPercentage)
+		cs.UpdatePriceChangePercentage(minChange, cs.CurrentMaxPriceChangePercentage)
 	case 2:
 	        log.Println("Updating the client state min price change percentage and current timeframe preferences...")
 		minChange, err := strconv.ParseFloat(args[0], 64)
 		if err != nil {
 		        log.Fatal(err)
 		}
-		timeframe := crypto.GetInputTimeframes(args[1:])
+		timeframes := crypto.GetInputTimeframes(args[1:])
 		cs.UpdatePriceChangePercentage(minChange, cs.CurrentMaxPriceChangePercentage)
-		cs.UpdateCurrentTimeframe(timeframe)
+		cs.UpdateCurrentTimeframe(timeframes[0])
 	default:
 	        log.Println("Invalid use of command: find crypto high_price_spike <min_price_change_percentage float64> <timeframe>")
 	}

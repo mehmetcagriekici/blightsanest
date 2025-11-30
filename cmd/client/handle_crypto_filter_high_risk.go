@@ -7,7 +7,9 @@ import(
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterHighRisk(cs *crypto.CryptoState) {
+func handleCryptoFilterHighRisk(cs *crypto.CryptoState, args []string) {
+        controlFilterHighRisk(cs, args)
+	
         log.Println("Filtering the coins by their volatility based on 24h high/low swing rate")
 	log.Println("")
 

@@ -7,7 +7,8 @@ const (
 
 // routing keys
 const (
-        BlightCrypto = "crypto"
+        BlightCrypto       = "crypto"
+	BlightClientCrypto = "client_crypto"
 )
 
 // exchange types
@@ -18,7 +19,8 @@ const (
 
 // queue names
 const (
-        CryptoGet = "crypto_get"
+        CryptoGet       = "crypto_get"
+	CryptoClientGet = "crypto_client_get"
 )
 
 // queue types
