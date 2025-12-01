@@ -25,7 +25,7 @@ func controlFindCoinInflation(cs *crypto.CryptoState, args []string) {
         switch len(args) {
 	case 0:
 	        log.Println("No arguments are passed. Using the client state values.")
-		log.Printf("Current Min Market Cap Rank: %d\n", cs.CurrentMinMarketCap)
+		log.Printf("Current Min Market Cap Rank: %f\n", cs.CurrentMinMarketCap)
 		log.Printf("Current Min Supply Value: %f\n", cs.CurrentMinSupply)
 		log.Printf("Current Ignored Coins: %s\n", strings.Join(cs.CurrentIgnoredCoins, " "))
 	case 1:

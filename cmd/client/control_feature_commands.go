@@ -18,7 +18,7 @@ func controlFeatureCommands(words []string) bool {
 func controlFeatureSub(words []string) bool {
         // some feature commands require at least two more argument
 	if len(words) < 3 {
-	        log.Printf("%s command requires at least two additional arguments...\n, words[0]")
+	        log.Printf("%s command requires at least two additional arguments...\n", words[0])
 		log.Printf("* %s group crypto\n", words[0])
 		return false
 	}

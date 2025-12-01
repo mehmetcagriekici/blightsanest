@@ -26,10 +26,10 @@ func controlCalcGrowthPotential(cs *crypto.CryptoState, args []string) {
 	case 0:
 	        log.Println("No arguments are passed. Using the client preferences for min growth potential and max market cap rank values.")
 		log.Printf("Min Growth Potential: %f\n", cs.CurrentMinGrowthPotential)
-		log.Printf("Max Market Cap Rank: %f\n", cs.CurrentMaxRank)
+		log.Printf("Max Market Cap Rank: %d\n", cs.CurrentMaxRank)
 	case 1:
 	        log.Println("One argument is passed. Updating the client min growth potential preference...")
-		log.Printf("Max Market Cap Rank: %f\n", cs.CurrentMaxRank)
+		log.Printf("Max Market Cap Rank: %d\n", cs.CurrentMaxRank)
 		minPotential, err := strconv.ParseFloat(args[0], 64)
 		if err != nil {
 		        log.Fatal(err)

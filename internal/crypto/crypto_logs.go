@@ -34,7 +34,7 @@ func PrintCryptoList(list []MarketData, id string, timeframes []string, fields [
                 // other -optional- fields
 		for field := range slices.Values(fields) {
 		        val := GetCoinField(field, c)
-			fmt.Printf("%: %v\n", ToSnakeCase(field), val)
+			fmt.Printf("%s: %v\n", ToSnakeCase(field), val)
 		}
 		
 		fmt.Println("")
