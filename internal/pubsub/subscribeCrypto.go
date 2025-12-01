@@ -11,32 +11,30 @@ import(
 // function to subscribe to crypto data from the server
 func SubscribeCrypto(conn *amqp.Connection,
                      msgID string,
-                     handler func(routing.CryptoExchangeBody)) error {
+                     handler func(routing.CryptoExchangeBody)) (func() error, error) {
         // Subscribe to the crypto list
 	routingKey := fmt.Sprintf("%s-%s", routing.BlightCrypto, msgID)
-	if err := Subscribe(conn,
-	                    routing.BlightDurable,
-			    routing.CryptoGet,
-			    routingKey,
-			    routing.CryptoExchange,
-			    handler); err != nil {
-	        return err
-	}
-	return nil
+	
+	return Subscribe(conn,
+	                 routing.BlightDurable,
+			 routing.CryptoGet,
+			 routingKey,
+			 routing.CryptoExchange,
+			 handler,
+			 Decode)
 }
 
 // function to subscribe the crypto data from other clients
 func SubscribeClientCrypto(conn *amqp.Connection,
                            msgID string,
-			   handler func(routing.CryptoExchangeBody)) error {
+			   handler func(routing.CryptoExchangeBody)) (func() error, error) {
         routingKey := fmt.Sprintf("%s-%s", routing.BlightClientCrypto, msgID)
-	if err := Subscribe(conn,
-	                    routing.BlightTransient,
-			    routing.CryptoClientGet,
-			    routingKey,
-			    routing.CryptoExchange,
-			    handler); err != nil {
-	        return err
-	}
-	return nil
+	
+        return Subscribe(conn,
+	                 routing.BlightTransient,
+		         routing.CryptoClientGet,
+			 routingKey,
+			 routing.CryptoExchange,
+			 handler,
+			 Decode)
 }

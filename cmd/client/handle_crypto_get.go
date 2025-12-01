@@ -14,7 +14,8 @@ import(
 func handleCryptoGet(cc     *crypto.CryptoCache,
                      cs     *crypto.CryptoState,
 		     conn   *amqp.Connection,
-		     frames []string) {
+		     frames []string,
+		     sm     *pubsub.SubscriptionManager) {
         // create a key from passed frames
 	key := crypto.CreateCryptoCacheKey(frames, time.Now().Unix())
 
@@ -33,16 +34,17 @@ func handleCryptoGet(cc     *crypto.CryptoCache,
 		return
 	}
 	
-	// if it doesn't exist on the client cache, get the list from the queue
-	cs.SetTimeframes(key)
-	if err := pubsub.SubscribeCrypto(conn, key, subscriber(cc, cs, key)); err != nil {
+	cancel, err := pubsub.SubscribeCrypto(conn, key, subscriberServer(cc, cs, key))
+	if err != nil {
 	        log.Fatal(err)
 	}
+
+        sm.Add(cancel)
 	
 	return
 }
 
-func subscriber(cc *crypto.CryptoCache, cs *crypto.CryptoState, key string) func(routing.CryptoExchangeBody) {
+func subscriberServer(cc *crypto.CryptoCache, cs *crypto.CryptoState, key string) func(routing.CryptoExchangeBody) {
         return func(delivery routing.CryptoExchangeBody) {
 	        list := delivery.Payload
 		id   := delivery.ID

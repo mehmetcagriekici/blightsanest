@@ -16,13 +16,14 @@ func Subscribe[T any](conn *amqp.Connection,
 		      queueName,
 		      routingKey,
 		      exchangeName string,
-		      handler func(T)) error {
+		      handler func(T),
+		      unmarshaller func([]byte) (T, error)) (func() error, error) {
         // create a channel from the connection
 	ch, err := conn.Channel()
 	if err != nil {
-	        return err
+	        return nil, err
 	}
-
+	
         // queue parameters
 	var durable    bool
 	var autoDelete bool
@@ -36,7 +37,7 @@ func Subscribe[T any](conn *amqp.Connection,
 		autoDelete = true
 		exclusive  = true
 	} else {
-	        return errors.New("Invalid queue type")
+	        return nil, errors.New("Invalid queue type")
 	}
 
         // declare a queue from the channel with the parameters
@@ -47,36 +48,36 @@ func Subscribe[T any](conn *amqp.Connection,
 				  false,
 				  nil)
 	if err != nil {
-	        return err
+	        return nil, err
 	}
-
+        
         // bind the queue to the exchange
 	if err := ch.QueueBind(q.Name,
 	                       routingKey,
 			       exchangeName,
 			       false,
 			       nil); err != nil {
-	        return err
+	        return nil, err
+	}
+
+        // prefetch 10 messages at a time
+	if err := ch.Qos(10, 0, false); err != nil {
+	        return nil, err
 	}
         
         // start delivering messages from the queue
-	deliveries, err := ch.Consume(q.Name,
-	                              "",
-				      false,
-				      false,
-				      false,
-				      false,
-				      nil)
+	deliveries, err := ch.Consume(q.Name, "", false, false, false, false, nil)
 	if err != nil {
-	        return err
+	        ch.Close()
+	        return nil, err
 	}
-
+	
         // range over the deliveries
 	go func() {
+	        defer ch.Close()
 	        for dl := range deliveries {
 		        // decode the delivery body
-		        var buff T
-			val, err := Decode(dl.Body, buff)
+			val, err := unmarshaller(dl.Body)
 			if err != nil {
 			        log.Printf("Couldn't decode the delivery body: %v\n", err)
 			}
@@ -88,6 +89,8 @@ func Subscribe[T any](conn *amqp.Connection,
 			}
 		}
 	}()
-
-        return nil
+	
+        return func() error {
+	        return ch.Cancel("", false)
+	}, nil
 }

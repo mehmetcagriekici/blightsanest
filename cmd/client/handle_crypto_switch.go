@@ -9,19 +9,22 @@ import(
 	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
 )
 
-func handleCryptoSwitch(cs *crypto.CryptoState,
-                        cc *crypto.CryptoCache,
-			key string,
-			conn *amqp.Connection) {
+func handleCryptoSwitch(cs  *crypto.CryptoState,
+                        cc  *crypto.CryptoCache,
+			key  string,
+			conn *amqp.Connection,
+			sm   *pubsub.SubscriptionManager) {
         if key == "" {
 	        log.Println("Please provide an ID of an existing list to use this command.")
 		return
 	}
 
         // subscribe to the crypto lists from other clients and add them to the current client's cache
-	if err := pubsub.SubscribeClientCrypto(conn, key, subscriberClient(cc)); err != nil {
+	cancel, err := pubsub.SubscribeClientCrypto(conn, key, subscriberClient(cc))
+	if err != nil {
 	        log.Fatal(err)
 	}
+	sm.Add(cancel)
 
 	list, ok := cc.Get(key)
 	if !ok {

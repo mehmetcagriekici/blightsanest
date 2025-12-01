@@ -11,9 +11,9 @@ import(
 	amqp "github.com/rabbitmq/amqp091-go"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
-	// "github.com/mehmetcagriekici/blightsanest/internal/routing"
 	"github.com/mehmetcagriekici/blightsanest/internal/clientlogic"
 	"github.com/mehmetcagriekici/blightsanest/internal/logs"
+	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
 )
 
 func main() {
@@ -39,6 +39,9 @@ func main() {
 
         // create a new crypto state
 	cryptoState := crypto.CreateCryptoState()
+
+        // create a new subscription manager for the crypto
+	cryptoSubscriptionManager := pubsub.NewSubscriptionManager()
 
         // create a crypto cache for the client
 	interval, err := strconv.ParseFloat(cacheInterval, 64)
@@ -81,6 +84,8 @@ func main() {
                 // quit REPL
 		if words[0] == "quit" {
 		        log.Println("Ending client session...")
+			cryptoSubscriptionManager.CloseAll()
+			time.Sleep(200 * time.Millisecond)
 			break
 		}
 
@@ -146,7 +151,8 @@ func main() {
 				handleCryptoSwitch(cryptoState,
 				                   cryptoCache,
 						   words[2],
-						   conn)
+						   conn,
+						   cryptoSubscriptionManager)
 				continue
 			}
 		}
@@ -160,7 +166,7 @@ func main() {
 
                 // list the existing lists in the cache
 		if words[0] == "clientlogic.CLIENT_LIST" {
-		        handleCryptoList(cryptoState, cryptoCache, conn)
+		        handleCryptoList(cryptoState, cryptoCache, conn, cryptoSubscriptionManager)
 			continue
 		}
 		
@@ -168,7 +174,7 @@ func main() {
 		if words[0] == clientlogic.CLIENT_GET {
 		        if words[1] == "crypto" {
 			        frames := words[2:]
-				handleCryptoGet(cryptoCache, cryptoState, conn, frames)
+				handleCryptoGet(cryptoCache, cryptoState, conn, frames, cryptoSubscriptionManager)
 				crypto.PrintCryptoList(cryptoState.CurrentList,
 				                       cryptoState.CurrentListID,
 						       cryptoState.ClientTimeframes,
