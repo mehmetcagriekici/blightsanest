@@ -106,8 +106,10 @@ func main() {
 			log.Println("* help crypto: will print the crypto part of the manual.")
 			log.Println("")
 
-                        if words[1] == "crypto" {
-			        clientlogic.PrintCryptoHelp()
+                        if len(words) == 2 {
+                                if words[1] == "crypto" {
+			                clientlogic.PrintCryptoHelp()
+			        }
 			}
 			continue
 		}
