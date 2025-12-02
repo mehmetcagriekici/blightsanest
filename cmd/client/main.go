@@ -175,10 +175,6 @@ func main() {
 		        if words[1] == "crypto" {
 			        frames := words[2:]
 				handleCryptoGet(cryptoCache, cryptoState, conn, frames, cryptoSubscriptionManager)
-				crypto.PrintCryptoList(cryptoState.CurrentList,
-				                       cryptoState.CurrentListID,
-						       cryptoState.ClientTimeframes,
-						       []string{})
                                 continue
 			}
 		}

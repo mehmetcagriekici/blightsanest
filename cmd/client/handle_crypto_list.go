@@ -2,7 +2,6 @@ package main
 
 import(
         "log"
-	"time"
 	
         amqp "github.com/rabbitmq/amqp091-go"
 
@@ -17,8 +16,7 @@ func handleCryptoList(cs   *crypto.CryptoState,
         log.Println("Checking the rabbitmq server for other lists from other clients...")
 	log.Println("Adding the lists from other clients to the current client's cache")
 	
-	key := crypto.CreateCryptoCacheKey(cs.ClientTimeframes, time.Now().Unix())
-	cancel, err := pubsub.SubscribeClientCrypto(conn, key, subscriberClient(cc))
+	cancel, err := pubsub.SubscribeClientCrypto(conn, subscriberClient(cc))
 	if err != nil {
 	        log.Fatal(err)
 	}

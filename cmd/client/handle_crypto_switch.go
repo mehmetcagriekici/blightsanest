@@ -20,7 +20,7 @@ func handleCryptoSwitch(cs  *crypto.CryptoState,
 	}
 
         // subscribe to the crypto lists from other clients and add them to the current client's cache
-	cancel, err := pubsub.SubscribeClientCrypto(conn, key, subscriberClient(cc))
+	cancel, err := pubsub.SubscribeClientCrypto(conn, subscriberClient(cc))
 	if err != nil {
 	        log.Fatal(err)
 	}

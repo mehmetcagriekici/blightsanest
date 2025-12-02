@@ -10,15 +10,14 @@ import(
 
 // function to subscribe to crypto data from the server
 func SubscribeCrypto(conn *amqp.Connection,
-                     msgID string,
                      handler func(routing.CryptoExchangeBody)) (func() error, error) {
         // Subscribe to the crypto list
-	routingKey := fmt.Sprintf("%s-%s", routing.BlightCrypto, msgID)
+	bindingKey := fmt.Sprintf("%s.*", routing.BlightCrypto)
 	
 	return Subscribe(conn,
 	                 routing.BlightDurable,
 			 routing.CryptoGet,
-			 routingKey,
+			 bindingKey,
 			 routing.CryptoExchange,
 			 handler,
 			 Decode)
@@ -26,14 +25,13 @@ func SubscribeCrypto(conn *amqp.Connection,
 
 // function to subscribe the crypto data from other clients
 func SubscribeClientCrypto(conn *amqp.Connection,
-                           msgID string,
 			   handler func(routing.CryptoExchangeBody)) (func() error, error) {
-        routingKey := fmt.Sprintf("%s-%s", routing.BlightClientCrypto, msgID)
+        bindingKey := fmt.Sprintf("%s.*", routing.BlightClientCrypto)
 	
         return Subscribe(conn,
 	                 routing.BlightTransient,
 		         routing.CryptoClientGet,
-			 routingKey,
+			 bindingKey,
 			 routing.CryptoExchange,
 			 handler,
 			 Decode)

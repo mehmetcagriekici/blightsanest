@@ -54,7 +54,7 @@ func CreateCryptoCacheKey(timeframes []string, unix int64) string {
         frames := strings.Join(timeframes, "-")
 	createdAt := GetCryptoCacheHour(unix)
 	
-        return fmt.Sprintf("cryptoFrames_%s__createdAt-%.0f", frames, createdAt)
+        return fmt.Sprintf("%s__%.0f", frames, createdAt)
 }
 
 // function to get timeframes array

@@ -34,12 +34,14 @@ func handleCryptoGet(cc     *crypto.CryptoCache,
 		return
 	}
 	
-	cancel, err := pubsub.SubscribeCrypto(conn, key, subscriberServer(cc, cs, key))
+	cancel, err := pubsub.SubscribeCrypto(conn, subscriberServer(cc, cs, key))
 	if err != nil {
 	        log.Fatal(err)
 	}
-
+        
         sm.Add(cancel)
+	
+	log.Println("Successfully fetched the crypto list from the server.")
 	
 	return
 }

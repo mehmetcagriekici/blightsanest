@@ -13,7 +13,7 @@ import(
 func PublishCrypto(ctx context.Context,
                    conn *amqp.Connection,
 		   cryptoData routing.CryptoExchangeBody) error {
-		   routingKey := fmt.Sprintf("%s.*", routing.BlightCrypto)
+		   routingKey := fmt.Sprintf("%s.%s", routing.BlightCrypto, cryptoData.ID)
         if err := Publish(ctx,
 	                  conn,
 			  routing.BlightDurable,
@@ -30,7 +30,8 @@ func PublishCrypto(ctx context.Context,
 func PublishClientCrypto(ctx context.Context,
                          conn *amqp.Connection,
 			 data routing.CryptoExchangeBody) error {
-	routingKey := fmt.Sprintf("%s*", routing.BlightClientCrypto)
+	
+	routingKey := fmt.Sprintf("%s.%s", routing.BlightClientCrypto, data.ID)
         if err := Publish(ctx,
 	                  conn,
 			  routing.BlightTransient,

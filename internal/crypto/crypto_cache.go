@@ -82,6 +82,14 @@ func (c *CryptoCache) Get(key string) ([]MarketData, bool) {
 	return out, true
 }
 
+func (c *CryptoCache) GetCreatedAt(key string) (time.Time, bool) {
+        entry, ok := c.Market[key]
+	if !ok {
+	        return time.Time{}, false
+	}
+	return entry.createdAt, true
+}
+ 
 // remove old entries
 func (c *CryptoCache) reapLoop() {
         ticker := time.NewTicker(c.interval)

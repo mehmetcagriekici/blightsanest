@@ -60,11 +60,6 @@ func Subscribe[T any](conn *amqp.Connection,
 	        return nil, err
 	}
 
-        // prefetch 10 messages at a time
-	if err := ch.Qos(10, 0, false); err != nil {
-	        return nil, err
-	}
-        
         // start delivering messages from the queue
 	deliveries, err := ch.Consume(q.Name, "", false, false, false, false, nil)
 	if err != nil {
