@@ -3,6 +3,13 @@
 ## What is BlightSanest?
 BlightSanest is a CLI tool that allows users to fetch finance assets and analyze them, finding/identifying outliers. It uses the publisher/subscriber architecture to separate data and functionality by fetching the raw data from the server and publishing it to the clients. This way you can run various operations on any finance asset simultaniously from multiple terminals.
 
+## Dev Logs
+If you face any bugs problems or something not clear, please do reach me from mehmetcagriekici@gmail.com
+### Initial Relase V1
+1) Faced an issue with REPL and pubsub architecture, fixed the cancellation logic.
+2) Faced few bugs concerning routing. Fixed the issue with routing and binding keys.
+3) Facing an issue with caching lists, and client distributions.
+
 ## How to Use:
 1) Create a .env file with the necessary variables described below
 2) Start the rabbitmq server from your CLI using rabbit.sh file
