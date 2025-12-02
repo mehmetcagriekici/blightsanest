@@ -16,17 +16,27 @@ func handleCryptoSave(cs *crypto.CryptoState,
                       cc *crypto.CryptoCache,
 		      ctx context.Context,
 		      conn *amqp.Connection) {
+        if len(cs.CurrentList) == 0 {
+	        log.Println("Current client list is empty...")
+		return
+	}
+	
         // save current list to the cache
-        log.Println("Saving the current list to the client cache and to the docker volume.")
 	cc.Add(cs.CurrentListID, cs.CurrentList)
+	createdAt, ok := cc.GetCreatedAt(cs.CurrentListID)
+	if !ok {
+	        log.Println("Using the current time as the message created at.")
+		createdAt = time.Now()
+	}
 
         // publish current list to the other clients
 	data := routing.CryptoExchangeBody{
 	        ID:        cs.CurrentListID,
-		CreatedAt: time.Now(),
-		Payload: cs.CurrentList,
+		CreatedAt: createdAt,
+		Payload:   cs.CurrentList,
 	}
-	if err := pubsub.PublishClientCrypto(ctx, conn, data); err != nil {
+	
+	if err := pubsub.PublishCrypto(ctx, conn, data); err != nil {
 	        log.Fatal(err)
 	}
 }

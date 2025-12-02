@@ -13,6 +13,7 @@ func PrintServerIntroduction() {
 func PrintServerHelp() {
         fmt.Println("Available Server Features and Commands:")
 	fmt.Println("--- To quit the current session: * quit")
+	fmt.Println("--- To see the available commands: * help")
 	fmt.Println("--- To fetch crypto data with custom queries: * fetch crypto <1h/24h/7d/30d/200d/1y - one or many with one space>")
 }
 

@@ -39,7 +39,7 @@ func PrintCryptoHelp() {
     fmt.Println("There is only one active market list per client; all commands run on that list.")
     fmt.Println("")
 
-    fmt.Println("## Saving and switching lists")
+    fmt.Println("## Saving, printing and switching lists")
     fmt.Println("")
     fmt.Println("Use <save> to store the current state list in the client cache with a key:")
     fmt.Println("  save crypto my_filtered_list")
@@ -50,16 +50,13 @@ func PrintCryptoHelp() {
     fmt.Println("  switch crypto my_filtered_list")
     fmt.Println("      Make 'my_filtered_list' the current state list from cache or volume.")
     fmt.Println("")
-
-    fmt.Println("## Listing existing lists...")
-    fmt.Println("")
-    fmt.Println("Use <list> to print the existing lists in the client cache:")
+    fmt.Println("Use <list> to print the IDs of the he existing lists in the client cache:")
     fmt.Println("  list crypto")
+    fmt.Println("")
     fmt.Println("Use <switch> to change the active state list to another list:")
     fmt.Println("  switch crypto <id_of_the_list>")
     fmt.Println("      Make the selected list the current state list from cache.")
     fmt.Println("")
-
 
     fmt.Println("## Ranking coins by price change")
     fmt.Println("")

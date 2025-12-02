@@ -11,12 +11,13 @@ import(
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
+// consumes the crypto data in the queue
 func handleCryptoGet(cc     *crypto.CryptoCache,
                      cs     *crypto.CryptoState,
 		     conn   *amqp.Connection,
 		     frames []string,
 		     sm     *pubsub.SubscriptionManager) {
-        // create a key from passed frames
+        // create a key from passed frames / args and interval cache
 	key := crypto.CreateCryptoCacheKey(frames, time.Now().Unix())
 
         // check if the key exists in the cache
@@ -33,36 +34,25 @@ func handleCryptoGet(cc     *crypto.CryptoCache,
 		cs.UpdateCurrentList(key, list)
 		return
 	}
+
+        // consume
+	cancel, err := pubsub.SubscribeCrypto(conn, asyncCryptoSubscriptionHandler(func(delivery routing.CryptoExchangeBody) {
+	        list := delivery.Payload
+		id := delivery.ID
+
+                if id == "" || len(list) == 0 {
+		        log.Println("No crypto list is delivered to the client subscriber.")
+			return
+		}
+
+                cc.Add(id, list)
+		cs.UpdateCurrentList(id, list)
+		log.Printf("New crypto list <%s> is successfully added to the client cache and the state.\n", id)
+	}))
 	
-	cancel, err := pubsub.SubscribeCrypto(conn, subscriberServer(cc, cs, key))
 	if err != nil {
 	        log.Fatal(err)
 	}
         
-        sm.Add(cancel)
-	
-	log.Println("Successfully fetched the crypto list from the server.")
-	
-	return
-}
-
-func subscriberServer(cc *crypto.CryptoCache, cs *crypto.CryptoState, key string) func(routing.CryptoExchangeBody) {
-        return func(delivery routing.CryptoExchangeBody) {
-	        list := delivery.Payload
-		id   := delivery.ID
-
-                // if there is no id or no list or id is not a match
-		if id == "" || len(list) == 0 {
-		        log.Fatal("No Crypto List found on the server!")
-		}
-		
-		if key != id {
-		        log.Fatal("Requested Crypto Key does not match the server key")
-		}
-
-                // add list to the cache and to the state
-		cc.Add(id, list)
-		cs.UpdateCurrentList(id, list)
-		log.Println("New Crypto List successfully added to the client")
-	}
+        sm.Add(cancel)	
 }

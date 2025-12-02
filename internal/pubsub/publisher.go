@@ -44,6 +44,7 @@ func Publish[T any](ctx context.Context,
 				             return err
 				     }
 
+
         // encode the value into bytes
 	data, err := Encode(val)
 	if err != nil {

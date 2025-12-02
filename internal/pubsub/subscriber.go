@@ -3,9 +3,12 @@ package pubsub
 import(
         "log"
         "errors"
+	"os"
+	"strconv"
 
         "github.com/mehmetcagriekici/blightsanest/internal/routing"
-	
+
+        "github.com/joho/godotenv"
         amqp "github.com/rabbitmq/amqp091-go"
 )
 
@@ -14,10 +17,19 @@ import(
 func Subscribe[T any](conn *amqp.Connection,
                       queueType routing.QueueType,
 		      queueName,
-		      routingKey,
+		      bindingKey,
 		      exchangeName string,
 		      handler func(T),
 		      unmarshaller func([]byte) (T, error)) (func() error, error) {
+        // fetch env variables
+	if err := godotenv.Load(); err != nil {
+	        log.Fatal(err)
+	}
+	qosCount, err := strconv.Atoi(os.Getenv("SUBSCRIBER_PREFETCH"))
+	if err != nil {
+	        log.Fatal(err)
+	}
+	
         // create a channel from the connection
 	ch, err := conn.Channel()
 	if err != nil {
@@ -53,11 +65,16 @@ func Subscribe[T any](conn *amqp.Connection,
         
         // bind the queue to the exchange
 	if err := ch.QueueBind(q.Name,
-	                       routingKey,
+	                       bindingKey,
 			       exchangeName,
 			       false,
 			       nil); err != nil {
 	        return nil, err
+	}
+
+        // set the quality of service
+	if err := ch.Qos(qosCount, 0, false); err != nil {
+	        log.Fatal(err)
 	}
 
         // start delivering messages from the queue

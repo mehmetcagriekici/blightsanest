@@ -22,17 +22,3 @@ func SubscribeCrypto(conn *amqp.Connection,
 			 handler,
 			 Decode)
 }
-
-// function to subscribe the crypto data from other clients
-func SubscribeClientCrypto(conn *amqp.Connection,
-			   handler func(routing.CryptoExchangeBody)) (func() error, error) {
-        bindingKey := fmt.Sprintf("%s.*", routing.BlightClientCrypto)
-	
-        return Subscribe(conn,
-	                 routing.BlightTransient,
-		         routing.CryptoClientGet,
-			 bindingKey,
-			 routing.CryptoExchange,
-			 handler,
-			 Decode)
-}

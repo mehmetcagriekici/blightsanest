@@ -9,6 +9,11 @@ import(
 )
 
 func handleCryptoMutate(cs *crypto.CryptoState, cc *crypto.CryptoCache, operation, feature string, args []string) {
+        if len(cs.CurrentList) == 0 {
+	        log.Println("Client crypto list is empty...")
+		return
+	}
+	
         switch operation {
 	case clientlogic.CLIENT_RANK:
 	        controlCryptoRank(cs, args)

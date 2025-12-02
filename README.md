@@ -8,7 +8,10 @@ If you face any bugs problems or something not clear, please do reach me from me
 ### Initial Relase V1
 1) Faced an issue with REPL and pubsub architecture, fixed the cancellation logic.
 2) Faced few bugs concerning routing. Fixed the issue with routing and binding keys.
-3) Facing an issue with caching lists, and client distributions.
+3) Faced an issue with caching lists, and client distributions, fixed queue consumption and async data flow logic
+4) Faced a bug that causes clients to exit after fetching a new list with new args from the server. Loosened strict key-id match check, eliminating the bug due to key creation process.
+5) Facing an issue while updating clients, unidentified bugs with client operations
+6) Currently improving the UX
 
 ## How to Use:
 1) Create a .env file with the necessary variables described below
@@ -30,6 +33,7 @@ go build ./cmd/server
 COIN_GECKO_KEY           # coin gecko api key for crypto currencies
 RABBIT_CONNECTION_STRING # url to the rabbitmq server
 CACHE_INTERVAL           # time until a crypto cache entry becomes stalei and removed
+SUBSCRIBER_PREFETCH      # prefetch count for amqp Qos
 ```
 
 ## Available Finance Assets:

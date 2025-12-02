@@ -102,16 +102,19 @@ func main() {
                                 if data, ok := cryptoCache.Get(cck); ok {
 		                        // fetched data already exists and published on the crypto channel
 					log.Println("Crypto data already exists on the server cache...")
+					
 					// publish the existing data
 					createdAt, ok := cryptoCache.GetCreatedAt(cck)
 					if !ok {
 					        log.Println("Using the zero value for msg CreatedAt...")
 					}
+					
 					msg := routing.CryptoExchangeBody{
 					        ID: cck,
 						CreatedAt: createdAt,
 						Payload: data,
 					}
+					
 					if err := pubsub.PublishCrypto(ctx, conn, msg); err != nil {
 					        log.Fatal(err)
 					}

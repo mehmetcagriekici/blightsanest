@@ -150,7 +150,7 @@ func main() {
 		        if words[1] == "crypto" {
 				handleCryptoSwitch(cryptoState,
 				                   cryptoCache,
-						   words[2],
+						   words[2:],
 						   conn,
 						   cryptoSubscriptionManager)
 				continue
@@ -159,18 +159,18 @@ func main() {
 
                 // save the asset on the cache
 		if words[0] == clientlogic.CLIENT_SAVE {
-		        // to save the current list on the state in the cache and to the docker volume
+		        // to save the current list in the cache
 			handleCryptoSave(cryptoState, cryptoCache, ctx, conn)
 			continue
 		}
 
                 // list the existing lists in the cache
-		if words[0] == "clientlogic.CLIENT_LIST" {
-		        handleCryptoList(cryptoState, cryptoCache, conn, cryptoSubscriptionManager)
+		if words[0] == clientlogic.CLIENT_LIST {
+		        handleCryptoList(cryptoState, cryptoCache)
 			continue
 		}
 		
-	        // Get data from the server
+	        // Get data from the serve
 		if words[0] == clientlogic.CLIENT_GET {
 		        if words[1] == "crypto" {
 			        frames := words[2:]

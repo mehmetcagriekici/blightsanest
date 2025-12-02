@@ -13,7 +13,8 @@ import(
 func PublishCrypto(ctx context.Context,
                    conn *amqp.Connection,
 		   cryptoData routing.CryptoExchangeBody) error {
-		   routingKey := fmt.Sprintf("%s.%s", routing.BlightCrypto, cryptoData.ID)
+        routingKey := fmt.Sprintf("%s.%s", routing.BlightCrypto, cryptoData.ID)
+	
         if err := Publish(ctx,
 	                  conn,
 			  routing.BlightDurable,
@@ -23,24 +24,6 @@ func PublishCrypto(ctx context.Context,
 			  cryptoData); err != nil {
 	        return err
 	}
-	return nil
-}
-
-// function to publish client modifed client lists - transient
-func PublishClientCrypto(ctx context.Context,
-                         conn *amqp.Connection,
-			 data routing.CryptoExchangeBody) error {
 	
-	routingKey := fmt.Sprintf("%s.%s", routing.BlightClientCrypto, data.ID)
-        if err := Publish(ctx,
-	                  conn,
-			  routing.BlightTransient,
-			  routing.CryptoExchange,
-			  routing.BlightTopic,
-			  routingKey,
-			  data); err != nil {
-	        return err
-	}
 	return nil
-
 }
