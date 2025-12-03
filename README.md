@@ -47,12 +47,12 @@ From the [CoinGecko API](https://www.coingecko.com/en/api) BlightSanest Server c
 
 Server Examples:
 
-1) To see the available queries enter the command without any arguments.
+1) Without any query parameters:
 ```
-fetch crypto # without any additional arguements, prints the help menu.
+fetch crypto # fetches the data without any query parameters
 
 ```
-Query parameters order: ids > names > symbols > include_tokens > category > order > per_page > page > sparkline > price_change_percentage > percision
+2) Query parameters order: ids > names > symbols > include_tokens > category > order > per_page > page > sparkline > price_change_percentage > percision
 **This order is strict! Skip the parameter with minus sign (-) see the examples below.**
 ```
 fetch crypto - Bitcoin                                  # omits ids and the rest of the parameters after the names.
