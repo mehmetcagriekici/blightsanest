@@ -51,11 +51,11 @@ func findNewPrice(cs *crypto.CryptoState, cc *crypto.CryptoCache, foo func(oldCo
 	compared := cs.CurrentList
 	for k := range cc.Market { 
 	        log.Printf("---- Comparing list %s with current list %s\n", k, cs.CurrentListID)
-		v, ok := cc.Get(k)
+		cryptoEntry, ok := cc.Get(k)
 		if !ok {
 		        continue
 		}
-		compared = foo(v, compared)
+		compared = foo(cryptoEntry.Market, compared)
 	}
 	return compared
 }

@@ -2,7 +2,6 @@ package main
 
 import(
         "log"
-	"time"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/clientlogic"
@@ -144,6 +143,5 @@ func handleCryptoMutate(cs *crypto.CryptoState, cc *crypto.CryptoCache, operatio
 }
 
 func updateCurrentList(cs *crypto.CryptoState, list []crypto.MarketData) {
-        newID := crypto.CreateCryptoCacheKey(cs.ClientTimeframes, time.Now().Unix())
-	cs.UpdateCurrentList(newID, list)
+	cs.UpdateCurrentList(cs.CurrentListID, list)
 }

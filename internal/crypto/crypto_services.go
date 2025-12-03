@@ -2,11 +2,8 @@ package crypto
 
 import (
         "io"
-        "fmt"
 	"net/http"
 	"encoding/json"
-	"strings"
-	"slices"
 	"log"
 )
 
@@ -56,20 +53,9 @@ const (
 // currency=usd
 // order=market_cap_{ORDER}
 // price_change_percentage={TIMEFRAME}
-func CryptoFetchMarket(timeframes []AvailableTimeframes, key string) ([]MarketData, error) {
+func CryptoFetchMarket(url, key string) ([]MarketData, error) {
         client := &http.Client{}
 
-        // convert timeframes to type string
-        urlFrames := []string{}
-	for timeframe := range slices.Values(timeframes) {
-	        urlFrames = append(urlFrames, string(timeframe))
-	}
-	
-        // api url
-	baseURL := "https://api.coingecko.com/api/v3/coins/markets"
-	urlQuery := strings.Join(urlFrames, ",")
-	url := fmt.Sprintf("%s?vs_currency=usd&price_change_percentage=%s", baseURL, urlQuery)
-	
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 	        log.Println("An error occured while trying to create a new request.")

@@ -3,12 +3,13 @@ package routing
 // exchange names
 const (
 	CryptoExchange  = "crypto_topic"
+	ClientExchange  = "client_topic"
 )
 
 // routing keys
 const (
-        BlightCrypto       = "crypto"
-	BlightClientCrypto = "client_crypto"
+        BlightCrypto       = "blight_crypto"
+	BlightClientCrypto = "blight_client_crypto"
 )
 
 // exchange types

@@ -12,6 +12,7 @@ const (
 	CLIENT_FILTER string = "filter"
 	CLIENT_FIND   string = "find"
 	CLIENT_CALC   string = "calc"
+	CLIENT_FETCH  string = "fetch"
 )
 
 // crypto features (sub operations)

@@ -34,7 +34,7 @@ func SortCoinNames(coins []MarketData, i, j int) bool {
 }
 
 // function to get crypto cache key createdAts
-func GetCryptoCacheHour(unix int64) float64 {
+func GetCryptoCacheHour(unix int64) string {
         d := float64(3600)
         u := float64(unix)
 
@@ -46,15 +46,8 @@ func GetCryptoCacheHour(unix int64) float64 {
 	reminder := (fullHours - hours) * d
 
        // calc hourly unix in seconds and return the hour to be used as a cache key
-       return math.Floor(u - reminder) / d
-}
-
-// function to create crypto cache key
-func CreateCryptoCacheKey(timeframes []string, unix int64) string {
-        frames := strings.Join(timeframes, "-")
-	createdAt := GetCryptoCacheHour(unix)
-	
-        return fmt.Sprintf("%s__%.0f", frames, createdAt)
+       cachedUnix := math.Floor(u - reminder) / d
+       return fmt.Sprintf("%.0f", cachedUnix)
 }
 
 // function to get timeframes array

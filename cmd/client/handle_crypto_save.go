@@ -23,20 +23,16 @@ func handleCryptoSave(cs *crypto.CryptoState,
 	
         // save current list to the cache
 	cc.Add(cs.CurrentListID, cs.CurrentList)
-	createdAt, ok := cc.GetCreatedAt(cs.CurrentListID)
-	if !ok {
-	        log.Println("Using the current time as the message created at.")
-		createdAt = time.Now()
-	}
-
+	
         // publish current list to the other clients
 	data := routing.CryptoExchangeBody{
 	        ID:        cs.CurrentListID,
-		CreatedAt: createdAt,
+		CreatedAt: time.Now(),
 		Payload:   cs.CurrentList,
 	}
-	
-	if err := pubsub.PublishCrypto(ctx, conn, data); err != nil {
+
+        log.Printf("Publishing the list: %s\n", cs.CurrentListID)
+	if err := pubsub.PublishClientCrypto(ctx, conn, data); err != nil {
 	        log.Fatal(err)
 	}
 }

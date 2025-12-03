@@ -70,6 +70,7 @@ func main() {
 		   words[0] != "save"   &&
 		   words[0] != "list"   &&
 		   words[0] != "get"    &&
+		   words[0] != "fetch"  &&
 		   words[0] != "rank"   &&
 		   words[0] != "group"  &&
 		   words[0] != "filter" &&
@@ -114,6 +115,7 @@ func main() {
                         if len(words) == 2 {
                                 if words[1] == "crypto" {
 			                clientlogic.PrintCryptoHelp()
+					continue
 			        }
 			}
 			continue
@@ -139,44 +141,70 @@ func main() {
 				        handleCryptoMutate(cryptoState, cryptoCache, words[1], "", words[3:])
 					continue
 				}
+				
 			        handleCryptoMutate(cryptoState, cryptoCache, words[1], words[3], words[4:])
 				continue
 			}
+			
 			continue
 		}
 
                 // switch between cached data
 		if words[0] == clientlogic.CLIENT_SWITCH {
 		        if words[1] == "crypto" {
-				handleCryptoSwitch(cryptoState,
-				                   cryptoCache,
-						   words[2:],
-						   conn,
-						   cryptoSubscriptionManager)
+				handleCryptoSwitch(cryptoState, cryptoCache, words[2:])
 				continue
 			}
+			
+			continue
 		}
 
                 // save the asset on the cache
 		if words[0] == clientlogic.CLIENT_SAVE {
-		        // to save the current list in the cache
-			handleCryptoSave(cryptoState, cryptoCache, ctx, conn)
-			continue
+		        if words[1] == "crypto" {
+			        handleCryptoSave(cryptoState, cryptoCache, ctx, conn)
+			        continue
+			}
+
+                        continue
 		}
 
                 // list the existing lists in the cache
 		if words[0] == clientlogic.CLIENT_LIST {
-		        handleCryptoList(cryptoState, cryptoCache)
-			continue
+		        if words[1] == "crypto" {
+		                handleCryptoList(cryptoState, cryptoCache)
+		   	        continue
+			}
+
+                        continue
 		}
 		
-	        // Get data from the serve
-		if words[0] == clientlogic.CLIENT_GET {
+	        // Get data from the server
+		if words[0] == clientlogic.CLIENT_FETCH {
 		        if words[1] == "crypto" {
-			        frames := words[2:]
-				handleCryptoGet(cryptoCache, cryptoState, conn, frames, cryptoSubscriptionManager)
+				handleCryptoFetch(cryptoCache,
+				                  cryptoState,
+						  conn,
+						  words[2:],
+						  cryptoSubscriptionManager)
                                 continue
 			}
+
+                        continue
+		}
+
+                // get data from other clients
+		if words[0] == clientlogic.CLIENT_GET {
+		        if words[1] == "crypto" {
+			        handleCryptoGet(cryptoCache,
+				                cryptoState,
+						conn,
+						words[2:],
+						cryptoSubscriptionManager)
+				continue
+			}
+
+                        continue
 		}
 
                 // ranking features

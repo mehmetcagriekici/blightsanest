@@ -9,11 +9,11 @@ import(
         "github.com/mehmetcagriekici/blightsanest/internal/routing"        
 )
 
-// function to publish raw crypto data from the server - durable
+// function to publish fresh crypto data from the server - durable
 func PublishCrypto(ctx context.Context,
                    conn *amqp.Connection,
-		   cryptoData routing.CryptoExchangeBody) error {
-        routingKey := fmt.Sprintf("%s.%s", routing.BlightCrypto, cryptoData.ID)
+		   data routing.CryptoExchangeBody) error {
+        routingKey := fmt.Sprintf("%s.%s", routing.BlightCrypto, data.ID)
 	
         if err := Publish(ctx,
 	                  conn,
@@ -21,9 +21,26 @@ func PublishCrypto(ctx context.Context,
 			  routing.CryptoExchange,
 			  routing.BlightTopic,
 			  routingKey,
-			  cryptoData); err != nil {
+			  data); err != nil {
 	        return err
 	}
 	
 	return nil
+}
+
+// function to publish existing client data - transient
+func PublishClientCrypto(ctx context.Context, conn *amqp.Connection, data routing.CryptoExchangeBody) error {
+        routingKey := fmt.Sprintf("%s.%s", routing.BlightClientCrypto, data.ID)
+
+        if err := Publish(ctx,
+	                  conn,
+			  routing.BlightTransient,
+			  routing.ClientExchange,
+			  routing.BlightTopic,
+			  routingKey,
+			  data); err != nil {
+	        return err
+	}
+
+        return nil
 }

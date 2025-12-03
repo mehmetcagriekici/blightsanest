@@ -7,8 +7,8 @@ import (
 
 // Crypto Cache Entry
 type cryptoEntry struct {
-        createdAt time.Time
-	market []MarketData
+        CreatedAt time.Time
+	Market []MarketData
 }
 
 // Crypto Cache
@@ -40,8 +40,8 @@ func (c *CryptoCache) Add(key string, market []MarketData) {
 
         // add a new entry
 	c.Market[key] = cryptoEntry{
-	        createdAt: time.Now(),
-		market: append([]MarketData(nil), market...),
+	        CreatedAt: time.Now(),
+		Market: append([]MarketData(nil), market...),
 	}
 
         // unlock the cache
@@ -49,7 +49,7 @@ func (c *CryptoCache) Add(key string, market []MarketData) {
 }
 
 // Get an entry from the cache
-func (c *CryptoCache) Get(key string) ([]MarketData, bool) {
+func (c *CryptoCache) Get(key string) (cryptoEntry, bool) {
         // lock the cache
 	c.mu.RLock()
 
@@ -57,12 +57,11 @@ func (c *CryptoCache) Get(key string) ([]MarketData, bool) {
 	entry, ok := c.Market[key]
 	if !ok {
 	        c.mu.RUnlock()
-	        return nil, false
+	        return cryptoEntry{}, false
 	}
 
         // check if the entry is stale
-        isStale := time.Since(entry.createdAt) > c.interval
-	val := entry.market
+        isStale := time.Since(entry.CreatedAt) > c.interval
 	c.mu.RUnlock()
 
         if isStale {
@@ -70,26 +69,17 @@ func (c *CryptoCache) Get(key string) ([]MarketData, bool) {
 		c.mu.Lock()
 
                 // re-check in case another goroutine updated it
-		if e2, ok2 := c.Market[key]; ok2 && time.Since(e2.createdAt) > c.interval {
+		if e2, ok2 := c.Market[key]; ok2 && time.Since(e2.CreatedAt) > c.interval {
 		        delete(c.Market, key)
 		}
 		c.mu.Unlock()
-		return nil, false
+		return cryptoEntry{}, false
 	}
 
-        // return the value
-	out := append([]MarketData(nil), val...)
-	return out, true
+        // return the entry
+	return entry, true
 }
 
-func (c *CryptoCache) GetCreatedAt(key string) (time.Time, bool) {
-        entry, ok := c.Market[key]
-	if !ok {
-	        return time.Time{}, false
-	}
-	return entry.createdAt, true
-}
- 
 // remove old entries
 func (c *CryptoCache) reapLoop() {
         ticker := time.NewTicker(c.interval)
@@ -100,7 +90,7 @@ func (c *CryptoCache) reapLoop() {
 		case <-ticker.C:
 		        c.mu.Lock()
 			for k, m := range c.Market {
-			        if time.Since(m.createdAt) > c.interval {
+			        if time.Since(m.CreatedAt) > c.interval {
 				        delete(c.Market, k)
 				}
 			}

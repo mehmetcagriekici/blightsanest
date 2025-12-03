@@ -11,7 +11,7 @@ import(
 )
 
 // gets data from the server
-func handleCryptoGet(cc     *crypto.CryptoCache,
+func handleCryptoFetch(cc     *crypto.CryptoCache,
                        cs     *crypto.CryptoState,
 		       conn   *amqp.Connection,
 		       args   []string,
@@ -19,8 +19,8 @@ func handleCryptoGet(cc     *crypto.CryptoCache,
 	defer log.Print("> ")
         // control args
 	if len(args) != 1 {
-	        log.Println("<get crypto> command requires a key of a published crypto list as an argument.")
-		log.Println("    get crypto <id_of_a_published_crypto_list_from_the_client>")
+	        log.Println("<fetch crypto> command requires a key of a published crypto list as an argument.")
+		log.Println("    fetch crypto <id_of_a_published_crypto_list_from_the_server>")
 		return
 	}
 	
@@ -41,8 +41,8 @@ func handleCryptoGet(cc     *crypto.CryptoCache,
 		return
 	}
 
-        log.Println("Subscribing to the client publishing channel to get the requested list...")
-	cancel, err := pubsub.SubscribeClientCrypto(conn, func(delivery routing.CryptoExchangeBody) {
+        log.Println("Subscribing to the server crypto channel to get the requested list...")
+	cancel, err := pubsub.SubscribeCrypto(conn, func(delivery routing.CryptoExchangeBody) {
 	        list := delivery.Payload
 		id := delivery.ID
 

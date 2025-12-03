@@ -10,8 +10,9 @@ If you face any bugs problems or something not clear, please do reach me from me
 2) Faced few bugs concerning routing. Fixed the issue with routing and binding keys.
 3) Faced an issue with caching lists, and client distributions, fixed queue consumption and async data flow logic
 4) Faced a bug that causes clients to exit after fetching a new list with new args from the server. Loosened strict key-id match check, eliminating the bug due to key creation process.
-5) Facing an issue while updating clients, unidentified bugs with client operations
-6) Currently improving the UX
+5) Facing an issue while updating clients, Solved creating another channel for inner client publishings.
+6) Added more server query parameters for the API to improve the UX.
+7) Currently improving the UX
 
 ## How to Use:
 1) Create a .env file with the necessary variables described below
@@ -42,14 +43,23 @@ SUBSCRIBER_PREFETCH      # prefetch count for amqp Qos
 
 **<ins>Available Timeframes:</ins> __1h, 24h, 7d, 30d, 200d, 1y__**
 
-From the [CoinGecko API](https://www.coingecko.com/en/api) BlightSanest Server can fetch the coins with related market data from the API [endpoint](https://docs.coingecko.com/reference/coins-markets) with the server command "fetch" with the arguments "crypto" and one or multiple timeframes (1h, 24h, 7d, 30d, 200d, 1y)
+From the [CoinGecko API](https://www.coingecko.com/en/api) BlightSanest Server can fetch the coins with related market data from the API [endpoint](https://docs.coingecko.com/reference/coins-markets) with the server command "fetch" with the arguments "crypto" and one or multiple queries.
 
 Server Examples:
 
+1) To see the available queries enter the command without any arguments.
 ```
-fetch crypto 1h 24h
+fetch crypto # without any additional arguements, prints the help menu.
 
-fetch crypto 1h
+```
+Query parameters order: ids > names > symbols > include_tokens > category > order > per_page > page > sparkline > price_change_percentage > percision
+**This order is strict! Skip the parameter with minus sign (-) see the examples below.**
+```
+fetch crypto - Bitcoin                                  # omits ids and the rest of the parameters after the names.
+
+fetch crypto - - btc                                    # omits ids, names and the rest of the parameters after the symbols.
+
+fetch crypto - - - top - market_cap_asc - - - 1h,24h,7d # omits ids, names, symbols, category, per_page, page, sparkline, and percision.
 ```
 
 After fetching the crypto data from the server, you also need to get it from the client. BlightSanest does not perform initial calls to any APIs on the server neither on the client not to produce undesired results and not to be a burden on the API.
@@ -57,13 +67,12 @@ After fetching the crypto data from the server, you also need to get it from the
 Client Examples:
 
 ```
-get crypto        # gets all crypto lists from the publisher
-get crypto 1h     # gets a specific crypto list from the publisher if exists
+fetch crypto crypto_list_id # gets a specific crypto list from the server publisher if exists
 
-get cryoto 1h 24h # gets a specific crypto list from the publisher if exists
+get crypto crypto_list_id # gets a specific crypto list from a client publisher if exists
 ```
 
-From the clients that has the crypto list/lists, you can perform these operations:
+From the clients that has the crypto list, you can perform these operations:
 
 **After each operation if you want to update the crypto list on the client enter the command and the argument `mutate crypto` on the client terminal. Otherwise the operations will not affect the crypto list and you will run the next operation on the original list. __Mutating the list on a client will not affect the lists on the other clients nor the lists on the server__**
 
