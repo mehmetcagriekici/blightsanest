@@ -55,7 +55,6 @@ func handleCryptoFetch(cc     *crypto.CryptoCache,
 
                 cc.Add(id, list)
 		cs.UpdateCurrentList(id, list)
-	}
         
 
 		log.Printf("New crypto list <%s> is successfully added to the client cache and the state.\n", id)

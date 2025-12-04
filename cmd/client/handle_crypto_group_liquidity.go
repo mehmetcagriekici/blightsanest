@@ -4,27 +4,16 @@ import(
         "log"
 	"strconv"
 	"fmt"
-	"strings"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoGroupLiquidity(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
         controlLiquidityArguments(cs, args)
-	
-        highCoins := crypto.GroupHighLiquidityCoins(cs.CurrentMinRank, cs.CurrentMaxRank, cs.CurrentMinVolume, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_group_liquidity_%s_%s_%s", baseID, cs.CurrentMinRank, cs.CurrentMaxRank, cs.CurrentMinVolume)
-	cs.UpdateCurrentList(newID, highCoins)
-	
+        list := crypto.GroupHighLiquidityCoins(cs.CurrentMinRank, cs.CurrentMaxRank, cs.CurrentMinVolume, cs.CurrentList)
+	newID := fmt.Sprintf("group_liquidity_%d_%d_%f", cs.CurrentMinRank, cs.CurrentMaxRank, cs.CurrentMinVolume)
 	fields := []string{"MarketCapRank", "TotalVolume"}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-        log.Println("")
-	
-	return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 // min market rank int

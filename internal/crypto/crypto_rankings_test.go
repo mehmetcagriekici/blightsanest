@@ -20,7 +20,7 @@ func TestRankCoinsASC(t *testing.T) {
 	}
 
         expected := []MarketData{coin1, coin2, coin3}
-	result := RankCoins(PCP_DAY, order, []MarketData{coin1, coin2, coin3})
+	result := RankCoins("PriceChangePercentage24h", order, []MarketData{coin1, coin2, coin3})
 
         if !reflect.DeepEqual(expected, result) {
 	        t.Errorf("expected: %v, got: %v", expected, result)
@@ -40,7 +40,7 @@ func TestRankCoinsDESC(t *testing.T) {
 	}
 
         expected := []MarketData{coin3, coin2, coin1}
-	result := RankCoins(PCP_DAY, order, []MarketData{coin1, coin2, coin3})
+	result := RankCoins("PriceChangePercentage24h", order, []MarketData{coin1, coin2, coin3})
 
         if !reflect.DeepEqual(expected, result) {
 	        t.Errorf("expected: %v, got: %v", expected, result)

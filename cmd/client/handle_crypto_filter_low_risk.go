@@ -9,24 +9,16 @@ import(
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterLowRisk(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
+func handleCryptoFilterLowRisk(cs *crypto.CryptoState, args []string) {	
         controlFilterLowRisk(cs, args)
 	
 	list := crypto.FlagSafeCoins(cs.CurrentMaxRank, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_filter_low_risk_%s_%s_%s", baseID, cs.CurrentMaxRank, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe)
-	cs.UpdateCurrentList(newID, list)
-	
+	newID := fmt.Sprintf("filter_low_risk_%d_%f_%v", cs.CurrentMaxRank, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe)
 	t := fmt.Sprintf("%v", cs.CurrentTimeframe)
 	frame := fmt.Sprintf("PriceChangePercentage%s", strings.ToUpper(t))
 	fields := []string{"MarketCapRank", "MarketCap", frame}
 	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 // max market rank

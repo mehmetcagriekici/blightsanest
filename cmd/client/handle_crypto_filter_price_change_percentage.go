@@ -10,23 +10,13 @@ import(
 )
 
 func handleCryptoFilterPriceChangePercentage(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
         controlFilterPriceChangePercentage(cs, args)
-	
 	list := crypto.FilterCoinPriceChange(cs.CurrentMinPriceChangePercentage, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_filter_pcp_%s_%s_%s", baseID, cs.CurrentMinPriceChangePercentage, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe)
-	cs.UpdateCurrentList(newID, list)
-	
+	newID := fmt.Sprintf("filter_pcp_%f_%f_%v", cs.CurrentMinPriceChangePercentage, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe)
 	t := fmt.Sprintf("%v", cs.CurrentTimeframe)
         frame := fmt.Sprintf("PriceChangePercentage%s", strings.ToUpper(t))
         fields := []string{frame}
-        crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 // min price change

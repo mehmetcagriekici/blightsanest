@@ -3,30 +3,19 @@ package main
 import(
         "log"
 	"fmt"
-	"strings"
-
+	
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoCalcTrendStrength(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
         controlCalcTrendStrength(cs, args)
-	
         list, err := crypto.CheckRealTrend(cs.CurrentTimeframe, cs.CurrentList)
 	if err != nil {
 	        log.Fatal(err)
 	}
- 
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_calc_trend_strength_%s", baseID, cs.CurrentTimeframe)
-	cs.UpdateCurrentList(newID, list)
- 
+	newID := fmt.Sprintf("calc_trend_strength_%s", cs.CurrentTimeframe)
         fields := []string{"PriceChangePercentage24h", "MarketCap", "MarketCapRank", "MarketCapRankPercentage"}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 func controlCalcTrendStrength(cs *crypto.CryptoState, args []string) {

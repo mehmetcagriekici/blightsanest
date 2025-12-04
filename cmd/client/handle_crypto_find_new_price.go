@@ -2,48 +2,28 @@ package main
 
 import (
         "log"
-	"strings"
-	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoNewHighPrice(cs *crypto.CryptoState, cc *crypto.CryptoCache) {
-        defer log.Print("> ")
-	
         list := findNewPrice(cs, cc, crypto.CoinsNewHigh)
 	if len(list) == 0 {
 	        return
 	}
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_find_new_high_price", baseID)
-	cs.UpdateCurrentList(newID, list)
-
+	newID := "find_new_high_price"
         fields := []string{"High24H"}
-        crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 func handleCryptoNewLowPrice(cs *crypto.CryptoState, cc *crypto.CryptoCache) {
-        defer log.Print("> ")
-	
         list := findNewPrice(cs, cc, crypto.CoinsNewLow)
 	if len(list) == 0 {
 	        return
 	}
-	
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_find_new_low_price", baseID)
-	cs.UpdateCurrentList(newID, list)
-
+	newID := "find_new_low_price"
         fields := []string{"Low24H"}
-        crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-         return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 func findNewPrice(cs *crypto.CryptoState, cc *crypto.CryptoCache, foo func(oldCoins, newCoins []crypto.MarketData) []crypto.MarketData) []crypto.MarketData {

@@ -10,21 +10,11 @@ import(
 )
 
 func handleCryptoFindCoinInflation(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
         controlFindCoinInflation(cs, args)
-	
         list := crypto.CoinsHighCirculatingSupply(cs.CurrentMinRank, cs.CurrentMinSupply, cs.CurrentIgnoredCoins, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_find_coin_inflation_%s_%s_%s", baseID, cs.CurrentMinRank, cs.CurrentMinSupply, cs.CurrentIgnoredCoins)
-	cs.UpdateCurrentList(newID, list)
-	
+	newID := fmt.Sprintf("find_coin_inflation_%d_%f_%s", cs.CurrentMinRank, cs.CurrentMinSupply, strings.Join(cs.CurrentIgnoredCoins, "_"))
 	fields := []string{"MaxSupply", "CirculatingSupply", "MarketCap", "MarketCapRank"}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 func controlFindCoinInflation(cs *crypto.CryptoState, args []string) {

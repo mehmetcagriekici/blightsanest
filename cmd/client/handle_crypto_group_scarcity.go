@@ -4,27 +4,16 @@ import(
         "log"
 	"strconv"
 	"fmt"
-	"strings"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoGroupScarcity(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
-        controlScarcityArguments(cs, args)
-	
+        controlScarcityArguments(cs, args)	
 	list := crypto.RankCoinScarcity(cs.CurrentMinCirculatingSupply, cs.CurrentMaxATHChangePercentage, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_group_scarcity_%s_%s", baseID, cs.CurrentMinCirculatingSupply, cs.CurrentMaxATHChangePercentage)
-	cs.UpdateCurrentList(newID, list)
-	
+        newID := fmt.Sprintf("group_scarcity_%f_%f", cs.CurrentMinCirculatingSupply, cs.CurrentMaxATHChangePercentage)
 	fields := []string{"ATH", "AthChangePercentage", "CirulatingSupply", "MaxSupply"}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-	
-	return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 // min circulatin supply

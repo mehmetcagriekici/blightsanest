@@ -3,28 +3,17 @@ package main
 import(
         "log"
 	"strconv"
-	"strings"
 	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoCalcLiquidity(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
         controlCalcLiquidity(cs, args)
-
         list := crypto.CalcCoinLiquidity(cs.CurrentMinLiquidity, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_calc_liquidity_%s", baseID, cs.CurrentMinLiquidity)
-	cs.UpdateCurrentList(newID, list)
-	
+	newID := fmt.Sprintf("calc_liquidity_%f", cs.CurrentMinLiquidity)
 	fields := []string{"TotalVolume", "MarketCap", "MarketCapRank"}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 func controlCalcLiquidity(cs *crypto.CryptoState, args []string) {

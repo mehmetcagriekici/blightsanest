@@ -3,28 +3,17 @@ package main
 import(
         "log"
 	"strconv"
-	"strings"
 	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoCalcVolatility(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
         controlCalcVolatility(cs, args)
-
         list := crypto.CalcCoinVolatility(cs.CurrentMinVolatility, cs.CurrentMaxVolatility, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_calc_volatility_%s_%s", baseID, cs.CurrentMinVolatility, cs.CurrentMaxVolatility)
-	cs.UpdateCurrentList(newID, list)
-
+	newID := fmt.Sprintf("calc_volatility_%f_%f", cs.CurrentMinVolatility, cs.CurrentMaxVolatility)
         fields := []string{"High24H", "Low24H"}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 func controlCalcVolatility(cs *crypto.CryptoState, args []string) {

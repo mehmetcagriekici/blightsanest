@@ -3,28 +3,17 @@ package main
 import(
         "log"
 	"strconv"
-	"strings"
 	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoFilterHighRisk(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
         controlFilterHighRisk(cs, args)
-	
         list := crypto.FlagRiskCoins(cs.CurrentMaxATHChangePercentage, cs.CurrentMaxVolume, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_filter_high_risk_%s_%s", baseID, cs.CurrentMaxATHChangePercentage, cs.CurrentMaxVolume)
-	cs.UpdateCurrentList(newID, list)
-	
+	newID := fmt.Sprintf("filter_high_risk_%f_%f", cs.CurrentMaxATHChangePercentage, cs.CurrentMaxVolume)
 	fields := []string{"TotalVolume", "ATH", "AthChangePercentage"}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-	
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 // max ath change

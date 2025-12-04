@@ -3,25 +3,16 @@ package main
 import(
         "log"
 	"fmt"
-	"strings"
-	
+		
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoRank(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
         controlCryptoRank(cs, args)
 	
-        sorted := crypto.RankCoins(cs.CurrentSortingField, cs.CurrentOrder, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-        newID := fmt.Sprintf("%s_sorted_%s_%s", baseID, cs.CurrentOrder, cs.CurrentSortingField)
-	cs.UpdateCurrentList(newID, sorted)
-	
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, []string{})
-	log.Println("")
-	
-	return
+        list := crypto.RankCoins(cs.CurrentSortingField, cs.CurrentOrder, cs.CurrentList)
+        newID := fmt.Sprintf("sorted_%v_%s", cs.CurrentOrder, cs.CurrentSortingField)
+	commonCryptoHandler(cs, list, []string{cs.CurrentSortingField}, newID)
 }
 
 // order

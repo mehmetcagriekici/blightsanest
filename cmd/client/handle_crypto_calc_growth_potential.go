@@ -3,28 +3,18 @@ package main
 import(
         "log"
 	"strconv"
-	"strings"
+
 	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoCalcGrowthPotential(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
         controlCalcGrowthPotential(cs, args)
-
         list := crypto.EstimateCoinUpsidePotential(cs.CurrentMinGrowthPotential, cs.CurrentMaxRank, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-        newID := fmt.Sprintf("%s_calc_growth_potential_%s_%s", baseID, cs.CurrentMinGrowthPotential, cs.CurrentMaxRank)
-	cs.UpdateCurrentList(newID, list)
-	
+        newID := fmt.Sprintf("calc_growth_potential_%f_%d", cs.CurrentMinGrowthPotential, cs.CurrentMaxRank)
 	fields := []string{"ATH", "AthChangePercentage"}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 func controlCalcGrowthPotential(cs *crypto.CryptoState, args []string) {

@@ -3,28 +3,17 @@ package main
 import(
         "log"
 	"strconv"
-	"strings"
 	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoFindPotentialRally(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
         controlFindPotentialRally(cs, args)
-
         list := crypto.CoinsGetCloseAthChange(cs.CurrentMaxATHChangePercentage, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_find_potential_rally_%s", baseID, cs.CurrentMaxATHChangePercentage)
-	cs.UpdateCurrentList(newID, list)
-	
+	newID := fmt.Sprintf("find_potential_rally_%f", cs.CurrentMaxATHChangePercentage)
 	fields := []string{"ATH", "AthChangePercentage"}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 // max ath change

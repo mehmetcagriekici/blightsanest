@@ -10,23 +10,13 @@ import(
 )
 
 func handleCryptoNewPriceSpike(cs *crypto.CryptoState, args []string) {
-        defer log.Print("> ")
-	
         controlHighPriceSpike(cs, args)
-	
         list := crypto.CoinsHighPriceSpike(cs.CurrentMinPriceChangePercentage, cs.CurrentTimeframe, cs.CurrentList)
-
-        baseID := strings.Split(cs.CurrentListID, "_")[0]
-	newID := fmt.Sprintf("%s_find_high_price_spike_%s_%s", baseID, cs.CurrentMinPriceChangePercentage, cs.CurrentTimeframe)
-	cs.UpdateCurrentList(newID, list)
-	
+	newID := fmt.Sprintf("find_high_price_spike_%f_%v", cs.CurrentMinPriceChangePercentage, cs.CurrentTimeframe)
 	t := fmt.Sprintf("%v", cs.CurrentTimeframe)
 	frame := fmt.Sprintf("PriceChangePercentage%s", strings.ToUpper(t))
 	fields := []string{frame}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-
-        return
+	commonCryptoHandler(cs, list, fields, newID)
 }
 
 // min price change percentage
