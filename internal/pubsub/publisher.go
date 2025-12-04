@@ -9,7 +9,7 @@ import(
 	
         amqp "github.com/rabbitmq/amqp091-go"
 )
-
+	
 func Publish[T any](ctx context.Context,
                     conn *amqp.Connection,
 		    queueType routing.QueueType,

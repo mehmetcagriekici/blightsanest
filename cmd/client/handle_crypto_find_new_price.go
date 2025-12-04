@@ -2,42 +2,48 @@ package main
 
 import (
         "log"
+	"strings"
+	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoNewHighPrice(cs *crypto.CryptoState, cc *crypto.CryptoCache) {
-        log.Println("Starting to compare existing crypto lists for the new high prices...")
-	log.Println("")
-
+        defer log.Print("> ")
+	
         list := findNewPrice(cs, cc, crypto.CoinsNewHigh)
 	if len(list) == 0 {
 	        return
 	}
 
-        log.Println("Coins with a new high price in the last 24 hours.")
-	log.Println("")
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_find_new_high_price", baseID)
+	cs.UpdateCurrentList(newID, list)
+
         fields := []string{"High24H"}
-        crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+        crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Println("To apply the result to the current state list: mutate find crypto new_high_price")
+
+        return
 }
 
 func handleCryptoNewLowPrice(cs *crypto.CryptoState, cc *crypto.CryptoCache) {
-        log.Println("Starting to compare existing crypto lists for the new low prices...")
-	log.Println("")
-
+        defer log.Print("> ")
+	
         list := findNewPrice(cs, cc, crypto.CoinsNewLow)
 	if len(list) == 0 {
 	        return
 	}
+	
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_find_new_low_price", baseID)
+	cs.UpdateCurrentList(newID, list)
 
-        log.Println("Coins with a new low price in the last 24 hours.")
-	log.Println("")
         fields := []string{"Low24H"}
-        crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+        crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Println("To apply the result to the current state list: mutate find crypto new_low_price")
+
+         return
 }
 
 func findNewPrice(cs *crypto.CryptoState, cc *crypto.CryptoCache, foo func(oldCoins, newCoins []crypto.MarketData) []crypto.MarketData) []crypto.MarketData {

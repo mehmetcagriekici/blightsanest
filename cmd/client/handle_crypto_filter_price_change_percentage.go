@@ -10,18 +10,23 @@ import(
 )
 
 func handleCryptoFilterPriceChangePercentage(cs *crypto.CryptoState, args []string) {
+        defer log.Print("> ")
+	
         controlFilterPriceChangePercentage(cs, args)
 	
-        log.Println("Filtering the crypto list with the client preferences min/max price change percentage and current timeframe")
-	log.Println("")
 	list := crypto.FilterCoinPriceChange(cs.CurrentMinPriceChangePercentage, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe, cs.CurrentList)
+
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_filter_pcp_%s_%s_%s", baseID, cs.CurrentMinPriceChangePercentage, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe)
+	cs.UpdateCurrentList(newID, list)
 	
 	t := fmt.Sprintf("%v", cs.CurrentTimeframe)
         frame := fmt.Sprintf("PriceChangePercentage%s", strings.ToUpper(t))
         fields := []string{frame}
-        crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+        crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Println("To update the current client list with the result: mutate filter crypto price_change_percentage")
+
+        return
 }
 
 // min price change

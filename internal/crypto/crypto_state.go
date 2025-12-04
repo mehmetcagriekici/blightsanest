@@ -14,6 +14,8 @@ type PriceRange struct {
 type CryptoState struct {
 	CurrentList                     []MarketData
 	CurrentListID                   string
+	CurrentOrder                    AvailableOrders
+        CurrentSortingField             string
 	ClientTimeframes                []string
 	CurrentTimeframe                AvailableTimeframes
 	CurrentMinRank                  int
@@ -28,7 +30,6 @@ type CryptoState struct {
 	CurrentMaxMarketCap             float64
 	CurrentMaxPriceChangePercentage float64
 	CurrentMinPriceChangePercentage float64
-	CurrentOrder                    AvailableOrders
 	CurrentMinSwingScore            float64
 	CurrentMaxSwingScore            float64
 	CurrentMinSupply                float64
@@ -48,6 +49,7 @@ func CreateCryptoState() *CryptoState {
         return &CryptoState{
 	        CurrentList:                     []MarketData{},
 		CurrentListID:                   "",
+		CurrentSortingField:             "",
 		ClientTimeframes:                []string{},
 		CurrentTimeframe:                PCP_DAY,
 		CurrentMinRank:                  0,
@@ -75,6 +77,13 @@ func CreateCryptoState() *CryptoState {
 		CurrentMinLiquidity:             math.Inf(-1),
 		CurrentMaxLiquidity:             math.Inf(+1),
 	}
+}
+
+// update sorting field
+func (cs *CryptoState) UpdateCurrentSortingField(field string) {
+        cs.mu.Lock()
+	defer cs.mu.Unlock()
+	cs.CurrentSortingField = field
 }
 
 // update current liquidity

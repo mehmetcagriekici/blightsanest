@@ -3,25 +3,28 @@ package main
 import(
         "log"
 	"strconv"
+	"strings"
+	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoFilterMarketCap(cs *crypto.CryptoState, args []string) {
-        controlFilterMarketCap(cs, args)
+        defer log.Print("> ")
 	
-        log.Println("")
-        log.Println("Filtering the client crypto list by the market cap using a min and max range.")
+        controlFilterMarketCap(cs, args)
 
         list := crypto.FilterCoinCap(cs.CurrentMinMarketCap, cs.CurrentMaxMarketCap, cs.CurrentList)
-	log.Println("")
-	log.Println("Successfully filtered the crypto list by the preferred market cap range")
-	log.Println("")
+
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_filter_market_cap_%s_%s", baseID, cs.CurrentMinMarketCap, cs.CurrentMaxMarketCap)
+	cs.UpdateCurrentList(newID, list)
 	
 	fields := []string{"MarketCapRank", "MarketCapChangePercentage"}
-	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Println("To update the current client list with the result: mutate filter crypto market_cap")
+	
+	return
 }
 
 // min market cap

@@ -35,7 +35,7 @@ type MarketData struct{
 type AvailableOrders string
 const (
         CRYPTO_DESC AvailableOrders = "desc"
-	CRYPTO_ASC AvailableOrders  = "asc"
+	CRYPTO_ASC  AvailableOrders  = "asc"
 )
 
 // Price Change Percentage Available timeframes

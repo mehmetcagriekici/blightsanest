@@ -26,4 +26,5 @@ func handleCryptoSwitch(cs  *crypto.CryptoState,  cc  *crypto.CryptoCache, args 
 
         log.Println("Updating the current list with the requested one...")
 	cs.UpdateCurrentList(key, cryptoEntry.Market)
+	return
 }

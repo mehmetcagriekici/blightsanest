@@ -18,13 +18,15 @@ func Subscribe[T any](conn *amqp.Connection,
                       queueType routing.QueueType,
 		      queueName,
 		      bindingKey,
-		      exchangeName string,
-		      handler func(T),
+		      exchangeName,
+		      dlx string,
+		      handler func(T) routing.AckType,
 		      unmarshaller func([]byte) (T, error)) (func() error, error) {
         // fetch env variables
 	if err := godotenv.Load(); err != nil {
 	        log.Fatal(err)
 	}
+	
 	qosCount, err := strconv.Atoi(os.Getenv("SUBSCRIBER_PREFETCH"))
 	if err != nil {
 	        log.Fatal(err)
@@ -46,19 +48,22 @@ func Subscribe[T any](conn *amqp.Connection,
 	        exclusive  = false
 	} else if queueType == routing.BlightTransient {
 	        durable    = false
-		autoDelete = true
-		exclusive  = true
+		autoDelete = false
+		exclusive  = false
 	} else {
 	        return nil, errors.New("Invalid queue type")
 	}
 
         // declare a queue from the channel with the parameters
+	qArgs := amqp.Table{
+	        "x-dead-letter-exhange": dlx,
+	}
 	q, err := ch.QueueDeclare(queueName,
 	                          durable,
 				  autoDelete,
 				  exclusive,
 				  false,
-				  nil)
+				  qArgs)
 	if err != nil {
 	        return nil, err
 	}
@@ -94,11 +99,24 @@ func Subscribe[T any](conn *amqp.Connection,
 			        log.Printf("Couldn't decode the delivery body: %v\n", err)
 			}
 			// use the decoded data on the handler function
-			handler(val)
-                        // remove the delivery from the queue
-			if err := dl.Ack(false); err != nil {
-			        log.Printf("ack error: %v\n", err)
-			}
+			ackType := handler(val)
+			// acknowledgement
+			switch ackType {
+			case routing.ACK:
+			        if err := dl.Ack(false); err != nil {
+				        log.Fatal(err)
+				}
+			case routing.NACK_REQUEUE:
+			        if err := dl.Nack(false, true); err != nil {
+				        log.Fatal(err)
+				}
+			case routing.NACK_DISCARD:
+			        if err := dl.Nack(false, false); err != nil {
+				        log.Fatal(err)
+				}
+			default:
+			        log.Fatal("Invalid Acknowledgement Type")
+			}	
 		}
 	}()
 	

@@ -3,21 +3,28 @@ package main
 import(
         "log"
 	"strconv"
+	"strings"
+	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoFindPotentialRally(cs *crypto.CryptoState, args []string) {
-        controlFindPotentialRally(cs, args)
+        defer log.Print("> ")
 	
-        log.Println("Starting to find the coins with large potential upside remaining to their ATH with max ath change percentage preference.")
-	log.Println("")
+        controlFindPotentialRally(cs, args)
 
         list := crypto.CoinsGetCloseAthChange(cs.CurrentMaxATHChangePercentage, cs.CurrentList)
+
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_find_potential_rally_%s", baseID, cs.CurrentMaxATHChangePercentage)
+	cs.UpdateCurrentList(newID, list)
+	
 	fields := []string{"ATH", "AthChangePercentage"}
-	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Println("To update the current client list with the result: mutate find crypto potential_rally")
+
+        return
 }
 
 // max ath change

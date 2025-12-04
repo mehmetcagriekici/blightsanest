@@ -3,23 +3,26 @@ package main
 import (
         "log"
 	"strconv"
+	"strings"
+	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoFilterVolatile(cs *crypto.CryptoState, args []string) {
-        controlFilterVolatile(cs, args)
+        defer log.Print("> ")
 	
-        log.Println("Filtering the list by a swing range.")
-        log.Println("")
-        log.Println("swing_score(rate) = high_24h / low_24h")
-	log.Println("")
+        controlFilterVolatile(cs, args)
 
         list := crypto.FindWildSwingCoins(cs.CurrentMinSwingScore, cs.CurrentMaxSwingScore, cs.CurrentList)
+
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_filter_volatile_%s_%s", baseID, cs.CurrentMinSwingScore, cs.CurrentMaxSwingScore)
+	cs.UpdateCurrentList(newID, list)
+
 	fields := []string{"High24H", "Low24H"}
-	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Println("To update the current list with the result: mutate filter crypto volatile")
 }
 
 // max rate

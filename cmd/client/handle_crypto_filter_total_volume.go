@@ -3,23 +3,28 @@ package main
 import (
         "log"
 	"strconv"
+	"strings"
+	"fmt"
 	
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoFilterTotalVolume(cs *crypto.CryptoState, args []string) {
+        defer log.Print("> ")
+	
         controlFilterTotalVolume(cs, args)
 	
         list := crypto.FilterCoinVolume(cs.CurrentMinVolume, cs.CurrentMaxVolume, cs.CurrentList)
-	log.Println("")
-	log.Println("Successfully filtered the coins by their volumes with.")
-	log.Println("")
-	log.Println("")
+
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_filter_total_volume_%s_%s", baseID, cs.CurrentMinVolume, cs.CurrentMaxVolume)
+	cs.UpdateCurrentList(newID, list)
+	
 	fields := []string{"TotalVolume"}
-	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
-	log.Println("")
-	log.Println("To update the list with the result: mutate filter crypto total_volume")
+	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
         log.Println("")
+
+        return
 }
 
 // min_volume

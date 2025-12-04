@@ -5,20 +5,20 @@ import (
         "slices"
 )
 
-// function to rank coins by price_change_percentage_{TIMEFRAME} to show biggest risers or fallers
-func RankCoins(timeframe AvailableTimeframes, order AvailableOrders, coins []MarketData) []MarketData {
+// function to rank coins by any number field
+func RankCoins(fieldName string, order AvailableOrders, coins []MarketData) []MarketData {
         // clone the coins slice
 	clone := slices.Clone(coins)
 
         // sort the clone
 	sort.Slice(clone, func(i, j int) bool {
 	        if order == CRYPTO_DESC {
-	                return GetPriceChange(clone[i], timeframe) >  GetPriceChange(clone[j], timeframe)
+	                return GetCoinField(fieldName, clone[i]).Float() >  GetCoinField(fieldName, clone[j]).Float()
 		}
 		if order == CRYPTO_ASC {
-		        return GetPriceChange(clone[i], timeframe) < GetPriceChange(clone[j], timeframe)
+		        return GetCoinField(fieldName, clone[i]).Float() < GetCoinField(fieldName, clone[j]).Float()
 		}
-		return GetPriceChange(clone[i], timeframe) == GetPriceChange(clone[j], timeframe)
+		return GetCoinField(fieldName, clone[i]).Equal(GetCoinField(fieldName, clone[j]))
 	})
 
         // return the clone

@@ -17,6 +17,7 @@ func handleCryptoFetch(cc     *crypto.CryptoCache,
 		       args   []string,
 		       sm     *pubsub.SubscriptionManager) {
 	defer log.Print("> ")
+	
         // control args
 	if len(args) != 1 {
 	        log.Println("<fetch crypto> command requires a key of a published crypto list as an argument.")
@@ -28,7 +29,7 @@ func handleCryptoFetch(cc     *crypto.CryptoCache,
 	
         // check if the requested list is the current list
 	if key == cs.CurrentListID {
-	        log.Println("Requested crypto list is already the list on the current client.")
+	        log.Println("Requested crypto list is already the list on the current client. Didn't perform the fetch request to the server.")
 		return
 	}
 	
@@ -41,24 +42,30 @@ func handleCryptoFetch(cc     *crypto.CryptoCache,
 		return
 	}
 
-        log.Println("Subscribing to the server crypto channel to get the requested list...")
-	cancel, err := pubsub.SubscribeCrypto(conn, func(delivery routing.CryptoExchangeBody) {
+	cancel, err := pubsub.SubscribeCrypto(conn, func(delivery routing.CryptoExchangeBody) routing.AckType {
+	        log.Println("Subscribing to the server crypto channel to get the requested list...")
+		
 	        list := delivery.Payload
 		id := delivery.ID
 
                 if id == "" || len(list) == 0 {
 		        log.Println("No crypto list is delivered to the client subscriber.")
-			return
+			return routing.NACK_DISCARD
 		}
 
                 cc.Add(id, list)
 		cs.UpdateCurrentList(id, list)
+	}
+        
+
 		log.Printf("New crypto list <%s> is successfully added to the client cache and the state.\n", id)
+		return routing.ACK
 	})
 	
 	if err != nil {
 	        log.Fatal(err)
 	}
-        
-        sm.Add(cancel)	
+
+        sm.Add(cancel)
+	return
 }

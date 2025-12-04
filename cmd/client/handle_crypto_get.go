@@ -12,11 +12,12 @@ import(
 
 // gets data from the server
 func handleCryptoGet(cc     *crypto.CryptoCache,
-                       cs     *crypto.CryptoState,
-		       conn   *amqp.Connection,
-		       args   []string,
-		       sm     *pubsub.SubscriptionManager) {
+                     cs     *crypto.CryptoState,
+		     conn   *amqp.Connection,
+		     args   []string,
+		     sm     *pubsub.SubscriptionManager) {
 	defer log.Print("> ")
+	
         // control args
 	if len(args) != 1 {
 	        log.Println("<get crypto> command requires a key of a published crypto list as an argument.")
@@ -41,24 +42,26 @@ func handleCryptoGet(cc     *crypto.CryptoCache,
 		return
 	}
 
-        log.Println("Subscribing to the client publishing channel to get the requested list...")
-	cancel, err := pubsub.SubscribeClientCrypto(conn, func(delivery routing.CryptoExchangeBody) {
+	cancel, err := pubsub.SubscribeClientCrypto(conn, func(delivery routing.CryptoExchangeBody) routing.AckType {
+	        log.Println("Subscribing to the client publishing channel to get the requested list...")
 	        list := delivery.Payload
 		id := delivery.ID
 
                 if id == "" || len(list) == 0 {
 		        log.Println("No crypto list is delivered to the client subscriber.")
-			return
+			return routing.NACK_REQUEUE
 		}
 
                 cc.Add(id, list)
 		cs.UpdateCurrentList(id, list)
 		log.Printf("New crypto list <%s> is successfully added to the client cache and the state.\n", id)
+		return routing.ACK
 	})
 	
 	if err != nil {
 	        log.Fatal(err)
 	}
-        
+	
+        return
         sm.Add(cancel)	
 }

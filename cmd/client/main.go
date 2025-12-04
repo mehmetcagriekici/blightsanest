@@ -49,6 +49,11 @@ func main() {
 	        log.Fatal(err)
 	}
 	cryptoCache := crypto.CreateCryptoCache(time.Duration(interval) * time.Hour)
+
+        // create dlx for crypto
+	if err := pubsub.CreateCryptoDLX(conn); err != nil {
+	        log.Fatal(err)
+	}
         
         // Client REPL
 	clientlogic.PrintClientIntroduction()
@@ -61,11 +66,12 @@ func main() {
 			continue
 		}
 
+                defer log.Print("> ")
+
                 // invalid commands
 		if words[0] != "manual" &&
 		   words[0] != "help"   &&
 		   words[0] != "quit"   &&
-		   words[0] != "mutate" &&
 		   words[0] != "switch" &&
 		   words[0] != "save"   &&
 		   words[0] != "list"   &&
@@ -124,29 +130,6 @@ func main() {
                 // feature commands requires at least one more argument
 		if !controlFeatureCommands(words) {
 		        continue
-		}
-
-                // mutate client state
-		if words[0] == clientlogic.CLIENT_MUTATE {
-		        // mutate <operation> <asset> <asset_feature>
-			if len(words) < 4 {
-			        log.Println("mutate command usage: mutate <operation> <asset> <feature> <operation_arguments - optional if not provided uses the client preferences ->")
-				log.Println("  Example: mutate group crypto liquidity")
-			        continue 
-			}
-			
-		        // update the client state list with the result of the operation
-			if words[2] == "crypto" {
-			        if words[1] == "rank" {
-				        handleCryptoMutate(cryptoState, cryptoCache, words[1], "", words[3:])
-					continue
-				}
-				
-			        handleCryptoMutate(cryptoState, cryptoCache, words[1], words[3], words[4:])
-				continue
-			}
-			
-			continue
 		}
 
                 // switch between cached data
@@ -257,6 +240,7 @@ func main() {
 				default:
 				        log.Println("Invalid crypto filtering option. Available: <total_volume> <market_cap> <price_change_percentage> <volatile> <high_risk> <low_risk>")
 			        }
+				
 			continue
 		        }
 		}

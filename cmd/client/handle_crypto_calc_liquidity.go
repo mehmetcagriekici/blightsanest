@@ -3,22 +3,28 @@ package main
 import(
         "log"
 	"strconv"
+	"strings"
+	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoCalcLiquidity(cs *crypto.CryptoState, args []string) {
-        controlCalcLiquidity(cs, args)
+        defer log.Print("> ")
 	
-        log.Println("Calculating the coins' liquidities by a minimum value...")
-	log.Println("liquidity = total_volume / market_cap")
-	log.Println("")
+        controlCalcLiquidity(cs, args)
 
         list := crypto.CalcCoinLiquidity(cs.CurrentMinLiquidity, cs.CurrentList)
+
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_calc_liquidity_%s", baseID, cs.CurrentMinLiquidity)
+	cs.UpdateCurrentList(newID, list)
+	
 	fields := []string{"TotalVolume", "MarketCap", "MarketCapRank"}
-	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Println("To update the current client list with the result: mutate calc crypto liquidity")
+
+        return
 }
 
 func controlCalcLiquidity(cs *crypto.CryptoState, args []string) {

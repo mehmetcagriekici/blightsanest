@@ -2,7 +2,6 @@ package clientlogic
 
 // main operations
 const (
-        CLIENT_MUTATE string = "mutate"
 	CLIENT_SWITCH string = "switch"
 	CLIENT_SAVE   string = "save"
 	CLIENT_LIST   string = "list"

@@ -4,21 +4,27 @@ import(
         "log"
 	"strconv"
 	"strings"
+	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoFindCoinInflation(cs *crypto.CryptoState, args []string) {
+        defer log.Print("> ")
+	
         controlFindCoinInflation(cs, args)
 	
-        log.Println("Starting to find coins with large supply value and relatively low market cap rank with client preferences.")
-	log.Println("")
-	
         list := crypto.CoinsHighCirculatingSupply(cs.CurrentMinRank, cs.CurrentMinSupply, cs.CurrentIgnoredCoins, cs.CurrentList)
+
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_find_coin_inflation_%s_%s_%s", baseID, cs.CurrentMinRank, cs.CurrentMinSupply, cs.CurrentIgnoredCoins)
+	cs.UpdateCurrentList(newID, list)
+	
 	fields := []string{"MaxSupply", "CirculatingSupply", "MarketCap", "MarketCapRank"}
-	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Println("To update the client list with the result: mutate find crypto coin_inflation")
+
+        return
 }
 
 func controlFindCoinInflation(cs *crypto.CryptoState, args []string) {

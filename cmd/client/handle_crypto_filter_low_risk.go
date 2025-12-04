@@ -10,18 +10,23 @@ import(
 )
 
 func handleCryptoFilterLowRisk(cs *crypto.CryptoState, args []string) {
+        defer log.Print("> ")
+	
         controlFilterLowRisk(cs, args)
 	
-        log.Println("Filtering the low risk coins by market cap rank and price change")
-	log.Println("")
-	
 	list := crypto.FlagSafeCoins(cs.CurrentMaxRank, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe, cs.CurrentList)
+
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_filter_low_risk_%s_%s_%s", baseID, cs.CurrentMaxRank, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe)
+	cs.UpdateCurrentList(newID, list)
+	
 	t := fmt.Sprintf("%v", cs.CurrentTimeframe)
 	frame := fmt.Sprintf("PriceChangePercentage%s", strings.ToUpper(t))
 	fields := []string{"MarketCapRank", "MarketCap", frame}
-	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Println("To update the client list with the result: mutate filter crypto low_risk")
+
+        return
 }
 
 // max market rank

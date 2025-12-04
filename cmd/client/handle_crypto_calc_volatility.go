@@ -3,23 +3,28 @@ package main
 import(
         "log"
 	"strconv"
+	"strings"
+	"fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoCalcVolatility(cs *crypto.CryptoState, args []string) {
-        controlCalcVolatility(cs, args)
+        defer log.Print("> ")
 	
-        log.Println("Calculating the daily volatility ranges of the coins...")
-	log.Println("volatility = (high_24h - lwo_24h) / current_price")
-	log.Println("")
+        controlCalcVolatility(cs, args)
 
         list := crypto.CalcCoinVolatility(cs.CurrentMinVolatility, cs.CurrentMaxVolatility, cs.CurrentList)
-	fields := []string{"High24H", "Low24H"}
-	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_calc_volatility_%s_%s", baseID, cs.CurrentMinVolatility, cs.CurrentMaxVolatility)
+	cs.UpdateCurrentList(newID, list)
+
+        fields := []string{"High24H", "Low24H"}
+	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-        log.Println("To update the current client list with the result: mutate calc crypto volatility")
-	log.Println("")
+
+        return
 }
 
 func controlCalcVolatility(cs *crypto.CryptoState, args []string) {

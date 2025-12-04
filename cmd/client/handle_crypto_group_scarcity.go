@@ -3,21 +3,28 @@ package main
 import(
         "log"
 	"strconv"
+	"fmt"
+	"strings"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 func handleCryptoGroupScarcity(cs *crypto.CryptoState, args []string) {
+        defer log.Print("> ")
+	
         controlScarcityArguments(cs, args)
 	
 	list := crypto.RankCoinScarcity(cs.CurrentMinCirculatingSupply, cs.CurrentMaxATHChangePercentage, cs.CurrentList)
-	log.Println("Successfully identified scarce coins with limited supply and large darwdowns from ATH.")
-	log.Println("")
+
+        baseID := strings.Split(cs.CurrentListID, "_")[0]
+	newID := fmt.Sprintf("%s_group_scarcity_%s_%s", baseID, cs.CurrentMinCirculatingSupply, cs.CurrentMaxATHChangePercentage)
+	cs.UpdateCurrentList(newID, list)
+	
 	fields := []string{"ATH", "AthChangePercentage", "CirulatingSupply", "MaxSupply"}
-	crypto.PrintCryptoList(list, cs.CurrentListID, cs.ClientTimeframes, fields)
+	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
 	log.Println("")
-	log.Println("")
-	log.Println("To update the client state list with the result: mutate group crypto scarcity")
+	
+	return
 }
 
 // min circulatin supply

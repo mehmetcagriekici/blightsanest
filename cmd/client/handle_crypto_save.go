@@ -16,8 +16,10 @@ func handleCryptoSave(cs *crypto.CryptoState,
                       cc *crypto.CryptoCache,
 		      ctx context.Context,
 		      conn *amqp.Connection) {
+        defer log.Print("> ")
+	
         if len(cs.CurrentList) == 0 {
-	        log.Println("Current client list is empty...")
+	        log.Println("Current client list is empty. Nothing to save...")
 		return
 	}
 	
@@ -35,4 +37,7 @@ func handleCryptoSave(cs *crypto.CryptoState,
 	if err := pubsub.PublishClientCrypto(ctx, conn, data); err != nil {
 	        log.Fatal(err)
 	}
+	
+	log.Println("List is successfully published.")
+	return
 }

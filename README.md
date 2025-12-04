@@ -12,11 +12,12 @@ If you face any bugs problems or something not clear, please do reach me from me
 4) Faced a bug that causes clients to exit after fetching a new list with new args from the server. Loosened strict key-id match check, eliminating the bug due to key creation process.
 5) Facing an issue while updating clients, Solved creating another channel for inner client publishings.
 6) Added more server query parameters for the API to improve the UX.
-7) Currently improving the UX
+7) Added DLX and manual acknowledgement for crypto routing.
 
 ## How to Use:
 1) Create a .env file with the necessary variables described below
-2) Start the rabbitmq server from your CLI using rabbit.sh file
+2) Make sure docker is running
+3) Start the rabbitmq server from your CLI using rabbit.sh file
 ```
 ./rabbit.sh start
 ```
@@ -53,6 +54,7 @@ fetch crypto # fetches the data without any query parameters
 
 ```
 2) Query parameters order: ids > names > symbols > include_tokens > category > order > per_page > page > sparkline > price_change_percentage > percision
+Make sure to visit the API docs -endpoint- to see how query parameters work.
 **This order is strict! Skip the parameter with minus sign (-) see the examples below.**
 ```
 fetch crypto - Bitcoin                                  # omits ids and the rest of the parameters after the names.
@@ -69,19 +71,26 @@ Client Examples:
 ```
 fetch crypto crypto_list_id # gets a specific crypto list from the server publisher if exists
 
-get crypto crypto_list_id # gets a specific crypto list from a client publisher if exists
+get crypto crypto_list_id   # gets a specific crypto list from a client publisher if exists
+
+save crypto crypto_list_id  # publishes a crypto list to other clients that are waiting for it with get command
+
+list crypto                 # prints the ids of the current client list and the lists in the cache
 ```
 
 From the clients that has the crypto list, you can perform these operations:
 
-**After each operation if you want to update the crypto list on the client enter the command and the argument `mutate crypto` on the client terminal. Otherwise the operations will not affect the crypto list and you will run the next operation on the original list. __Mutating the list on a client will not affect the lists on the other clients nor the lists on the server__**
+**Each operation will update the current client list on the state. You can publish the client list to other clients before the operation with <save> command. Save command will also add the client list to the client cache with a new ID, you can later <switch> to it.**
 
 1. You can see the biggest risers/fallers by sorting the coins in ascending/descending order
+Available Fields: <current_price>, <market_cap>, <market_cap_rank>, <market_cap_change_percentage>, <total_volume>, <high_24h>, <low_24h>, <ath>, <price_change_percentage (with an existing timeframe in the client state)>, <ath_change_percentage>, <max_supply>, <circulating_supply>
 
 ```
-rank crypto asc
+rank crypto asc current_price
     
-rank crypto desc
+rank crypto desc market_cap_rank
+
+rank crypto asc price_change_percentage
 ```
 
 2. You can get the coins between certain market cap ranks and filter out the coins with low liquidity
@@ -209,3 +218,5 @@ calc crypto trend_strength
 ```
 
 -------------------------------------Initial Relase Version-----------------------------------------------------
+# Future Plans
+## Stock Market Implementation
