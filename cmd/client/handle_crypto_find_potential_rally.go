@@ -27,7 +27,7 @@ func controlFindPotentialRally(cs *crypto.CryptoState, args []string) {
 		if err != nil {
 		        log.Fatal(err)
 		}
-		cs.UpdateAthChangePercentage(cs.CurrentMinATHChangePercentage, maxChange)
+		cs.UpdateAthChangePercentage(maxChange)
 	default:
 	        log.Println("Invalid use of command: find crypto potential_rally <max_ath_change_percentage float64>")
 	}

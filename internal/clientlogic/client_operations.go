@@ -12,6 +12,7 @@ const (
 	CLIENT_FIND   string = "find"
 	CLIENT_CALC   string = "calc"
 	CLIENT_FETCH  string = "fetch"
+	CLIENT_SET    string = "set"
 )
 
 // crypto features (sub operations)
@@ -34,4 +35,9 @@ const (
 	CRYPTO_CALC_GROWTH_POTENTIAL          string = "growth_potential"
 	CRYPTO_CALC_LIQUIDITY                 string = "liquidity"
 	CRYPTO_CALC_TREND_STRENGTH            string = "trend_strength"
+)
+
+// application assets
+const(
+        ASSET_CRYPTO = "crypto"
 )

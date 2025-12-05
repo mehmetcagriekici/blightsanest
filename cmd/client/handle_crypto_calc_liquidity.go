@@ -27,7 +27,7 @@ func controlCalcLiquidity(cs *crypto.CryptoState, args []string) {
 		if err != nil {
 		        log.Fatal(err)
 		}
-		cs.UpdateCurrentLiquidity(minLiquidity, cs.CurrentMaxLiquidity)
+		cs.UpdateCurrentLiquidity(minLiquidity)
 	default:
 	        log.Println("Invalid use of command: calc crypto liquidity <min_liquidity float64>")
 	}

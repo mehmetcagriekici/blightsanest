@@ -30,7 +30,7 @@ func controlCalcGrowthPotential(cs *crypto.CryptoState, args []string) {
 		if err != nil {
 		        log.Fatal(err)
 		}
-		cs.UpdateGrowthPotential(minPotential, cs.CurrentMaxGrowthPotential)
+		cs.UpdateGrowthPotential(minPotential)
 	case 2:
 	        log.Println("Updating the client min growth potential and max market cap rank preferences...")
 		minPotential, err := strconv.ParseFloat(args[0], 64)
@@ -41,7 +41,7 @@ func controlCalcGrowthPotential(cs *crypto.CryptoState, args []string) {
 		if err != nil {
 		        log.Fatal(err)
 		}
-		cs.UpdateGrowthPotential(minPotential, cs.CurrentMaxGrowthPotential)
+		cs.UpdateGrowthPotential(minPotential)
 		cs.UpdateMarketRank(cs.CurrentMinRank, maxRank)
 	default:
 	        log.Println("Invalid use of command: calc crypto growth_potential <min_potential float64> <max_market_cap_rank int>")

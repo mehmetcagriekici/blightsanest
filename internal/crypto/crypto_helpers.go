@@ -68,8 +68,9 @@ func GetInputTimeframes(frames []string) []AvailableTimeframes {
 		case "1y":
 		        timeframes = append(timeframes, PCP_YEAR)
 		default:
-		        log.Fatal("Invalid timeframe! (1h, 24h, 7d, 30d, 200d, 1y)")
+		        log.Println("Invalid timeframe! (1h, 24h, 7d, 30d, 200d, 1y)")
 		}
 	}
+	
 	return timeframes
 }

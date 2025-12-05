@@ -32,7 +32,7 @@ func controlScarcityArguments(cs *crypto.CryptoState, args []string) {
 		        log.Fatal(err)
 		}
 		log.Println("Updating the min circulating supply value...")
-		cs.UpdateCirculatingSupply(minSupply, cs.CurrentMaxCirculatingSupply)
+		cs.UpdateCirculatingSupply(minSupply)
 	case 2:
 	        log.Println("Updating the client state with the new values passed as arguments.")
 		minSupply, err := strconv.ParseFloat(args[0], 64)
@@ -43,8 +43,8 @@ func controlScarcityArguments(cs *crypto.CryptoState, args []string) {
 		if err != nil {
 		        log.Fatal(err)
 		}
-		cs.UpdateCirculatingSupply(minSupply, cs.CurrentMaxCirculatingSupply)
-		cs.UpdateAthChangePercentage(cs.CurrentMinATHChangePercentage, maxATHChange)
+		cs.UpdateCirculatingSupply(minSupply)
+		cs.UpdateAthChangePercentage(maxATHChange)
 	default:
 	        log.Println("Invalid amount of arguments!")
 		log.Println("group crypto scarcity <min_circulating_supply float64> <max_ath_change_percentage float64>")

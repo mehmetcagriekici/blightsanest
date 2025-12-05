@@ -75,6 +75,7 @@ func main() {
 		   words[0] != "switch" &&
 		   words[0] != "save"   &&
 		   words[0] != "list"   &&
+		   words[0] != "set"    &&
 		   words[0] != "get"    &&
 		   words[0] != "fetch"  &&
 		   words[0] != "rank"   &&
@@ -119,7 +120,7 @@ func main() {
 			log.Println("")
 
                         if len(words) == 2 {
-                                if words[1] == "crypto" {
+                                if words[1] == clientlogic.ASSET_CRYPTO {
 			                clientlogic.PrintCryptoHelp()
 					continue
 			        }
@@ -134,7 +135,7 @@ func main() {
 
                 // switch between cached data
 		if words[0] == clientlogic.CLIENT_SWITCH {
-		        if words[1] == "crypto" {
+		        if words[1] == clientlogic.ASSET_CRYPTO {
 				handleCryptoSwitch(cryptoState, cryptoCache, words[2:])
 				continue
 			}
@@ -142,9 +143,19 @@ func main() {
 			continue
 		}
 
+                // set client preferences
+		if words[0] == clientlogic.CLIENT_SET {
+		        if words[1] == clientlogic.ASSET_CRYPTO {
+			        handleCryptoSet(cryptoState, words[2:])
+				continue
+			}
+
+                        continue
+		}
+
                 // save the asset on the cache
 		if words[0] == clientlogic.CLIENT_SAVE {
-		        if words[1] == "crypto" {
+		        if words[1] == clientlogic.ASSET_CRYPTO {
 			        handleCryptoSave(cryptoState, cryptoCache, ctx, conn)
 			        continue
 			}
@@ -154,7 +165,7 @@ func main() {
 
                 // list the existing lists in the cache
 		if words[0] == clientlogic.CLIENT_LIST {
-		        if words[1] == "crypto" {
+		        if words[1] == clientlogic.ASSET_CRYPTO {
 		                handleCryptoList(cryptoState, cryptoCache)
 		   	        continue
 			}
@@ -164,7 +175,7 @@ func main() {
 		
 	        // Get data from the server
 		if words[0] == clientlogic.CLIENT_FETCH {
-		        if words[1] == "crypto" {
+		        if words[1] == clientlogic.ASSET_CRYPTO {
 				handleCryptoFetch(cryptoCache,
 				                  cryptoState,
 						  conn,
@@ -178,7 +189,7 @@ func main() {
 
                 // get data from other clients
 		if words[0] == clientlogic.CLIENT_GET {
-		        if words[1] == "crypto" {
+		        if words[1] == clientlogic.ASSET_CRYPTO {
 			        handleCryptoGet(cryptoCache,
 				                cryptoState,
 						conn,
@@ -192,7 +203,7 @@ func main() {
 
                 // ranking features
                 if words[0] == clientlogic.CLIENT_RANK {
-		        if words[1] == "crypto" {
+		        if words[1] == clientlogic.ASSET_CRYPTO {
 			        handleCryptoRank(cryptoState, words[2:])
 				continue
 			}
@@ -204,7 +215,7 @@ func main() {
 			        continue
 			}
 			
-		        if words[1] == "crypto" {
+		        if words[1] == clientlogic.ASSET_CRYPTO {
 			        switch words[2] {
 				case clientlogic.CRYPTO_GROUP_LIQUIDITY:
 			               	handleCryptoGroupLiquidity(cryptoState, words[3:])
@@ -223,7 +234,7 @@ func main() {
 			        continue
 			}
 			
-                        if words[1] == "crypto" {
+                        if words[1] == clientlogic.ASSET_CRYPTO {
                                 switch words[2] {
 			        case "total_volume":
 					handleCryptoFilterTotalVolume(cryptoState, words[3:])
@@ -251,7 +262,7 @@ func main() {
 			        continue
 			}
 
-                        if words[1] == "crypto" {
+                        if words[1] == clientlogic.ASSET_CRYPTO {
 			        switch words[2] {
 				case clientlogic.CRYPTO_FIND_NAME:
 				        handleCryptoFindName(cryptoState, words[3])
@@ -278,7 +289,7 @@ func main() {
 			        continue
 			}
 
-                        if words[1] == "crypto" {
+                        if words[1] == clientlogic.ASSET_CRYPTO {
 			        switch words[2] {
 				case clientlogic.CRYPTO_CALC_VOLATILITY:
 				        handleCryptoCalcVolatility(cryptoState, words[3:])

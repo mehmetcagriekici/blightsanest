@@ -16,7 +16,7 @@ func handleCryptoRank(cs *crypto.CryptoState, args []string) {
 }
 
 // order
-// timeframe
+// field
 func controlCryptoRank(cs *crypto.CryptoState, args []string) {
         switch len(args) {
 	case 0:

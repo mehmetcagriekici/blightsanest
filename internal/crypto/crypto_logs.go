@@ -4,11 +4,10 @@ import(
         "fmt"
 	"slices"
 	"regexp"
+	"strings"
 )
 
-func PrintCryptoList(list []MarketData, id string, timeframes []string, fields []string) {
-        frames := GetInputTimeframes(timeframes)
-	
+func PrintCryptoList(list []MarketData, id string, frames []AvailableTimeframes, fields []string) {
         fmt.Println("##########")
 	fmt.Printf("# Crypto List: %s\n", id)
 	fmt.Println("")
@@ -49,5 +48,17 @@ func ToSnakeCase(str string) string {
 	matchAllCap   := regexp.MustCompile("([a-z0-9])([A-Z0-9])")
 
         snake := matchFirstCap.ReplaceAllString(str, "${1} ${2}")
+	
         return matchAllCap.ReplaceAllString(snake, "${1} ${2}")
+}
+
+// Source - ChatGPT
+func ToCamelCase(str string) string {
+        re := regexp.MustCompile(`(^|_)([a-z])`)
+
+        camel := re.ReplaceAllStringFunc(str, func(sub string) string {
+                return strings.ToUpper(strings.TrimPrefix(sub, "_"))
+        })
+	
+	return camel
 }

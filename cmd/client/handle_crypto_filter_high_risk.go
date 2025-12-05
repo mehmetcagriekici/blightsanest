@@ -28,7 +28,7 @@ func controlFilterHighRisk(cs *crypto.CryptoState, args []string) {
 		if err != nil {
 		        log.Fatal(err)
 		}
-		cs.UpdateAthChangePercentage(cs.CurrentMinATHChangePercentage, maxAth)
+		cs.UpdateAthChangePercentage(maxAth)
 	case 2:
 	        log.Println("Updating the max ath change and max volume preferences...")
 		maxAth, err := strconv.ParseFloat(args[0], 64)
@@ -39,7 +39,7 @@ func controlFilterHighRisk(cs *crypto.CryptoState, args []string) {
 		if err != nil {
 		        log.Fatal(err)
 		}
-		cs.UpdateAthChangePercentage(cs.CurrentMinATHChangePercentage, maxAth)
+		cs.UpdateAthChangePercentage(maxAth)
 		cs.UpdateVolume(cs.CurrentMinVolume, maxVolume)
 	default:
 	        log.Println("Incorrect use of the command: filter crypto high_risk <max_ath_change_percentage float64> <max_total_volume float64>")

@@ -2,7 +2,6 @@ package crypto
 
 import(
         "sync"
-	"strings"
 	"math"
 )
 
@@ -16,16 +15,14 @@ type CryptoState struct {
 	CurrentListID                   string
 	CurrentOrder                    AvailableOrders
         CurrentSortingField             string
-	ClientTimeframes                []string
+	ClientTimeframes                []AvailableTimeframes
 	CurrentTimeframe                AvailableTimeframes
 	CurrentMinRank                  int
 	CurrentMaxRank                  int
 	CurrentMinVolume                float64
 	CurrentMaxVolume                float64
 	CurrentMinCirculatingSupply     float64
-	CurrentMaxCirculatingSupply     float64
 	CurrentMaxATHChangePercentage   float64
-	CurrentMinATHChangePercentage   float64
 	CurrentMinMarketCap             float64
 	CurrentMaxMarketCap             float64
 	CurrentMaxPriceChangePercentage float64
@@ -33,7 +30,6 @@ type CryptoState struct {
 	CurrentMinSwingScore            float64
 	CurrentMaxSwingScore            float64
 	CurrentMinSupply                float64
-	CurrentMaxSupply                float64
 	CurrentIgnoredCoins             []string
 	CurrentMinVolatility            float64
 	CurrentMaxVolatility            float64
@@ -50,16 +46,14 @@ func CreateCryptoState() *CryptoState {
 	        CurrentList:                     []MarketData{},
 		CurrentListID:                   "",
 		CurrentSortingField:             "",
-		ClientTimeframes:                []string{},
+		ClientTimeframes:                []AvailableTimeframes{},
 		CurrentTimeframe:                PCP_DAY,
 		CurrentMinRank:                  0,
 		CurrentMaxRank:                  250,
 		CurrentMinVolume:                math.Inf(-1),
 		CurrentMaxVolume:                math.Inf(+1),
 		CurrentMinCirculatingSupply:     math.Inf(-1),
-		CurrentMaxCirculatingSupply:     math.Inf(+1),
 		CurrentMaxATHChangePercentage:   math.Inf(+1),
-		CurrentMinATHChangePercentage:   math.Inf(-1),
 		CurrentMinMarketCap:             math.Inf(-1),
 		CurrentMaxMarketCap:             math.Inf(+1),
 		CurrentMinPriceChangePercentage: math.Inf(-1),
@@ -68,14 +62,11 @@ func CreateCryptoState() *CryptoState {
 		CurrentMinSwingScore:            math.Inf(-1),
 		CurrentMaxSwingScore:            math.Inf(+1),
 		CurrentMinSupply:                math.Inf(-1),
-		CurrentMaxSupply:                math.Inf(+1),
 		CurrentIgnoredCoins:             []string{},
 		CurrentMinVolatility:            math.Inf(-1),
 		CurrentMaxVolatility:            math.Inf(+1),
 		CurrentMinGrowthPotential:       math.Inf(-1),
-		CurrentMaxGrowthPotential:       math.Inf(+1),
 		CurrentMinLiquidity:             math.Inf(-1),
-		CurrentMaxLiquidity:             math.Inf(+1),
 	}
 }
 
@@ -87,19 +78,17 @@ func (cs *CryptoState) UpdateCurrentSortingField(field string) {
 }
 
 // update current liquidity
-func (cs *CryptoState) UpdateCurrentLiquidity(minLiquidity, maxLiquidity float64) {
+func (cs *CryptoState) UpdateCurrentLiquidity(minLiquidity float64) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.CurrentMinLiquidity = minLiquidity
-	cs.CurrentMaxLiquidity = maxLiquidity
 }
 
 // update current growth potential
-func (cs *CryptoState) UpdateGrowthPotential(minPotential, maxPotential float64) {
+func (cs *CryptoState) UpdateGrowthPotential(minPotential float64) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.CurrentMinGrowthPotential = minPotential
-	cs.CurrentMaxGrowthPotential = maxPotential
 }
 
 // update current volatility
@@ -118,11 +107,10 @@ func (cs *CryptoState) UpdateIgnoredCoins(ignoredCoins []string) {
 }
 
 // update current potential coin supply
-func (cs *CryptoState) UpdateSupply(minSupply, maxSupply float64) {
+func (cs *CryptoState) UpdateSupply(minSupply float64) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.CurrentMinSupply = minSupply
-	cs.CurrentMaxSupply = maxSupply
 }
 
 // update current swing score
@@ -164,18 +152,16 @@ func (cs *CryptoState) UpdateMarketCap(minCap, maxCap float64) {
 }
 
 // update circulating supply
-func (cs *CryptoState) UpdateCirculatingSupply(minSupply, maxSupply float64) {
+func (cs *CryptoState) UpdateCirculatingSupply(minSupply float64) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
 	cs.CurrentMinCirculatingSupply = minSupply
-	cs.CurrentMaxCirculatingSupply = maxSupply
 }
 
 // update ath change percentage
-func (cs *CryptoState) UpdateAthChangePercentage(minAth, maxAth float64) {
+func (cs *CryptoState) UpdateAthChangePercentage(maxAth float64) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
-	cs.CurrentMinATHChangePercentage = minAth
 	cs.CurrentMaxATHChangePercentage = maxAth
 }
 
@@ -188,13 +174,10 @@ func (cs *CryptoState) UpdateCurrentList(id string, newList []MarketData) {
 }
 
 // set client's timeframes
-func (cs *CryptoState) SetTimeframes(key string) {
+func (cs *CryptoState) UpdateClientTimeframes(frames []AvailableTimeframes) {
         cs.mu.Lock()
 	defer cs.mu.Unlock()
-	// get the timeframes from the key
-	keyParts := strings.Split(key, "__")
-	frames := strings.Split(keyParts[0], "_")
-	cs.ClientTimeframes = strings.Split(frames[1], "-")
+	cs.ClientTimeframes = frames
 }
 
 // update market cap rank preferences
