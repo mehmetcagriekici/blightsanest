@@ -24,10 +24,15 @@ func Subscribe[T any](conn *amqp.Connection,
 		      unmarshaller func([]byte) (T, error)) (func() error, error) {
         // fetch env variables
 	if err := godotenv.Load(); err != nil {
-	        log.Fatal(err)
+	        log.Println(err)
 	}
-	
-	qosCount, err := strconv.Atoi(os.Getenv("SUBSCRIBER_PREFETCH"))
+
+        prefetchCount := os.Getenv("SUBSCRIBER_PREFETCH")
+	if prefetchCount == "" {
+	        prefetchCount = "10"
+	}
+ 	
+	qosCount, err := strconv.Atoi(prefetchCount)
 	if err != nil {
 	        log.Fatal(err)
 	}

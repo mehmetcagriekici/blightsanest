@@ -5,12 +5,14 @@ const (
 	CryptoExchange = "crypto_topic"
 	ClientExchange = "client_topic"
 	CryptoDLX      = "crypto_dlx"
+	TestExchange   = "exchange_test"
 )
 
 // routing keys
 const (
         BlightCrypto       = "blight_crypto"
 	BlightClientCrypto = "blight_client_crypto"
+	BlightTesting      = "blight_test"
 )
 
 // exchange types
@@ -25,6 +27,7 @@ const (
         CryptoGet       = "crypto_get"
 	CryptoClientGet = "crypto_client_get"
 	CryptoDLQ       = "crypto_dlq"
+	TestQueue       = "queue_test"
 )
 
 // queue types
