@@ -22,6 +22,11 @@ func CoinsNewHigh(oldCoins, newCoins []MarketData) []MarketData {
 	// compare the slices
 	filtered := []MarketData{}
 	for i, coin := range cloneNew {
+	        // check length - no cloneOld[i]
+		if i == len(cloneOld) {
+		        break
+		}
+		
 	        if coin.Name != cloneOld[i].Name {
 		        continue
 		}

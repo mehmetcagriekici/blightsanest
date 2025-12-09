@@ -14,3 +14,4 @@ If you face any bugs problems or something not clear, please do reach me from me
 8)  Changed client rank, now accepting a wider range of coin fields.
 9)  Simplified the CLI printing, making the output more readable.
 10) Implemented a new command <set> to the client side, allowing users to config client state preferences beforehand.
+11) Fixed some of the crypto algorithms and added a test for the pubsub logic

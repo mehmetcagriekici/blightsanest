@@ -1,5 +1,7 @@
 package main
 
+import _ "github.com/lib/pq"
+
 import(
 	"log"
 	"os"
@@ -59,6 +61,7 @@ func main() {
 		// valid commands
 		if words[0] != "quit" &&
 		   words[0] != "fetch" &&
+		   words[0] != "get" &&
 		   words[0] != "help" {
 		        log.Println("Invalid server command! Please continue with one of these:")
 			serverlogic.PrintServerHelp()
@@ -78,7 +81,7 @@ func main() {
 			break
 		}
 		
-                // fetch
+                // fetch - from the api with cache
 		if words[0] == "fetch" {
 		        if len(words) < 2 {
 			        log.Println("fetch command requires at least one additional argument: <crypto>")
@@ -89,5 +92,9 @@ func main() {
 			        handleCryptoFetch(ctx, conn, cryptoCache, cryptoAPIKey, words[2:])
                         }
 		}
+
+               // get - from the database
+	       if words[0] == "get" {
+	       }
 	}
 }

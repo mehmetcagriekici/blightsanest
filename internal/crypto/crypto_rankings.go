@@ -15,10 +15,7 @@ func RankCoins(fieldName string, order AvailableOrders, coins []MarketData) []Ma
 	        if order == CRYPTO_DESC {
 	                return GetCoinField(fieldName, clone[i]).Float() >  GetCoinField(fieldName, clone[j]).Float()
 		}
-		if order == CRYPTO_ASC {
-		        return GetCoinField(fieldName, clone[i]).Float() < GetCoinField(fieldName, clone[j]).Float()
-		}
-		return GetCoinField(fieldName, clone[i]).Equal(GetCoinField(fieldName, clone[j]))
+	        return GetCoinField(fieldName, clone[i]).Float() < GetCoinField(fieldName, clone[j]).Float()
 	})
 
         // return the clone
@@ -46,6 +43,9 @@ func RankCoinScarcity(circulatingScore, athChangeScore float64, coins []MarketDa
 
         // delete the coins with low scarcity and high ath_change_percentage
 	clone = slices.DeleteFunc(clone, func(coin MarketData) bool {
+	        if coin.MaxSupply == 0 {
+		        return true
+		}
 	        return coin.CirculatingSupply / coin.MaxSupply < circulatingScore || coin.AthChangePercentage > athChangeScore
 	})
 
