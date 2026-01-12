@@ -129,7 +129,7 @@ func main() {
 		}
 
                 // feature commands requires at least one more argument
-		if !controlFeatureCommands(words) {
+		if !crypto.ControlFeatureCommands(words) {
 		        continue
 		}
 
@@ -211,7 +211,7 @@ func main() {
 
                 // grouping features
 		if words[0] == clientlogic.CLIENT_GROUP {
-		        if !controlFeatureSub(words) {
+		        if !crypto.ControlFeatureSub(words) {
 			        continue
 			}
 			
@@ -230,7 +230,7 @@ func main() {
 
                 // filtering features
 		if words[0] == clientlogic.CLIENT_FILTER {
-		        if !controlFeatureSub(words) {
+		        if !crypto.ControlFeatureSub(words) {
 			        continue
 			}
 			
@@ -258,7 +258,7 @@ func main() {
 
                 // searcing features
 		if words[0] == clientlogic.CLIENT_FIND {
-		        if !controlFeatureSub(words) {
+		        if !crypto.ControlFeatureSub(words) {
 			        continue
 			}
 
@@ -285,7 +285,7 @@ func main() {
 
                 // calculating features
 		if words[0] == clientlogic.CLIENT_CALC {
-		        if !controlFeatureSub(words) {
+		        if !crypto.ControlFeatureSub(words) {
 			        continue
 			}
 

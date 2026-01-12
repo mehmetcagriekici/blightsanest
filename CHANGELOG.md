@@ -15,3 +15,5 @@ If you face any bugs problems or something not clear, please do reach me from me
 9)  Simplified the CLI printing, making the output more readable.
 10) Implemented a new command <set> to the client side, allowing users to config client state preferences beforehand.
 11) Fixed some of the crypto algorithms and added a test for the pubsub logic
+12) Implemented a new command <get> to the server side, allowing users to get crypto lists from the local database.
+13) Implemented a new command <save> to the server, allowing users to save various crypto lists to the database with a custom id.

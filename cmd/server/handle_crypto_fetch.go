@@ -51,8 +51,7 @@ func handleCryptoFetch(ctx context.Context, conn *amqp.Connection, cc *crypto.Cr
 
         // control cache - data is cached for each hour based on the queries
 	cacheKey := createCryptoCacheKey(time.Now().Unix(), queries)
-	_, ok := cc.Get(cacheKey)
-	if !ok {
+	if _, ok := cc.Get(cacheKey); !ok {
 	        log.Println("Requested crypto list does not exists in the server cache, making a new request to the API.")
 	        // make the API request
 		cryptoList, err := crypto.CryptoFetchMarket(url, apiKey)

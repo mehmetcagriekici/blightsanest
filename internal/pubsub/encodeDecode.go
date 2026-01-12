@@ -3,6 +3,7 @@ package pubsub
 import(
         "bytes"
         "encoding/gob"
+	"encoding/json"
 )
 
 func Encode[T any](val T) ([]byte, error) {
@@ -20,6 +21,15 @@ func Decode[T any](data []byte) (T, error) {
 	
 	var v T
 	if err := dec.Decode(&v); err != nil {
+	        var noop T
+		return noop, err
+	}
+	return v, nil
+}
+
+func DecodeJSON[T any](data []byte) (T, error) {
+        var v T
+	if err != json.Unmarshal(data, &v); err != nil {
 	        var noop T
 		return noop, err
 	}

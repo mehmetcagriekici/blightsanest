@@ -8,10 +8,12 @@ import(
 	"time"
 	"context"
 	"strconv"
+	"database/sql"
 	
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/serverlogic"
 	"github.com/mehmetcagriekici/blightsanest/internal/logs"
+	"github.com/mehmetcagriekici/blightsanest/internal/database"
 	
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/joho/godotenv"
@@ -27,6 +29,7 @@ func main() {
 	cryptoAPIKey := os.Getenv("COIN_GECKO_KEY")
 	rabbitURL := os.Getenv("RABBIT_CONNECTION_STRING")
 	cacheInterval := os.Getenv("CACHE_INTERVAL")
+	databaseURL := os.Getenv("DB_URL")
 
         // create a context for the server
 	ctx := context.Background()
@@ -45,6 +48,15 @@ func main() {
 	}
         cryptoCache := crypto.CreateCryptoCache(time.Duration(interval) * time.Hour)
 	defer cryptoCache.Close()
+
+	// open database
+	db, err := sql.Open("postgres", databaseURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// get the gooese queries
+	dbQueries := database.New(db)
 	
         //REPL
 	serverlogic.PrintServerIntroduction()
@@ -62,6 +74,7 @@ func main() {
 		if words[0] != "quit" &&
 		   words[0] != "fetch" &&
 		   words[0] != "get" &&
+		   words[0} != "save" &&
 		   words[0] != "help" {
 		        log.Println("Invalid server command! Please continue with one of these:")
 			serverlogic.PrintServerHelp()
@@ -80,14 +93,13 @@ func main() {
 		        log.Println("Exiting the BlightSanest server...")
 			break
 		}
+
+                if !crypto.ControlFeatureCommands(words) {
+		        continue
+		}
 		
                 // fetch - from the api with cache
-		if words[0] == "fetch" {
-		        if len(words) < 2 {
-			        log.Println("fetch command requires at least one additional argument: <crypto>")
-				continue
-			}
-			
+		if words[0] == "fetch" {			
 			if words[1] == "crypto" {
 			        handleCryptoFetch(ctx, conn, cryptoCache, cryptoAPIKey, words[2:])
                         }
@@ -95,6 +107,16 @@ func main() {
 
                // get - from the database
 	       if words[0] == "get" {
+	               if words[1] == "crypto" {
+		               handleCryptoGet(ctx, conn, cryptoCache, words[:2], dbQueries)
+		       }
 	       }
+
+		// save - to the database
+		if words[0] == "save" {
+			if words[1] == "crypto" {
+				handleCryptoSave(ctx, cryptoCache, words[:2], dbQueries)
+			}
+		}
 	}
 }

@@ -19,7 +19,14 @@ fetch crypto - - btc                                    # omits ids, names and t
 
 fetch crypto - - - top - market_cap_asc - - - 1h,24h,7d # omits ids, names, symbols, category, per_page, page, sparkline, and percision.
 ```
-
+3) To get an already existing crypto list from the database -> to serve the clients:
+```
+get crypto <crypto_list_id_on_the_database>             # publish the crypto list from the database to clients.
+```
+4) To save a crypto list existing in the server cache to the database with a custom id
+```
+save crypto <crypto_list_cache_id> <custom_id>          # if a custom id is not provided already existing list id on the cache will be used.
+```
 ## Client Commands:
 
 ### Available Fields for <set> command:

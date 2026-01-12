@@ -31,6 +31,7 @@ COIN_GECKO_KEY           # coin gecko api key for crypto currencies
 RABBIT_CONNECTION_STRING # url to the rabbitmq server
 CACHE_INTERVAL           # time until a crypto cache entry becomes stalei and removed
 SUBSCRIBER_PREFETCH      # prefetch count for amqp Qos
+DB_URL                   # postgres connection string
 ```
 
 ## Motivation
