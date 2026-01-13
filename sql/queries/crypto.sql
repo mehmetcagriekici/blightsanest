@@ -9,11 +9,11 @@ WHERE crypto_key = $1 LIMIT 1;
 
 -- name: UpdateCryptoList :one
 UPDATE crypto
-SET updated_at = $2, status = $3, crypto_key = $4, crypto_list = $5
+SET updated_at = $2, crypto_key = $3, crypto_list = $4
 WHERE crypto_key = $1
 RETURNING *;
 
 -- name: DeleteCryptoList :many
 DELETE FROM crypto
-WHERE status = 'EXPIRED'
+WHERE crypto_key = $1
 RETURNING *;

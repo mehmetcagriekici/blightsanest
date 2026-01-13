@@ -2,17 +2,18 @@ package clientlogic
 
 // main operations
 const (
-	CLIENT_SWITCH string = "switch"
-	CLIENT_SAVE   string = "save"
-	CLIENT_LIST   string = "list"
-	CLIENT_GET    string = "get"
-	CLIENT_RANK   string = "rank"
-	CLIENT_GROUP  string = "group"
-	CLIENT_FILTER string = "filter"
-	CLIENT_FIND   string = "find"
-	CLIENT_CALC   string = "calc"
-	CLIENT_FETCH  string = "fetch"
-	CLIENT_SET    string = "set"
+	CLIENT_SWITCH   string = "switch"
+	CLIENT_SAVE     string = "save"
+	CLIENT_LIST     string = "list"
+	CLIENT_GET      string = "get"
+	CLIENT_RANK     string = "rank"
+	CLIENT_GROUP    string = "group"
+	CLIENT_FILTER   string = "filter"
+	CLIENT_FIND     string = "find"
+	CLIENT_CALC     string = "calc"
+	CLIENT_FETCH    string = "fetch"
+	CLIENT_SET      string = "set"
+	CLIENT_DATABASE string = "database"
 )
 
 // crypto features (sub operations)

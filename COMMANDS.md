@@ -27,6 +27,10 @@ get crypto <crypto_list_id_on_the_database>             # publish the crypto lis
 ```
 save crypto <crypto_list_cache_id> <custom_id>          # if a custom id is not provided already existing list id on the cache will be used.
 ```
+5) To delete a crypto list from the database
+```
+delete crypto <crypto_list_id>                          # lists exist in the database until they are deleted.
+```
 ## Client Commands:
 
 ### Available Fields for <set> command:
@@ -45,15 +49,17 @@ save crypto <crypto_list_cache_id> <custom_id>          # if a custom id is not 
 ```
 
 ```
-fetch crypto crypto_list_id # gets a specific crypto list from the server publisher if exists
+fetch crypto crypto_list_id        # gets a specific crypto list from the server publisher if exists
 
-get crypto crypto_list_id   # gets a specific crypto list from a client publisher if exists
+get crypto crypto_list_id          # gets a specific crypto list from a client publisher if exists
 
-save crypto crypto_list_id  # publishes a crypto list to other clients that are waiting for it with get command
+save crypto crypto_list_id         # publishes a crypto list to other clients that are waiting for it with get command
 
-list crypto                 # prints the ids of the current client list and the lists in the cache
+list crypto                        # prints the ids of the current client list and the lists in the cache
 
-set crypto field_name value # sets the client preference a crypto state fields to the value
+set crypto field_name value        # sets the client preference a crypto state fields to the value
+
+database crypto database_operation # performs one of the available database operations on the cryptolist: CREATE/READ/UPDATE/DELETE
 ```
 ## Client Crypto Commands
 

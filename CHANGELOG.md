@@ -14,6 +14,7 @@ If you face any bugs problems or something not clear, please do reach me from me
 8)  Changed client rank, now accepting a wider range of coin fields.
 9)  Simplified the CLI printing, making the output more readable.
 10) Implemented a new command <set> to the client side, allowing users to config client state preferences beforehand.
-11) Fixed some of the crypto algorithms and added a test for the pubsub logic
-12) Implemented a new command <get> to the server side, allowing users to get crypto lists from the local database.
-13) Implemented a new command <save> to the server, allowing users to save various crypto lists to the database with a custom id.
+11) Fixed some of the crypto algorith
+12) Added database features to the server CREATE/READ/DELETE
+13) Added database features to the client CREATE/READ/UPDATE/DELETE.
+

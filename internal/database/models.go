@@ -5,7 +5,6 @@
 package database
 
 import (
-	"database/sql"
 	"encoding/json"
 	"time"
 
@@ -14,9 +13,8 @@ import (
 
 type Crypto struct {
 	ID         uuid.UUID
-	CreatedAt  sql.NullTime
+	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	Status     string
 	CryptoKey  string
 	CryptoList json.RawMessage
 }

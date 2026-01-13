@@ -6,6 +6,7 @@ import(
 	"context"
 	"strconv"
         "time"
+	"database/sql"
 	
 	"github.com/joho/godotenv"
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -14,6 +15,7 @@ import(
 	"github.com/mehmetcagriekici/blightsanest/internal/clientlogic"
 	"github.com/mehmetcagriekici/blightsanest/internal/logs"
 	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
+	"github.com/mehmetcagriekici/blightsanest/internal/database"
 )
 
 func main() {
@@ -26,6 +28,8 @@ func main() {
 	rabbitURL := os.Getenv("RABBIT_CONNECTION_STRING")
 	// cache interval
 	cacheInterval := os.Getenv("CACHE_INTERVAL")
+	// database url
+	dbURL := os.Getenv("DB_URL")
 
         // create a context for the client
 	ctx := context.Background()
@@ -54,6 +58,15 @@ func main() {
 	if err := pubsub.CreateCryptoDLX(conn); err != nil {
 	        log.Fatal(err)
 	}
+
+	// open the database
+	db, err := sql.Open(postgres, dbURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// get the db queries
+	dbQueries := database.New(db)
         
         // Client REPL
 	clientlogic.PrintClientIntroduction()
@@ -131,6 +144,13 @@ func main() {
                 // feature commands requires at least one more argument
 		if !crypto.ControlFeatureCommands(words) {
 		        continue
+		}
+
+		// database operations
+		if words[0] == clientlogic.CLIENT_DATABASE {
+			if words[1] == clientlogic.ASSET_CRYPTO {
+				handleCryptoDatabase(ctx, dbQueries, words[2:])
+			}
 		}
 
                 // switch between cached data

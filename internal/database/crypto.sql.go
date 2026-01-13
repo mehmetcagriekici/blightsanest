@@ -16,7 +16,7 @@ import (
 const createCryptoList = `-- name: CreateCryptoList :one
 INSERT INTO crypto (id, updated_at, crypto_key, crypto_list)
 VALUES ($1, $2, $3, $4)
-RETURNING id, created_at, updated_at, status, crypto_key, crypto_list
+RETURNING id, created_at, updated_at, crypto_key, crypto_list
 `
 
 type CreateCryptoListParams struct {
@@ -38,7 +38,6 @@ func (q *Queries) CreateCryptoList(ctx context.Context, arg CreateCryptoListPara
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.Status,
 		&i.CryptoKey,
 		&i.CryptoList,
 	)
@@ -47,12 +46,12 @@ func (q *Queries) CreateCryptoList(ctx context.Context, arg CreateCryptoListPara
 
 const deleteCryptoList = `-- name: DeleteCryptoList :many
 DELETE FROM crypto
-WHERE status = 'EXPIRED'
-RETURNING id, created_at, updated_at, status, crypto_key, crypto_list
+WHERE crypto_key = $1
+RETURNING id, created_at, updated_at, crypto_key, crypto_list
 `
 
-func (q *Queries) DeleteCryptoList(ctx context.Context) ([]Crypto, error) {
-	rows, err := q.db.QueryContext(ctx, deleteCryptoList)
+func (q *Queries) DeleteCryptoList(ctx context.Context, cryptoKey string) ([]Crypto, error) {
+	rows, err := q.db.QueryContext(ctx, deleteCryptoList, cryptoKey)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +63,6 @@ func (q *Queries) DeleteCryptoList(ctx context.Context) ([]Crypto, error) {
 			&i.ID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
-			&i.Status,
 			&i.CryptoKey,
 			&i.CryptoList,
 		); err != nil {
@@ -82,7 +80,7 @@ func (q *Queries) DeleteCryptoList(ctx context.Context) ([]Crypto, error) {
 }
 
 const getCryptoList = `-- name: GetCryptoList :one
-SELECT id, created_at, updated_at, status, crypto_key, crypto_list FROM crypto
+SELECT id, created_at, updated_at, crypto_key, crypto_list FROM crypto
 WHERE crypto_key = $1 LIMIT 1
 `
 
@@ -93,7 +91,6 @@ func (q *Queries) GetCryptoList(ctx context.Context, cryptoKey string) (Crypto, 
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.Status,
 		&i.CryptoKey,
 		&i.CryptoList,
 	)
@@ -102,15 +99,14 @@ func (q *Queries) GetCryptoList(ctx context.Context, cryptoKey string) (Crypto, 
 
 const updateCryptoList = `-- name: UpdateCryptoList :one
 UPDATE crypto
-SET updated_at = $2, status = $3, crypto_key = $4, crypto_list = $5
+SET updated_at = $2, crypto_key = $3, crypto_list = $4
 WHERE crypto_key = $1
-RETURNING id, created_at, updated_at, status, crypto_key, crypto_list
+RETURNING id, created_at, updated_at, crypto_key, crypto_list
 `
 
 type UpdateCryptoListParams struct {
 	CryptoKey   string
 	UpdatedAt   time.Time
-	Status      string
 	CryptoKey_2 string
 	CryptoList  json.RawMessage
 }
@@ -119,7 +115,6 @@ func (q *Queries) UpdateCryptoList(ctx context.Context, arg UpdateCryptoListPara
 	row := q.db.QueryRowContext(ctx, updateCryptoList,
 		arg.CryptoKey,
 		arg.UpdatedAt,
-		arg.Status,
 		arg.CryptoKey_2,
 		arg.CryptoList,
 	)
@@ -128,7 +123,6 @@ func (q *Queries) UpdateCryptoList(ctx context.Context, arg UpdateCryptoListPara
 		&i.ID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.Status,
 		&i.CryptoKey,
 		&i.CryptoList,
 	)

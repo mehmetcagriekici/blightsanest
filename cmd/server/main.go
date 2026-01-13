@@ -73,8 +73,9 @@ func main() {
 		// valid commands
 		if words[0] != "quit" &&
 		   words[0] != "fetch" &&
-		   words[0] != "get" &&
-		   words[0} != "save" &&
+		   words[0] != "read" &&
+		   words[0] != "create" &&
+		   words[0] != "delete" &&
 		   words[0] != "help" {
 		        log.Println("Invalid server command! Please continue with one of these:")
 			serverlogic.PrintServerHelp()
@@ -102,20 +103,31 @@ func main() {
 		if words[0] == "fetch" {			
 			if words[1] == "crypto" {
 			        handleCryptoFetch(ctx, conn, cryptoCache, cryptoAPIKey, words[2:])
+				continue
                         }
 		}
 
                // get - from the database
-	       if words[0] == "get" {
+	       if words[0] == "read" {
 	               if words[1] == "crypto" {
 		               handleCryptoGet(ctx, conn, cryptoCache, words[:2], dbQueries)
+			       continue
 		       }
 	       }
 
 		// save - to the database
-		if words[0] == "save" {
+		if words[0] == "create" {
 			if words[1] == "crypto" {
 				handleCryptoSave(ctx, cryptoCache, words[:2], dbQueries)
+				continue
+			}
+		}
+
+		// delete - from the database
+		if words[0] == "delete" {
+			if words[1] == "crypto" {
+				handleCryptoDelete(ctx, words[:2], dbQueries)
+				continue
 			}
 		}
 	}
