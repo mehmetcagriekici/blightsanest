@@ -8,7 +8,7 @@ import(
 )
 
 func handleCryptoDelete(ctx context.Context, args []string, queries *database.Queries) {
-	if len(arg) == 0 {
+	if len(args) == 0 {
 		log.Println("To delete a crypto list from the database you need to provide the ID of the crypto list...")
 		return
 	}

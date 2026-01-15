@@ -3,14 +3,7 @@ package main
 import(
 	"log"
 	"context"
-	"encoding/json"
-	"time"
-	"errors"
-	"database/sql"
 	
-	"github.com/google/uuid"
-
-	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 )
@@ -72,24 +65,9 @@ func handleCryptoDatabaseCreate(ctx context.Context,
 	}
 
 	log.Printf("Saving the crypto list on this client with the ID %s to the database.\n", cryptoKey)
-
-	encoded, err := json.Marshal(cs.CurrentList)
-	if err != nil {
+	if err := crypto.CreateCryptoRow(ctx, queries, cs.CurrentList, cryptoKey); err != nil {
 		log.Fatal(err)
 	}
-
-	dbParams := database.CreateCryptoListParams{
-		ID: uuid.New(),
-		UpdatedAt: time.Now(),
-		CryptoKey: cryptoKey,
-		CryptoList: json.RawMessage(encoded),
-	}
-
-	if _, err := queries.CreateCryptoList(ctx, dbParams); err != nil {
-		log.Fatal(err)
-	}
-	
-	log.Printf("List %s successfully saved to database as %s\n", cryptoKey, cryptoKey)
 }
 
 // read
@@ -103,22 +81,13 @@ func handleCryptoDatabaseRead(ctx context.Context,
 	}
 
 	log.Printf("Getting the crypto list from the database with the ID %s...\n", args[0])
-
-	// get the data from the database
-	data, err := queries.GetCryptoList(ctx, args[0])
+        list, err := crypto.ReadCryptoRow(ctx, queries, args[0])
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// decode the json.RawMessage crypto list
-	list, err := pubsub.DecodeJSON(data.CryptoList)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// update the client state
-	log.Printf("New Client List: %s\n", data.CryptoKey)
-	cs.UpdateCurrentList(data.CryptoKey, list)
+	
+	log.Printf("New Client List: %s\n", args[0])
+	cs.UpdateCurrentList(args[0], list)
 
 }
 
@@ -133,76 +102,41 @@ func handleCryptoDatabaseUpdate(ctx context.Context,
 		return
 	}
 
-	// check if list exists in the database
-	if data, err := queries.Get(args[0]); err != nil {
-		// no rows
-		if errors.Is(err, sql.ErrNoRows) {
-			log.Println(err)
-			return
-		}
-		// unexpected error
-		log.Fatal(err)
-	}
-
-	updateParams := database.UpdateCryptoListParams{
-		ID: data.ID,
-		CreatedAt: data.CreatedAt,
-		UpdatedAt: time.Now(),
-		CryptoKey: args[0],
-	}
-
+	var currList []crypto.MarketData
 	// check if the list is the current state list
 	if cs.CurrentListID == args[0] {
 		// update the list at the database with the client state list
 		log.Printf("Updating the list %s at the database with the current list.\n", args[0])
-
-		// encode current list
-		encoded, err := json.Encode(cs.CurrentList)
-		if err != nil {
-			log.Fatal(err)
-		}
-		updateParams.CryptoList = json.RawMessage(encoded)
-	}
-	// check if the list exists on the client cache
-	else if entry, ok := cc.Get(args[0]); ok {
-		// update the list at the database with the list from the client cache
-		log.Printf("Updating the list %s at the database with an existing list from the client cache", args[0])
-
-		// encode the fetched list
-		encoded, err := json.Encode(entry.Market)
-		if err != nil {
-			log.Fatal(err)
-		}
-		updateParams.CryptoList = json.RawMessage(encoded)
+		currList = cs.CurrentList
 	} else {
-		log.Printf("Provided list ID %s is not the current list ID neither exists on the client cache. Exiting the process...\n", args[0])
-		return
+		// check if the list exists on the client cache
+		if entry, ok := cc.Get(args[0]); ok {
+			// update the list at the database with the list from the client cache
+			log.Printf("Updating the list %s at the database with an existing list from the client cache", args[0])
+			currList = entry.Market
+		} else {
+			log.Printf("Provided list ID %s is not the current list ID neither exists on the client cache. Exiting the process...\n", args[0])
+			return
+		}
 	}
 
-	updated, err := queries.UpdateCryptoList(ctx, updateParams)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println("Successfully updated the list at the database, updating the current client list...")
-        newList, err := pubsub.Decode(updated.CryptoList)
+	updatedList, err := crypto.UpdateCryptoRow(ctx, currList, queries, args[0], args[0])
 	if err != nil {
 		log.Fatal(err)
 	}
 	
-	cs.UpdateCurrentList(data.CryptoKey, newList)
+	cs.UpdateCurrentList(args[0], updatedList)
 }
 
 // delete
 func handleCryptoDatabaseDelete(ctx context.Context, queries *database.Queries, args []string) {
 	if len(args) == 0 {
-		log.Println("This is a manual process, please provide the ID of the crypto list that you want to delete from the database.")
+		log.Println("This is a manual process, please provide the IDs of the crypto lists that you want to delete from the database.")
 		return
 	}
-
-	data, err := queries.DeleteCryptoList(ctx, args[0])
-	if err != nil {
-		log.Fatal(err)
+	for _, k := range args {
+		if err := crypto.DeleteCryptoRow(ctx, queries, k); err != nil {
+			log.Fatal(err)
+		}
 	}
-	log.Printf("List %s is deleted from the database.\n", data.CryptoKey)
 }

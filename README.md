@@ -183,9 +183,8 @@ go test ./...
 # Future Plans
 
 ## V1.1-1.9 - making the app more flexible
-1) Adding Authorization for Database implementation
-2) Creating an Application Databases for the Server and the Client sides.
-3) Implementing Search for the results of the operations
+1) Implementing a database. -tests-
+2) Implementing a search functionality with RAG. -implementatiom + tests-
 
 ## V2 - expanding the app
 1) Stock Market Implementation

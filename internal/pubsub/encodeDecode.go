@@ -29,7 +29,7 @@ func Decode[T any](data []byte) (T, error) {
 
 func DecodeJSON[T any](data []byte) (T, error) {
         var v T
-	if err != json.Unmarshal(data, &v); err != nil {
+	if err := json.Unmarshal(data, &v); err != nil {
 	        var noop T
 		return noop, err
 	}

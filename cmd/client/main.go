@@ -60,7 +60,7 @@ func main() {
 	}
 
 	// open the database
-	db, err := sql.Open(postgres, dbURL)
+	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -149,7 +149,7 @@ func main() {
 		// database operations
 		if words[0] == clientlogic.CLIENT_DATABASE {
 			if words[1] == clientlogic.ASSET_CRYPTO {
-				handleCryptoDatabase(ctx, dbQueries, words[2:])
+				handleCryptoDatabase(ctx, dbQueries, cryptoState, cryptoCache, words[2:])
 			}
 		}
 

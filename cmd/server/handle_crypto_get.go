@@ -3,6 +3,7 @@ package main
 import(
         "log"
         "context"
+	"encoding/json"
 	
         amqp "github.com/rabbitmq/amqp091-go"
 
@@ -34,19 +35,23 @@ func handleCryptoGet(ctx context.Context,
 	}
 
         // decode the crypto list
-	list, err := pubsub.DecodeJSON(data.CryptoList)
+	mb, err := data.CryptoList.MarshalJSON()
 	if err != nil {
+		log.Fatal(err)
+	}
+	var b []crypto.MarketData
+	if err := json.Unmarshal(mb, &b); err != nil {
 	        log.Fatal(err)
 	}
 
         // add new list to the cache
-	cc.Add(data.CryptoKey, list)
+	cc.Add(data.CryptoKey, b)
 
         // publish the new list from the server
 	delivery := routing.CryptoExchangeBody{
 	        ID: data.CryptoKey,
 		CreatedAt: data.CreatedAt,
-		Payload: list,
+		Payload: b,
 	}
 	if err := pubsub.PublishCrypto(ctx, conn, delivery); err != nil {
 	        log.Fatal(err)
