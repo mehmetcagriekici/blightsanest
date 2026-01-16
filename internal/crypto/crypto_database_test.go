@@ -128,7 +128,7 @@ func TestCryptoDatabase(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error while reading the row from the databas: %v.\n", err)
 	}
-
+          
 	if !slices.Equal(sampleData, readSample) {
 		t.Errorf("Read and database samples do not match! Expected: %v\n Got: %v\n", sampleData, readSample)
 	}
@@ -147,5 +147,24 @@ func TestCryptoDatabase(t *testing.T) {
 	err = DeleteCryptoRow(ctx, queries, newSampleKey)
 	if err != nil {
 		t.Errorf("Unexpected error while deleting the new sample list from the database: %v.\n", err)
+	}
+
+	// try to get read the rows
+	deletedSample, err := ReadCryptoRow(ctx, queries, sampleKey)
+	if err == nil {
+		t.Errorf("Must throw an error: sql. no rows in result set.%v\n", err)
+	}
+
+	if deletedSample != nil {
+		t.Errorf("deleted sample expected to be nil %v\n", deletedSample)
+	}
+
+	deletedNewSample, err := ReadCryptoRow(ctx, queries, newSampleKey)
+	if err == nil {
+		t.Errorf("Must throw an error: sql. no rows in result set.%v\n", err)
+	}
+
+	if deletedNewSample != nil {
+		t.Errorf("deleted new sample expected to be nil: %v\n", deletedNewSample)
 	}
 }
