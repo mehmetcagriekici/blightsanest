@@ -1,6 +1,6 @@
 -- name: CreateCryptoList :one
-INSERT INTO crypto (id, updated_at, crypto_key, crypto_list)
-VALUES ($1, $2, $3, $4)
+INSERT INTO crypto (id, created_at, updated_at, crypto_key, crypto_list)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING *;
 
 -- name: GetCryptoList :one

@@ -25,6 +25,7 @@ func CreateCryptoRow(ctx context.Context,
 
 	params := database.CreateCryptoListParams{
 		ID: uuid.New(),
+		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		CryptoKey: cryptoKey,
 		CryptoList: json.RawMessage(encoded),

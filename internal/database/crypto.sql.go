@@ -14,13 +14,14 @@ import (
 )
 
 const createCryptoList = `-- name: CreateCryptoList :one
-INSERT INTO crypto (id, updated_at, crypto_key, crypto_list)
-VALUES ($1, $2, $3, $4)
+INSERT INTO crypto (id, created_at, updated_at, crypto_key, crypto_list)
+VALUES ($1, $2, $3, $4, $5)
 RETURNING id, created_at, updated_at, crypto_key, crypto_list
 `
 
 type CreateCryptoListParams struct {
 	ID         uuid.UUID
+	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	CryptoKey  string
 	CryptoList json.RawMessage
@@ -29,6 +30,7 @@ type CreateCryptoListParams struct {
 func (q *Queries) CreateCryptoList(ctx context.Context, arg CreateCryptoListParams) (Crypto, error) {
 	row := q.db.QueryRowContext(ctx, createCryptoList,
 		arg.ID,
+		arg.CreatedAt,
 		arg.UpdatedAt,
 		arg.CryptoKey,
 		arg.CryptoList,

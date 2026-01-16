@@ -9,7 +9,8 @@ import (
 	"fmt"
 	"testing"
 	"time"
-	// "context"
+	"context"
+	"slices"
 
 	"github.com/pressly/goose/v3"
 	_ "github.com/lib/pq"
@@ -95,18 +96,56 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-/*
 func TestCryptoDatabase(t *testing.T) {
 	ctx := context.Background()
 	sampleData := []MarketData{
 		{
 			Symbol: "BTC",
-			Price:  42000.50,
+			CurrentPrice:  42000.50,
 		},
 		{
 			Symbol: "ETH",
-			Price:  2300.75,
+			CurrentPrice:  2300.75,
 		},
 	}
+	newSampleData := []MarketData{
+		{
+			Symbol: "BTC",
+			CurrentPrice:  36000,
+		},
+	}
+	sampleKey := "sample_key"
+	newSampleKey := "new_sample_key"
+
+	// create row
+	err := CreateCryptoRow(ctx, queries, sampleData, sampleKey)
+	if err != nil {
+		t.Errorf("Unexpected error while adding a row to the database: %v.\n", err)
+	}
+
+	// read row
+	readSample, err := ReadCryptoRow(ctx, queries, sampleKey)
+	if err != nil {
+		t.Errorf("Unexpected error while reading the row from the databas: %v.\n", err)
+	}
+
+	if !slices.Equal(sampleData, readSample) {
+		t.Errorf("Read and database samples do not match! Expected: %v\n Got: %v\n", sampleData, readSample)
+	}
+
+	// update row
+	updatedSample, err := UpdateCryptoRow(ctx, newSampleData, queries, sampleKey, newSampleKey)
+	if err != nil {
+		t.Errorf("Unexpeced error while updating the sample list on the database: %v.\n", err)
+	}
+
+	if !slices.Equal(updatedSample, newSampleData) {
+		t.Errorf("Updated and the database samples do not match! Expected: %v\n Got: %v\n", newSampleData, updatedSample)
+	}
+
+	// delete row
+	err = DeleteCryptoRow(ctx, queries, newSampleKey)
+	if err != nil {
+		t.Errorf("Unexpected error while deleting the new sample list from the database: %v.\n", err)
+	}
 }
-*/
