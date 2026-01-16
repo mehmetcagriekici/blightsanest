@@ -17,3 +17,4 @@ If you face any bugs problems or something not clear, please do reach me from me
 11) Fixed some of the crypto algorith
 12) Added database features to the server CREATE/READ/DELETE
 13) Added database features to the client CREATE/READ/UPDATE/DELETE.
+14) Implementing RAG to the client and to the server, allowing users to perform AI powered semantic search.

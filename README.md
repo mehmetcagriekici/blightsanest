@@ -16,7 +16,12 @@ It uses the publisher/subscriber architecture to separate data and functionality
 ```
 ./rabbit.sh start
 ```
-3) Directly run the server and the client separately from different CLIs - or build them one by one, and run the executables from separate CLIs.
+5) Start the postgresql using postgres.sh file - still testing the possibe permission issues, if you face any problem with the database please reach me.
+```
+./postgres.sh start
+```
+> or start these services manually with the correct credentials
+6) Directly run the server and the client separately from different CLIs - or build them one by one, and run the executables from separate CLIs.
 ```
 go run ./cmd/client
 go run ./cmd/server
