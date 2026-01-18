@@ -10,11 +10,8 @@ import(
 
 // text processing + tokenize + stem
 func Tokenize(text string) []string {
-	// convert the text to lowercase
-	lower := strings.ToLower(text)
-
 	// remove punbtuation except float points
-	noPunc := removePunc(lower)
+	noPunc := removePunc(text)
 
 	// tokenization
 	tokens := slices.DeleteFunc(strings.Split(noPunc, " "), func(word string) bool {
@@ -30,8 +27,12 @@ func Tokenize(text string) []string {
 	})
 
 	// stem tokens
+	lowerStemmed := []string{}
 	stemmed := stemmer.StemMultiple(tokens)
-	return stemmed
+	for _, tkn := range stemmed {
+		lowerStemmed = append(lowerStemmed, strings.ToLower(tkn))
+	}
+	return lowerStemmed
 }
 
 // Source - https://stackoverflow.com/a/62343672

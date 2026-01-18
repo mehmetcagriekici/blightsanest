@@ -27,6 +27,8 @@ func main() {
 				case "keyword":
 				}
 			}
+		case "create_inverted_index":
+			log.Prinln("")
 		}
 	}
 }
