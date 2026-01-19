@@ -1,14 +1,50 @@
 package main
 
 import(
+	"os"
 	"log"
+	"context"
+	"database/sql"
 
+
+	"github.com/joho/godotenv"
+	amqp "github.com/rabbitmq/amqp091-go"
+
+
+	"github.com/mehmetcagriekici/blightsanest/internal/database"
 	"github.com/mehmetcagriekici/blightsanest/internal/search"
 	"github.com/mehmetcagriekici/blightsanest/internal/logs"
 )
 
 func main() {
 	log.Println("Welcome to BlightSanest Search Engine...")
+
+	// load environment variables
+	if err = godotenv.Load(); err != nil {
+		log.Fatal(err)
+	}
+
+	// get the rabbitmq and postgresql database url from .env
+	rabbitURL   := os.Getenv("RABBIT_CONNECTION_STRING")
+	databaseURL := os.Getenv("DB_URL")
+
+	// create context, rabbit connection, and database queries
+	ctx := context.Background()
+	
+	conn, err := amqp.Dial(rabbitURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+
+	db, err := sql.Open("postgres", databaseURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	dbQueries := database.New(db)
+
+	// inverted index
 
 	// REPL
 	for {
