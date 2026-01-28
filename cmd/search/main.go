@@ -20,7 +20,7 @@ func main() {
 	log.Println("Welcome to BlightSanest Search Engine...")
 
 	// load environment variables
-	if err = godotenv.Load(); err != nil {
+	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -45,6 +45,7 @@ func main() {
 	dbQueries := database.New(db)
 
 	// inverted index
+	invertedIndex := search.NewInvertedIndex()
 
 	// REPL
 	for {
@@ -64,7 +65,19 @@ func main() {
 				}
 			}
 		case "create_inverted_index":
-			log.Prinln("")
+			log.Println("Building the inverted index for the database")
+			if err := invertedIndex.BuildCryptoIndex(ctx, dbQueries); err != nil {
+				log.Printf("An error occured while trying to build the inverted index: %v\n", err)
+				continue
+			}
+
+			log.Println("Saving the created inverted index to the local cache folder.")
+			nIdx, nDoc, err := invertedIndex.SaveDocuments()
+			if err != nil {
+				log.Printf("Couldn't save the created inverted index to the local machine: %v\n", err)
+				continue
+			}
+			log.Printf("Saved %d bytes to index and %d bytes to docmap cache.\n", nIdx, nDoc)
 		}
 	}
 }
