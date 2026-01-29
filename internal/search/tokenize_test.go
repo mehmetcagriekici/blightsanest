@@ -11,9 +11,9 @@ func TestTokenize(t *testing.T) {
 
 	expected := []string{"show", "coin", "least", "1234.567", "dollar", "current", "price"}
 	tokens := Tokenize(query)
-	log.Println(tokens)
 
 	if !slices.Equal(tokens, expected) {
+		log.Println(tokens)
 		t.Errorf("Expected: %v \n Got: %v \n", expected, tokens)
 	}
 }

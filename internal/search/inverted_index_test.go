@@ -130,9 +130,26 @@ func TestInvertedIndex(t *testing.T) {
 		t.Errorf("Get documents unexpectedly returns nil.")
 	}
 
-	// test add documents
-
 	// test save document
+	nIdx, nDoc, nTf, err := invertedIndex.SaveDocuments()
+	if err != nil {
+		t.Errorf("Unexpected error while trying to save the inverted index into local files: %v\n", err)
+	}
+
+	if nIdx == 0 {
+		t.Errorf("Zero amount of bytes received for inverted index index")
+	}
+
+	if nDoc == 0 {
+		t.Errorf("Zero amount of bytes received for inverted index docmap")
+	}
+
+	if nTf == 0 {
+		t.Errorf("Zero amount of bytes received for inverted index term frequencies")
+	}
 
 	// test load documents
+	if err := invertedIndex.LoadDocuments(); err != nil {
+		t.Errorf("Unexpected error while trying to load the inverted index from the local cache: %v\n", err)
+	}
 }

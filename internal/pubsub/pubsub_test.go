@@ -7,6 +7,7 @@ import(
         amqp "github.com/rabbitmq/amqp091-go"
 	
         "github.com/mehmetcagriekici/blightsanest/internal/routing"
+	"github.com/mehmetcagriekici/blightsanest/internal/readwrite"
 )
 
 type TestMsg struct {
@@ -52,7 +53,7 @@ func TestPubsub(t *testing.T) {
 					 }
 					 return routing.ACK
 				 },
-				 Decode)
+				 readwrite.Decode)
 	if err != nil {
 	        t.Errorf("Couldn't subscribe to the message")
 	}

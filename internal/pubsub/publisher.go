@@ -6,6 +6,7 @@ import(
 	"errors"
 
         "github.com/mehmetcagriekici/blightsanest/internal/routing"
+	"github.com/mehmetcagriekici/blightsanest/internal/readwrite"
 	
         amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -46,7 +47,7 @@ func Publish[T any](ctx context.Context,
 
 
         // encode the value into bytes
-	data, err := Encode(val)
+	data, err := readwrite.Encode(val)
 	if err != nil {
 	        return err
 	}

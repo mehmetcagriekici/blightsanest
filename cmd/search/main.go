@@ -1,5 +1,7 @@
 package main
 
+import _ "github.com/lib/pq"
+
 import(
 	"os"
 	"log"
@@ -62,6 +64,8 @@ func main() {
 				log.Println("Please provide a search type.")
 				switch searchType := words[1]; searchType {
 				case "keyword":
+					// keyword search
+					handle_keyword_search(invertedIndex)
 				}
 			}
 		case "create_inverted_index":
@@ -72,12 +76,12 @@ func main() {
 			}
 
 			log.Println("Saving the created inverted index to the local cache folder.")
-			nIdx, nDoc, err := invertedIndex.SaveDocuments()
+			nIdx, nDoc, nTf, err := invertedIndex.SaveDocuments()
 			if err != nil {
 				log.Printf("Couldn't save the created inverted index to the local machine: %v\n", err)
 				continue
 			}
-			log.Printf("Saved %d bytes to index and %d bytes to docmap cache.\n", nIdx, nDoc)
+			log.Printf("Saved %d bytes to index and %d bytes to docmap cache. %d bytes to the term frequencies cache.\n", nIdx, nDoc, nTf)
 		}
 	}
 }

@@ -4,6 +4,7 @@ import(
         "fmt"
 
         "github.com/mehmetcagriekici/blightsanest/internal/routing"
+	"github.com/mehmetcagriekici/blightsanest/internal/readwrite"
 	
         amqp "github.com/rabbitmq/amqp091-go"
 )
@@ -21,7 +22,7 @@ func SubscribeCrypto(conn *amqp.Connection,
 			 routing.CryptoExchange,
 			 routing.CryptoDLX,
 			 handler,
-			 Decode)
+			 readwrite.Decode)
 }
 
 // function to subscribe to existing crypto data from clients
@@ -36,5 +37,5 @@ func SubscribeClientCrypto(conn *amqp.Connection,
 			 routing.ClientExchange,
 			 routing.CryptoDLX,
 			 handler,
-			 Decode)
+			 readwrite.Decode)
 }
