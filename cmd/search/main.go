@@ -65,7 +65,7 @@ func main() {
 				switch searchType := words[1]; searchType {
 				case "keyword":
 					// keyword search
-					handle_keyword_search(invertedIndex)
+					handle_keyword_search(invertedIndex, words[2:])
 				}
 			}
 		case "create_inverted_index":

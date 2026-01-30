@@ -3,6 +3,7 @@ package search
 import(
 	"os"
 	"context"
+	"errors"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 	"github.com/mehmetcagriekici/blightsanest/internal/readwrite"
@@ -24,6 +25,10 @@ type InvertedIndex struct {
 	TermFrequencies map[string]map[string]int
 	// term frequencies cache path
 	PTF             string
+	// Document Lengths
+	DocLengths      map[string]int
+	// Doc Lengths Cache Path
+	PDL             string
 }
 
 // initiate inverted index
@@ -32,10 +37,29 @@ func NewInvertedIndex() *InvertedIndex {
 		Index: make(map[string]map[string]struct{}),
 		SearchMap: make(map[string][]byte),
 		TermFrequencies: make(map[string]map[string]int),
+		DocLengths: make(map[string]int),
 		PIDX: "../../cache/db_index.gob",
 		PDOC: "../../cache/db_docmap.gob",
 		PTF: "../../cache/db_termfreq.gob",
+		PDL: "../../cache/db_doclens.gob",
 	}
+}
+
+// function the get the term frequencies of a document for a term
+func (i *InvertedIndex) GetTf(docID, term string) (int, error) {
+	// tokenize the term
+	tokens := Tokenize(term)
+	// if there is more than one term return an error
+	if len(tokens) != 1 {
+		return 0, errors.New("Get term frequencies requires one single term.")
+	}
+
+	countObj, ok := i.TermFrequencies[doc_id]
+	if !ok {
+		return 0, nil
+	}
+
+	return i.TermFrequencies[doc_id][tokens[0]], nil
 }
 
 // load index and the docmap from the disk
@@ -74,10 +98,22 @@ func (i *InvertedIndex) LoadDocuments() error {
 		return err
 	}
 
-	// assign inverted index and docmap
+	// read doc lengths file
+	bufDocl, err := readwrite.Read(i.PDL)
+	if err != nil {
+		return err
+	}
+	// decode doc lengths
+	decodedDocl, err := readwrite.Decode[map[string]int](bufDocl)
+	if err != nil {
+		return err
+	}
+
+	// assign inverted index
 	i.Index = decodedIdx
 	i.SearchMap = decodedDoc
 	i.TermFrequencies = decodedTf
+	i.DocLengths = decodedDocl
 	
 	return nil
 }
@@ -135,6 +171,17 @@ func (i *InvertedIndex) AddDocument(docID, text string) {
 		}
 		var st struct{}
 		i.Index[t][docID] = st
+
+		// check if there is a count object for the doc id
+		if _, ok := i.TermFrequencies[doc_id]; !ok {
+			i.TermFrequencies[doc_id] = make(map[string]int)
+		}
+
+		// check if the token exist in the document counter
+		if _, ok := i.TermFrequencies[doc_id][t]; !ok {
+			i.TermFrequencies[doc_id][t] = 0
+		}
+		i.TermFrequencies[doc_id][t] += 1
 	}
 }
 

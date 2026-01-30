@@ -12,6 +12,8 @@ func PrintSearchHelp() {
 	fmt.Println("  ### Keyword Search")
 	fmt.Println("")
 	fmt.Println("  - To use the Keyword Search on existing database index: * search keyword <your search query>")
+	fmt.Println("")
+	fmt.Println("> Keyword search uses BM25 algorithm.")
 	fmt.Println("  ### Create Database Index")
 	fmt.Println("")
 	fmt.Println("  - Create an Inverted Index for the entire database: * create_inverted_index")
