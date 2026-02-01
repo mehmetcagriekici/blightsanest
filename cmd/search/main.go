@@ -76,12 +76,10 @@ func main() {
 			}
 
 			log.Println("Saving the created inverted index to the local cache folder.")
-			nIdx, nDoc, nTf, err := invertedIndex.SaveDocuments()
-			if err != nil {
+			if err := invertedIndex.SaveDocuments(); err != nil {
 				log.Printf("Couldn't save the created inverted index to the local machine: %v\n", err)
 				continue
 			}
-			log.Printf("Saved %d bytes to index and %d bytes to docmap cache. %d bytes to the term frequencies cache.\n", nIdx, nDoc, nTf)
 		}
 	}
 }

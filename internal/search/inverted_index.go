@@ -2,6 +2,7 @@ package search
 
 import(
 	"os"
+	"fmt"
 	"context"
 	"errors"
 
@@ -12,12 +13,12 @@ import(
 // Implemented Assets:
 //   crypto:
 type InvertedIndex struct {
-	// token -> doc_id -> doc
+	// token -> doc_id -> {}
 	Index           map[string]map[string]struct{}
 	// index path
 	PIDX            string
 	// doc_id -> doc -> bytes can be unmarshalled
-	SearchMap       map[string][]byte
+	DocMap       map[string][]byte
 	// docmap path
 	PDOC            string
 	// term frequencies - how many times each term appears in each document
@@ -35,7 +36,7 @@ type InvertedIndex struct {
 func NewInvertedIndex() *InvertedIndex {
 	return &InvertedIndex{
 		Index: make(map[string]map[string]struct{}),
-		SearchMap: make(map[string][]byte),
+		DocMap: make(map[string][]byte),
 		TermFrequencies: make(map[string]map[string]int),
 		DocLengths: make(map[string]int),
 		PIDX: "../../cache/db_index.gob",
@@ -111,7 +112,7 @@ func (i *InvertedIndex) LoadDocuments() error {
 
 	// assign inverted index
 	i.Index = decodedIdx
-	i.SearchMap = decodedDoc
+	i.DocMap = decodedDoc
 	i.TermFrequencies = decodedTf
 	i.DocLengths = decodedDocl
 	
@@ -119,47 +120,66 @@ func (i *InvertedIndex) LoadDocuments() error {
 }
 
 // save index and the docmap to the disk
-func (i *InvertedIndex) SaveDocuments() (int, int, int, error) {
+func (i *InvertedIndex) SaveDocuments() error {
 	// create the cache folder
 	if err := os.MkdirAll("../../cache", 0750); err != nil {
-		return 0, 0, 0, err
+		return err
 	}
 
 	// encode index, docmap (searchmap) and term frequencies
 	encodedIndex, err := readwrite.Encode(i.Index)
 	if err != nil {
-		return 0, 0, 0, err
+		return err
 	}
 
-	encodedSearchMap, err := readwrite.Encode(i.SearchMap)
+	encodedDocMap, err := readwrite.Encode(i.DocMap)
 	if err != nil {
-		return 0, 0, 0, err
+		return err
 	}
 
 	encodedTermFrequencies, err := readwrite.Encode(i.TermFrequencies)
 	if err != nil {
-		return 0, 0, 0, err
+		return err
+	}
+
+	encodedDocLengths, err := readwrite.Encode(i.Doclengths)
+	if err != nil {
+		return err
 	}
 
         // create index file and write the current index
 	nIdx, err := readwrite.Write(i.PIDX, encodedIndex)
 	if err != nil {
-		return 0, 0, 0, err
-	}
-	
-	// create docmap file and write the docmap
-	nDoc, err := readwrite.Write(i.PDOC, encodedSearchMap)
-	if err != nil {
-		return nIdx, 0, 0, err
-	}
-	
-	// create term frequencies file and writ term frequencies
-	nTf, err := readwrite.Write(i.PTF, encodedTermFrequencies)
-	if err != nil {
-		return nIdx, nDoc, 0, err
+		return err
 	}
 
-	return nIdx, nDoc, nTf, nil
+	fmt.Printf("%d bytes are written for inverted index index.\n", nIdx)
+	
+	// create docmap file and write the docmap
+	nDoc, err := readwrite.Write(i.PDOC, encodedDocMap)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%d bytes are written for inverted index docmap.\n", nIDpc)
+	
+	// create term frequencies file and write term frequencies
+	nTf, err := readwrite.Write(i.PTF, encodedTermFrequencies)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%d bytes are written for inverted index term frequencies.\n", nTf)
+
+	// create document lengths life and write doc lengths
+	nDocl, err := readwrite.Write(i.PDL, encodedDocLengths)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%d bytes are written for inverted index document lengths.\n", nDocl)
+
+	return nil
 }
 
 // tokenize the input text, add each token to the index with the document ID
@@ -183,10 +203,13 @@ func (i *InvertedIndex) AddDocument(docID, text string) {
 		}
 		i.TermFrequencies[doc_id][t] += 1
 	}
+
+	// store document length
+	i.DocLengths[doc_id] = len(tokens)
 }
 
-// get the set of document ids for a a given query
-func (i *InvertedIndex) GetDocuments(query string) []string {
+// get the set of document ids for a a given token
+func (i *InvertedIndex) GetDocuments(token string) []string {
 	// tokenize the query
 	tokens := Tokenize(query)
 
@@ -195,11 +218,9 @@ func (i *InvertedIndex) GetDocuments(query string) []string {
 
 	// iterate over the index and append the doc_ids that contains the token to the results
 	for k, v := range i.Index {
-		// iterate over the tokens
-		for _, t := range tokens {
-			if _, ok := v[t]; ok {
-				results = append(results, k)
-			}
+		if _, ok := v[token]; ok {
+			results = append(results, k)
+		}
 		}
 	}
 
@@ -230,7 +251,7 @@ func (i *InvertedIndex) BuildCryptoIndex(ctx context.Context, queries *database.
 		i.AddDocument(dataKey, content)
 
 		// add docs to docmap
-		i.SearchMap[dataKey] = cryptoBytes
+		i.DocMap[dataKey] = cryptoBytes
 	}
 
 	return nil

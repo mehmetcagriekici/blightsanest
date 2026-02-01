@@ -7,43 +7,49 @@ import(
 
 // Diminishing returns controller constant
 var BM25_K1 float64 = 1.5
-// Document length normalization
-var BM24_B float64 = 0.75
+// length normalization constant
+var BM25_B float64 = 0.75
 
 // term frequency - inverse document frequency
-// TF * IDF
-func CalcTFIDF(invertedIndex *invertedIndex, docID, term string) (float64, error) {
+// TF * IDF - bm25 score
+func CalcBM25(invertedIndex *invertedIndex, docID, token string) (float64, error) {
 	idf, err := CalcIDF(invertedIndex, term)
 	if err != nil {
 		return 0.0, err
 	}
 
-	tf, err := invertedIndex.GetTf(docID, term)
+	tf, err := invertedIndex.GetTf(docID, token)
 	if err != nil {
 		return 0.0, err
 	}
 
-	// saturate the tf
-	saturatedTf := (tf * (BM25_K1 + 1) / (tf + BM25_K1))
+	// calculate the average doc length and length norm
+	avgDocLen := 0.0
+	lengthNorm := 1 - BM25_B
+	if len(invertedIndex.DocLengths) > 0 {
+		for _, v := range invertedIndex.DocLengths {
+			avgDocLen += v
+		}
+		avgDocLen = avgDocLen / len(invertedIndex.DocLengths)
+		lengthNorm += BM25_B * (invertedIndex.DocLengths[docID] / avgDocLen) 
+	}
 
+	// saturate and normalize the tf
+	saturatedTf := (tf * (BM25_K1 + 1)) / (tf + BM25_K1 * lengthNorm)
+
+	// bm25 score
 	return float64(saturatedTf) * idf
 }
 
 // inverse document frequency
-func CalcIDF(invertedIndex *InvertedIndex, term string) (float64, error) {
+func CalcIDF(invertedIndex *InvertedIndex, token string) (float64, error) {
 	// load the index and the docmap from the inverted index from the disk
 	if err := invertedIndex.Load(); err != nil {
 		return 0.0, err
 	}
 
-	// tokenize the term - there must be one token
-	tokens := Tokenize(term)
-	if len(tokens) != 1 {
-		return 0.0, errors.New("IDF is calculated for one term.")
-	}
-
 	// BM25 IDF solution
-	totalDocCount := float64(len(invertedIndex.SearchMap))
-	termMatchDocCount := float64(len(invertedIndex.Index[tokens[0]]))
+	totalDocCount := float64(len(invertedIndex.DocMap))
+	termMatchDocCount := float64(len(invertedIndex.Index[token]))
 	return math.Log((totalDocCount - termMatchDocCount + 0.5) / (termMatchDocCount + 0.5 ) + 1)
 }
