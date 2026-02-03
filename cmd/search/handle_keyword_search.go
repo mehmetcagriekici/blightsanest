@@ -1,10 +1,13 @@
 package main
 
 import(
+	"fmt"
 	"log"
+	"slices"
 	"strings"
 	
 	"github.com/mehmetcagriekici/blightsanest/internal/search"
+	"github.com/mehmetcagriekici/blightsanest/internal/clientlogic"
 )
 
 type scorePair struct {
@@ -12,7 +15,7 @@ type scorePair struct {
 	score float64;
 }
 
-func handle_keyword_search(invertedIndex *search.InvertedIndex, queryArray []string) {
+func handle_keyword_search(invertedIndex *search.InvertedIndex, assetType string, queryArray []string) {
 	// load the cdocuments from the cache
 	if err := invertedIndex.LoadDocuments(); err != nil {
 		log.Println("Before start searching, please build the inverted index with the command <create_inverted_index>")
@@ -45,9 +48,26 @@ func handle_keyword_search(invertedIndex *search.InvertedIndex, queryArray []str
 	// sort the scores
 	sortedScores := []scorePair{}
 	for k, v := range scores {
-		pair := scorePair{doc_id: k,
-			score: v,
+		if (v > 0.0) {
+			pair := scorePair{
+				doc_id: k,
+				score: v,
+			}
+			sortedScores = append(sortedScores, pair)
 		}
-		sortedScores = append(sortedScores, pair)
+	}
+	slices.SortFunc(sortedScores, func(a, b scorePair) int {
+		return int(b.score - a.score)
+	})
+
+	// display the search results
+	for i, v := range sortedScores {
+		if i == 5 {
+			break
+		}
+
+		if assetType == clientlogic.ASSET_CRYPTO {
+			fmt.Printf("Cryto List ID: %s\n Match Score: %f\n", v.doc_id, v.score)
+		}
 	}
 }
