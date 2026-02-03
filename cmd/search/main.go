@@ -70,6 +70,9 @@ func main() {
 			case "keyword":
 				// keyword search
 				handle_keyword_search(invertedIndex, words[2], words[3:])
+			case "semantic":
+				// semantic search
+				handle_semantic_search()
 			}
 		case "create_inverted_index":
 			log.Println("Building the inverted index for the database")
