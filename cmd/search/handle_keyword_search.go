@@ -7,7 +7,7 @@ import(
 	"github.com/mehmetcagriekici/blightsanest/internal/search"
 )
 
-type scorePair {
+type scorePair struct {
 	doc_id string;
 	score float64;
 }
@@ -24,7 +24,7 @@ func handle_keyword_search(invertedIndex *search.InvertedIndex, queryArray []str
 	queryTokens := search.Tokenize(query)
 
 	// map document ids to their total bm25 scores
-	scores := make(map[string]int)
+	scores := make(map[string]float64)
 
 	// iterate over the query tokens
 	for _, t := range queryTokens {
@@ -32,18 +32,22 @@ func handle_keyword_search(invertedIndex *search.InvertedIndex, queryArray []str
 		for _, d := range invertedIndex.GetDocuments(t) {
 			// calculate the bm25 score
 			if _, ok := scores[d]; !ok {
-				scores[d] = 0
+				scores[d] = 0.0
 			}
-			scores[d] += search.CalcBM25(invertedIndex, d, t)
+			newScore, err := search.CalcBM25(invertedIndex, d, t)
+			if err != nil {
+				log.Fatal(err)
+			}
+			scores[d] += newScore
 		}
 	}
 
 	// sort the scores
 	sortedScores := []scorePair{}
 	for k, v := range scores {
-		sortedScores = append(sortedScores, {
-			doc_id: k,
+		pair := scorePair{doc_id: k,
 			score: v,
-		})
+		}
+		sortedScores = append(sortedScores, pair)
 	}
 }

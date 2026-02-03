@@ -4,7 +4,6 @@ import(
 	"os"
 	"fmt"
 	"context"
-	"errors"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 	"github.com/mehmetcagriekici/blightsanest/internal/readwrite"
@@ -47,20 +46,13 @@ func NewInvertedIndex() *InvertedIndex {
 }
 
 // function the get the term frequencies of a document for a term
-func (i *InvertedIndex) GetTf(docID, term string) (int, error) {
-	// tokenize the term
-	tokens := Tokenize(term)
-	// if there is more than one term return an error
-	if len(tokens) != 1 {
-		return 0, errors.New("Get term frequencies requires one single term.")
-	}
-
-	countObj, ok := i.TermFrequencies[doc_id]
+func (i *InvertedIndex) GetTf(docID, token string) (int, error) {
+	countObj, ok := i.TermFrequencies[docID]
 	if !ok {
 		return 0, nil
 	}
 
-	return i.TermFrequencies[doc_id][tokens[0]], nil
+	return countObj[token], nil
 }
 
 // load index and the docmap from the disk
@@ -142,7 +134,7 @@ func (i *InvertedIndex) SaveDocuments() error {
 		return err
 	}
 
-	encodedDocLengths, err := readwrite.Encode(i.Doclengths)
+	encodedDocLengths, err := readwrite.Encode(i.DocLengths)
 	if err != nil {
 		return err
 	}
@@ -161,7 +153,7 @@ func (i *InvertedIndex) SaveDocuments() error {
 		return err
 	}
 
-	fmt.Printf("%d bytes are written for inverted index docmap.\n", nIDpc)
+	fmt.Printf("%d bytes are written for inverted index docmap.\n", nDoc)
 	
 	// create term frequencies file and write term frequencies
 	nTf, err := readwrite.Write(i.PTF, encodedTermFrequencies)
@@ -193,26 +185,23 @@ func (i *InvertedIndex) AddDocument(docID, text string) {
 		i.Index[t][docID] = st
 
 		// check if there is a count object for the doc id
-		if _, ok := i.TermFrequencies[doc_id]; !ok {
-			i.TermFrequencies[doc_id] = make(map[string]int)
+		if _, ok := i.TermFrequencies[docID]; !ok {
+			i.TermFrequencies[docID] = make(map[string]int)
 		}
 
 		// check if the token exist in the document counter
-		if _, ok := i.TermFrequencies[doc_id][t]; !ok {
-			i.TermFrequencies[doc_id][t] = 0
+		if _, ok := i.TermFrequencies[docID][t]; !ok {
+			i.TermFrequencies[docID][t] = 0
 		}
-		i.TermFrequencies[doc_id][t] += 1
+		i.TermFrequencies[docID][t] += 1
 	}
 
 	// store document length
-	i.DocLengths[doc_id] = len(tokens)
+	i.DocLengths[docID] = len(tokens)
 }
 
 // get the set of document ids for a a given token
 func (i *InvertedIndex) GetDocuments(token string) []string {
-	// tokenize the query
-	tokens := Tokenize(query)
-
 	// array to store doc_ids
 	results := []string{}
 
@@ -221,11 +210,11 @@ func (i *InvertedIndex) GetDocuments(token string) []string {
 		if _, ok := v[token]; ok {
 			results = append(results, k)
 		}
-		}
 	}
 
 	return results
 }
+
 
 func (i *InvertedIndex) BuildCryptoIndex(ctx context.Context, queries *database.Queries) error {
 	// get the entire crypto data from the database
