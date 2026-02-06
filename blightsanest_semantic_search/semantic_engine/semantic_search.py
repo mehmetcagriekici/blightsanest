@@ -1,3 +1,5 @@
+from semantic_engine.cosine_similarity import cosine_similarity
+
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import os
@@ -47,3 +49,23 @@ class SemanticSearch:
             if len(self.embeddings) == len(self.documents):
                 return self.embeddings
         return self.build_embeddings(documents)
+
+    # semantic search method
+    def search(self, query, limit):
+        # check if the embeddings loaded
+        if self.embeddings is None:
+            raise ValueError("Please call <load_or_create_embeddings> first.")
+
+        # generate an embedding for the query
+        query_embedding = self.generate_embedding(query)
+
+        # calculate cosine similarity between the query embedding and each document embeddings.
+        similarities = []
+        for i in range(len(self.embeddings)):
+            cs_score = cosine_similarity(query_embedding, self.embeddings[i])
+            similarities.append((cs_score, self.documents[i]))
+
+        # sort the similarities
+        similarities = sorted(similarities, key=lambda kv: kv[0], reverse=True)
+
+        return similarities[:limit]

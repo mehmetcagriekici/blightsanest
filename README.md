@@ -12,22 +12,15 @@ It uses the publisher/subscriber architecture to separate data and functionality
 1) Clone this repository
 2) Create a .env file with the necessary variables described below
 3) Make sure docker is running
-4) Start the rabbitmq server from your CLI using rabbit.sh file
-```
-./rabbit.sh start
-```
-5) Start the postgresql using postgres.sh file - still testing the possibe permission issues, if you face any problem with the database please reach me.
-```
-./postgres.sh start
-```
-> or start these services manually with the correct credentials
-6) Directly run the server and the client separately from different CLIs - or build them one by one, and run the executables from separate CLIs.
+4) Directly run the server and the client separately from different CLIs - or build them one by one, and run the executables from separate CLIs.
 ```
 go run ./cmd/client
 go run ./cmd/server
+go run ./cmd/search
 
 go build ./cmd/client
 go build ./cmd/server
+go build ./cmd/search
 ```
 
 ## Enviromental Variables:
