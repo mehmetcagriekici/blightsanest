@@ -27,11 +27,11 @@ func main() {
 	}
 
         // rabbit url
-	rabbitURL := os.Getenv("RABBIT_CONNECTION_STRING")
+	rabbitURL := os.Getenv("RABBITMQ_URL")
 	// cache interval
 	cacheInterval := os.Getenv("CACHE_INTERVAL")
 	// database url
-	dbURL := os.Getenv("DB_URL")
+	dbURL := os.Getenv("DATABASE_URL")
 
         // create a context for the client
 	ctx := context.Background()

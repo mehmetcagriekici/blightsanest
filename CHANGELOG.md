@@ -18,3 +18,6 @@ If you face any bugs problems or something not clear, please do reach me from me
 12) Added database features to the server CREATE/READ/DELETE
 13) Added database features to the client CREATE/READ/UPDATE/DELETE.
 14) Implementing RAG to the client and to the server, allowing users to perform AI powered semantic search.
+15) Dockerizing PostgreSQL database.
+16) Building FAST API for semantic search and RAG.
+17) Preparing the application for production by composing docker images.

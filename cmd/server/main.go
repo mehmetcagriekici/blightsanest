@@ -27,9 +27,9 @@ func main() {
 
         // environment variables
 	cryptoAPIKey := os.Getenv("COIN_GECKO_KEY")
-	rabbitURL := os.Getenv("RABBIT_CONNECTION_STRING")
+	rabbitURL := os.Getenv("RABBITMQ_URL")
 	cacheInterval := os.Getenv("CACHE_INTERVAL")
-	databaseURL := os.Getenv("DB_URL")
+	databaseURL := os.Getenv("DATABASE_URL")
 
         // create a context for the server
 	ctx := context.Background()

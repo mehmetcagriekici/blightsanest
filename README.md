@@ -12,24 +12,19 @@ It uses the publisher/subscriber architecture to separate data and functionality
 1) Clone this repository
 2) Create a .env file with the necessary variables described below
 3) Make sure docker is running
-4) Directly run the server and the client separately from different CLIs - or build them one by one, and run the executables from separate CLIs.
+4) Build up the docker-compose.yml
 ```
-go run ./cmd/client
-go run ./cmd/server
-go run ./cmd/search
-
-go build ./cmd/client
-go build ./cmd/server
-go build ./cmd/search
+docker compose build
+docker compose up
 ```
 
 ## Enviromental Variables:
 ```
 COIN_GECKO_KEY           # coin gecko api key for crypto currencies
-RABBIT_CONNECTION_STRING # url to the rabbitmq server
+RABBITMQ_URL # url to the rabbitmq server
 CACHE_INTERVAL           # time until a crypto cache entry becomes stalei and removed
 SUBSCRIBER_PREFETCH      # prefetch count for amqp Qos
-DB_URL                   # postgres connection string
+DATABASE_URL             # postgres connection string
 ```
 
 ## Motivation

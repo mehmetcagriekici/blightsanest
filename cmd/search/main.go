@@ -27,8 +27,8 @@ func main() {
 	}
 
 	// get the rabbitmq and postgresql database url from .env
-	rabbitURL   := os.Getenv("RABBIT_CONNECTION_STRING")
-	databaseURL := os.Getenv("DB_URL")
+	rabbitURL   := os.Getenv("RABBITMQ_URL")
+	databaseURL := os.Getenv("DATABASE_URL")
 
 	// create context, rabbit connection, and database queries
 	ctx := context.Background()

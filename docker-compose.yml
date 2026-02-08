@@ -1,0 +1,65 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"      # AMQP
+      - "15672:15672"    # management UI
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: mehmetcagriekici
+      POSTGRES_PASSWORD: helloworld
+      POSTGRES_DB: blightsanest_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  go-server:
+    build:
+      context: . # uses .blightsanest/Dockerfile
+    command: ["./server"]     # matches Dockerfile output name
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@localhost:5672
+      DATABASE_URL: postgres://mehmetcagriekici:helloworld@localhost:5432/blightsanest_db?sslmode=disable
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  go-search:
+    build:
+      context: .
+    command: ["./search"]
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@localhost:5672
+      DATABASE_URL: postgres://mehmetcagriekici:helloworld@localhost:5432/blightsanest_db?sslmode=disable
+      SEMANTIC_API_URL: http://python-semantic-api:8000
+    depends_on:
+      - rabbitmq
+      - postgres
+      - python-semantic-api
+
+  go-client:
+    build:
+      context: .
+    command: ["./client"]
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@localhost:5672
+      DATABASE_URL: postgres://mehmetcagriekici:helloworld@localhost:5432/blightsanest_db?sslmode=disable
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  python-semantic-api:
+    build:
+      context: ./blightsanest_semantic_search
+    environment:
+      DATABASE_URL: postgres://mehmetcagriekici:helloworld@localhost:5432/blightsanest_db?sslmode=disable
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
