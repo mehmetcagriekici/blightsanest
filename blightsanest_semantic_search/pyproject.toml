@@ -1,8 +1,8 @@
 [project]
 name = "blightsanest-semantic-search"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "Blightsanest semantic search engine"
+readme = "SEMANTIC.md"
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.4.2",

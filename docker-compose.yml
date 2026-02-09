@@ -19,6 +19,7 @@ services:
   go-server:
     build:
       context: . # uses .blightsanest/Dockerfile
+    image: go-app:dev
     command: ["./server"]     # matches Dockerfile output name
     environment:
       RABBITMQ_URL: amqp://guest:guest@localhost:5672
@@ -30,6 +31,7 @@ services:
   go-search:
     build:
       context: .
+    image: go-app:dev
     command: ["./search"]
     environment:
       RABBITMQ_URL: amqp://guest:guest@localhost:5672
@@ -43,6 +45,7 @@ services:
   go-client:
     build:
       context: .
+    image: go-app:dev
     command: ["./client"]
     environment:
       RABBITMQ_URL: amqp://guest:guest@localhost:5672

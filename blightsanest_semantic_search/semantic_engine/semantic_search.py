@@ -34,6 +34,11 @@ class SemanticSearch:
             data_list.append(doc_data)
         # embed the documents
         self.embeddings = self.model.encode(data_list, show_progress_bar=True)
+
+        # save the embeddings for the next time
+        os.makedirs("cache", exist_ok=True)
+        np.save("cache/db_embeddings.npy", self.embeddings)
+                
         return self.embeddings
 
     # store embeddings locally

@@ -14,8 +14,14 @@ It uses the publisher/subscriber architecture to separate data and functionality
 3) Make sure docker is running
 4) Build up the docker-compose.yml
 ```
-docker compose build
+docker compose build - you only need to build once
 docker compose up
+```
+5) Run the application from seperate clis
+```
+go run ./cmd/server
+go run ./cmd/client
+go run ./cmd/search
 ```
 
 ## Enviromental Variables:
@@ -25,6 +31,7 @@ RABBITMQ_URL # url to the rabbitmq server
 CACHE_INTERVAL           # time until a crypto cache entry becomes stalei and removed
 SUBSCRIBER_PREFETCH      # prefetch count for amqp Qos
 DATABASE_URL             # postgres connection string
+SEMANTIC_API_URL         # fastapi url - same as the one in docker-compose.yml file
 ```
 
 ## Motivation

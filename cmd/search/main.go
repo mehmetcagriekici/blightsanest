@@ -29,6 +29,7 @@ func main() {
 	// get the rabbitmq and postgresql database url from .env
 	rabbitURL   := os.Getenv("RABBITMQ_URL")
 	databaseURL := os.Getenv("DATABASE_URL")
+	semanticURL := os.Getenv("SEMANTIC_API_URL")
 
 	// create context, rabbit connection, and database queries
 	ctx := context.Background()
@@ -48,6 +49,9 @@ func main() {
 
 	// inverted index
 	invertedIndex := search.NewInvertedIndex()
+
+	// semantic api client
+	semanticClient := search.NewClient(semanticURL)
 
 	// REPL
 	for {
@@ -72,7 +76,7 @@ func main() {
 				handle_keyword_search(invertedIndex, words[2], words[3:])
 			case "semantic":
 				// semantic search
-				handle_semantic_search()
+				handle_semantic_search(semanticClient, words[2], words[3:])
 			}
 		case "create_inverted_index":
 			log.Println("Building the inverted index for the database")
@@ -86,6 +90,9 @@ func main() {
 				log.Printf("Couldn't save the created inverted index to the local machine: %v\n", err)
 				continue
 			}
+		case "create_semantic_index":
+			log.Println("Sending the request to the Blightsanest Semantic Search Engine to create embeddings for the semantic search from the database.")
+			handle_create_semantic_index(ctx, dbQueries, semanticClient)
 		}
 	}
 }

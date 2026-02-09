@@ -14,6 +14,3 @@ COPY . .
 RUN go build -o server ./cmd/server
 RUN go build -o search ./cmd/search
 RUN go build -o client ./cmd/client
-
-# Default command (overridden by docker-compose per service)
-CMD ["/bin/server"]
