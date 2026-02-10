@@ -45,7 +45,7 @@ func CreateCryptoState() *CryptoState {
         return &CryptoState{
 	        CurrentList:                     []MarketData{},
 		CurrentListID:                   "",
-		CurrentSortingField:             "",
+		CurrentSortingField:             "CurrentPrice",
 		ClientTimeframes:                []AvailableTimeframes{},
 		CurrentTimeframe:                PCP_DAY,
 		CurrentMinRank:                  0,
