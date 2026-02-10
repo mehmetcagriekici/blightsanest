@@ -17,7 +17,6 @@ type EmbeddingsResponse struct {
 
 type SearchRequest struct {
 	Query string `json:"query"`
-	Limit int    `json:"limit"`
 }
 
 type SearchDocument struct {

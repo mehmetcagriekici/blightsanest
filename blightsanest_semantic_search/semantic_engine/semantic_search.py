@@ -56,7 +56,7 @@ class SemanticSearch:
         return self.build_embeddings(documents)
 
     # semantic search method
-    def search(self, query, limit):
+    def search(self, query):
         # check if the embeddings loaded
         if self.embeddings is None:
             raise ValueError("Please call <load_or_create_embeddings> first.")
@@ -73,4 +73,4 @@ class SemanticSearch:
         # sort the similarities
         similarities = sorted(similarities, key=lambda kv: kv[0], reverse=True)
 
-        return similarities[:limit]
+        return similarities

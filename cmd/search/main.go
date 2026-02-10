@@ -64,20 +64,8 @@ func main() {
 
 		switch cmd := words[0]; cmd {
 		case "search":
-			if len(words) < 3 {
-				log.Println("Please at least provide and asset type and a search type.")
-				log.Println("search <search_type> <asset> <query...>")
-				log.Println("Example: search keyword crypto find tokens with 1150 dollars.")
-				continue
-			}
-			switch searchType := words[1]; searchType {
-			case "keyword":
-				// keyword search
-				handle_keyword_search(invertedIndex, words[2], words[3:])
-			case "semantic":
-				// semantic search
-				handle_semantic_search(semanticClient, words[2], words[3:])
-			}
+			// hybrid search 
+			handleSearch(invertedIndex, semanticClient, words[1], words[2:])
 		case "create_inverted_index":
 			log.Println("Building the inverted index for the database")
 			if err := invertedIndex.BuildCryptoIndex(ctx, dbQueries); err != nil {

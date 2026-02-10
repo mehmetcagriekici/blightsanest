@@ -43,8 +43,8 @@ func (c *Client) Index(docs []EmbeddingDoc) (*EmbeddingsResponse, error) {
 	return &out, nil
 }
 
-func (c *Client) Search(query string, limit int) (*SearchResponse, error) {
-	reqBody, err := json.Marshal(SearchRequest{Query: query, Limit: limit})
+func (c *Client) Search(query string) (*SearchResponse, error) {
+	reqBody, err := json.Marshal(SearchRequest{Query: query})
 	if err != nil {
 		return nil, err
 	}
