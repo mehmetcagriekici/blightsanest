@@ -5,7 +5,7 @@ import(
 	"context"
 
         amqp "github.com/rabbitmq/amqp091-go"
-	
+
         "github.com/mehmetcagriekici/blightsanest/internal/routing"
 	"github.com/mehmetcagriekici/blightsanest/internal/readwrite"
 )
@@ -20,6 +20,7 @@ func TestPubsub(t *testing.T) {
         conn, err := amqp.Dial("amqp://guest:guest@localhost:5672")
 	if err != nil {
 	        t.Errorf("Couldn't create the connection")
+		return
 	}
 	defer conn.Close()
 
@@ -36,6 +37,7 @@ func TestPubsub(t *testing.T) {
 			  routing.BlightTesting,
 			  msg); err != nil {
 	        t.Errorf("Couldn't publish the message")
+		return
 	}
 
         // subscribe to the message
@@ -56,6 +58,7 @@ func TestPubsub(t *testing.T) {
 				 readwrite.Decode)
 	if err != nil {
 	        t.Errorf("Couldn't subscribe to the message")
+		return
 	}
 
 	defer cancel()
