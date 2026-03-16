@@ -1,10 +1,10 @@
-package main
+package cmd
 
 import(
 	"log"
 	"context"
 	"encoding/json"
-	
+
 	"github.com/google/uuid"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
@@ -17,7 +17,7 @@ func handleCryptoSave(ctx context.Context, cc *crypto.CryptoCache, args []string
 		log.Println("To save a crypto list to the database, please provide the ID of the crypto list you want to save")
 		return
 	}
-	
+
 	// initial key -> cache id
 	cryptoKey := args[0]
 	if len(args) == 2 {

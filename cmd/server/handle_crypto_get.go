@@ -1,10 +1,10 @@
-package main
+package cmd
 
 import(
         "log"
         "context"
 	"encoding/json"
-	
+
         amqp "github.com/rabbitmq/amqp091-go"
 
         "github.com/mehmetcagriekici/blightsanest/internal/database"
@@ -28,7 +28,7 @@ func handleCryptoGet(ctx context.Context,
 	        log.Println("Requested list already exists in the current cache. Quiting the process...")
 		return
 	}
-	
+
         data, err := queries.GetCryptoList(ctx, args[0])
 	if err != nil {
 	        log.Fatal(err)

@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import _ "github.com/lib/pq"
 
@@ -11,8 +11,6 @@ import(
 	"database/sql"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
-	"github.com/mehmetcagriekici/blightsanest/internal/serverlogic"
-	"github.com/mehmetcagriekici/blightsanest/internal/logs"
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -58,17 +56,9 @@ func main() {
 	// get the gooese queries
 	dbQueries := database.New(db)
 
+	// change this with cobra
         //REPL
-	serverlogic.PrintServerIntroduction()
 	for {
-	        words := logs.GetInput()
-
-		// no commands
-		if len(words) == 0 {
-		        log.Println("Please provide one of the commands to continue:")
-			serverlogic.PrintServerHelp()
-		        continue
-		}
 
 		// valid commands
 		if words[0] != "quit" &&
@@ -79,13 +69,6 @@ func main() {
 		   words[0] != "help" {
 		        log.Println("Invalid server command! Please continue with one of these:")
 			serverlogic.PrintServerHelp()
-			continue
-		}
-
-                // print the server help
-		if words[0] == "help" {
-		        serverlogic.PrintServerHelp()
-			printCryptoFetchHelp()
 			continue
 		}
 

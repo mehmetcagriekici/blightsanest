@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import(
         "log"
@@ -6,7 +6,7 @@ import(
 	"fmt"
 	"time"
 	"context"
-	
+
 	amqp "github.com/rabbitmq/amqp091-go"
 
         "github.com/mehmetcagriekici/blightsanest/internal/pubsub"
@@ -58,7 +58,7 @@ func handleCryptoFetch(ctx context.Context, conn *amqp.Connection, cc *crypto.Cr
 		if err != nil {
 		        log.Fatal(err)
 		}
-			
+
 		// add list to the cache
 		cc.Add(cacheKey, cryptoList)
 	}
@@ -68,14 +68,14 @@ func handleCryptoFetch(ctx context.Context, conn *amqp.Connection, cc *crypto.Cr
 	if !ok {
 	        log.Fatal("Requested crypto list could not be fetched.")
 	}
-	
+
         log.Printf("Publishing the requested crypto list with the id: %s\n", cacheKey)
 	delivery := routing.CryptoExchangeBody{
 	        ID:        cacheKey,
 		CreatedAt: cacheEntry.CreatedAt,
 		Payload:   cacheEntry.Market,
 	}
-	
+
 	if err := pubsub.PublishCrypto(ctx, conn, delivery); err != nil {
 	        log.Fatal(err)
 	}
@@ -89,7 +89,7 @@ func createCryptoCacheKey(unix int64, queries string) string {
 
 func createCryptoFetchURLQueries(args []string) string {
         queries := []string{}
-	
+
         if len(args) == 0 {
 		return ""
 	}
@@ -101,7 +101,7 @@ func createCryptoFetchURLQueries(args []string) string {
 		query := fmt.Sprintf("%s=%s", queryParameters[i], q)
 		queries = append(queries, query)
 	}
-	
+
 	return strings.Join(queries, "&")
 }
 
