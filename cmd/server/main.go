@@ -9,12 +9,12 @@ import(
 	"context"
 	"strconv"
 	"database/sql"
-	
+
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/serverlogic"
 	"github.com/mehmetcagriekici/blightsanest/internal/logs"
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
-	
+
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/joho/godotenv"
 )
@@ -57,19 +57,19 @@ func main() {
 
 	// get the gooese queries
 	dbQueries := database.New(db)
-	
+
         //REPL
 	serverlogic.PrintServerIntroduction()
 	for {
 	        words := logs.GetInput()
-		
+
 		// no commands
 		if len(words) == 0 {
 		        log.Println("Please provide one of the commands to continue:")
 			serverlogic.PrintServerHelp()
 		        continue
 		}
-		
+
 		// valid commands
 		if words[0] != "quit" &&
 		   words[0] != "fetch" &&
@@ -98,9 +98,9 @@ func main() {
                 if !crypto.ControlFeatureCommands(words) {
 		        continue
 		}
-		
+
                 // fetch - from the api with cache
-		if words[0] == "fetch" {			
+		if words[0] == "fetch" {
 			if words[1] == "crypto" {
 			        handleCryptoFetch(ctx, conn, cryptoCache, cryptoAPIKey, words[2:])
 				continue
