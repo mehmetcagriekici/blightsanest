@@ -23,26 +23,28 @@ Parameter order: `ids > names > symbols > include_tokens > category > order > pe
 Use `-` to skip a parameter.
 
 ```
-fetch crypto - Bitcoin
+fetch crypto -- - Bitcoin
 # skips ids, fetches by name
 
-fetch crypto - - btc
+fetch crypto -- - - btc
 # skips ids and names, fetches by symbol
 
-fetch crypto - - - top - market_cap_asc - - - 1h,24h,7d
+fetch crypto -- - - - top - market_cap_asc - - - 1h,24h,7d
 # skips ids, names, symbols, per_page, page, sparkline, and precision
 ```
+
+> The `--` separator is required before positional arguments when using Cobra to distinguish them from flags.
 
 For full parameter details see the [CoinGecko /coins/markets endpoint docs](https://docs.coingecko.com/reference/coins-markets).
 
 ---
 
-### `get crypto`
+### `read crypto`
 
 Retrieves an existing crypto list from the database and publishes it to connected clients.
 
 ```
-get crypto <list_id>
+read crypto <list_id>
 ```
 
 ---
@@ -105,6 +107,16 @@ Prints the ID of the current client list and all lists stored in the local cache
 
 ```
 list crypto
+```
+
+---
+
+### `switch crypto`
+
+Switches the active client list to a different one stored in the local cache.
+
+```
+switch crypto <cache_id>
 ```
 
 ---
@@ -285,7 +297,7 @@ find crypto potential_rally <max_ath_change_percentage>
 Identifies coins with high circulating supply values that may face inflation or unlock pressure. Use `ignored_coins` to exclude known stablecoins or irrelevant assets (space-separated names).
 
 ```
-find crypto coin_inflation <max_market_cap_rank> <min_supply_value> [ignored_coins]
+find crypto coin_inflation <max_market_cap_rank> <min_supply_value> [ignored_coins...]
 ```
 
 **Formula:** `supply_value = CurrentPrice * CirculatingSupply`

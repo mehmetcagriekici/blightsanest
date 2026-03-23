@@ -2,12 +2,13 @@ package main
 
 import(
 	"log"
-	
+
+	"github.com/spf13/cobra"
+	amqp "github.com/rabbitmq/amqp091-go"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
 	"github.com/mehmetcagriekici/blightsanest/internal/routing"
-	
-	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 // gets data from the server
@@ -17,22 +18,22 @@ func handleCryptoFetch(cc     *crypto.CryptoCache,
 		       args   []string,
 		       sm     *pubsub.SubscriptionManager) {
 	defer log.Print("> ")
-	
+
         // control args
 	if len(args) != 1 {
 	        log.Println("<fetch crypto> command requires a key of a published crypto list as an argument.")
 		log.Println("    fetch crypto <id_of_a_published_crypto_list_from_the_server>")
 		return
 	}
-	
+
 	key := args[0]
-	
+
         // check if the requested list is the current list
 	if key == cs.CurrentListID {
 	        log.Println("Requested crypto list is already the list on the current client. Didn't perform the fetch request to the server.")
 		return
 	}
-	
+
         // check client cache if the crypto list exists
 	_, ok := cc.Get(key)
 	if ok {
@@ -44,7 +45,7 @@ func handleCryptoFetch(cc     *crypto.CryptoCache,
 
 	cancel, err := pubsub.SubscribeCrypto(conn, func(delivery routing.CryptoExchangeBody) routing.AckType {
 	        log.Println("Subscribing to the server crypto channel to get the requested list...")
-		
+
 	        list := delivery.Payload
 		id := delivery.ID
 
@@ -55,12 +56,12 @@ func handleCryptoFetch(cc     *crypto.CryptoCache,
 
                 cc.Add(id, list)
 		cs.UpdateCurrentList(id, list)
-        
+
 
 		log.Printf("New crypto list <%s> is successfully added to the client cache and the state.\n", id)
 		return routing.ACK
 	})
-	
+
 	if err != nil {
 	        log.Fatal(err)
 	}

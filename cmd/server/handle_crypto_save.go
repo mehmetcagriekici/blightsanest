@@ -12,7 +12,7 @@ import(
 )
 
 // args: mandotary crypto list cache id, arbitrary custom crypto list id -> saveed as key
-func handleCryptoSave(ctx context.Context, cc *crypto.CryptoCache, args []string, queries *database.Queries) {
+func handleCryptoSave(ctx context.Context, CryptoCache *crypto.CryptoCache, args []string, queries *database.Queries) {
 	if len(args) == 0 {
 		log.Println("To save a crypto list to the database, please provide the ID of the crypto list you want to save")
 		return
@@ -25,7 +25,7 @@ func handleCryptoSave(ctx context.Context, cc *crypto.CryptoCache, args []string
 	}
 
 	// check if the passed list id exist on the cache
-	cryptoEntry, ok := cc.Get(args[0])
+	cryptoEntry, ok := CryptoCache.Get(args[0])
 	if !ok {
 		log.Println("Provided crypto list id does not exist on the server cache!")
 		return
