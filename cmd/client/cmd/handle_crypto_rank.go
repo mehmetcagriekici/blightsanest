@@ -1,18 +1,26 @@
-package main
+package cmd
 
-import(
+import (
         "log"
 	"fmt"
-		
+
+	"github.com/spf13/cobra"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoRank(cs *crypto.CryptoState, args []string) {
-        controlCryptoRank(cs, args)
-	
-        list := crypto.RankCoins(cs.CurrentSortingField, cs.CurrentOrder, cs.CurrentList)
-        newID := fmt.Sprintf("sorted_%v_%s", cs.CurrentOrder, cs.CurrentSortingField)
-	commonCryptoHandler(cs, list, []string{cs.CurrentSortingField}, newID)
+var rankCryptoCmd = &cobra.Command{
+	Use:   "crypto [args...]",
+	Short: "Sort current crypto list by a field.",
+	Run:   handleCryptoRank,
+}
+
+func handleCryptoRank(cmd *cobra.Command, args []string) {
+        controlCryptoRank(CryptoState, args)
+
+        list := crypto.RankCoins(CryptoState.CurrentSortingField, CryptoState.CurrentOrder, CryptoState.CurrentList)
+        newID := fmt.Sprintf("sorted_%v_%s", CryptoState.CurrentOrder, CryptoState.CurrentSortingField)
+	commonCryptoHandler(CryptoState, list, []string{CryptoState.CurrentSortingField}, newID)
 }
 
 // order

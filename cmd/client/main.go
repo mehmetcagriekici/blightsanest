@@ -9,42 +9,6 @@ func main() {
 
 func main() {
         for {
-	        // Get data from the server
-		if words[0] == clientlogic.CLIENT_FETCH {
-		        if words[1] == clientlogic.ASSET_CRYPTO {
-				handleCryptoFetch(cryptoCache,
-				                  cryptoState,
-						  conn,
-						  words[2:],
-						  cryptoSubscriptionManager)
-                                continue
-			}
-
-                        continue
-		}
-
-                // get data from other clients
-		if words[0] == clientlogic.CLIENT_GET {
-		        if words[1] == clientlogic.ASSET_CRYPTO {
-			        handleCryptoGet(cryptoCache,
-				                cryptoState,
-						conn,
-						words[2:],
-						cryptoSubscriptionManager)
-				continue
-			}
-
-                        continue
-		}
-
-                // ranking features
-                if words[0] == clientlogic.CLIENT_RANK {
-		        if words[1] == clientlogic.ASSET_CRYPTO {
-			        handleCryptoRank(cryptoState, words[2:])
-				continue
-			}
-		}
-
                 // grouping features
 		if words[0] == clientlogic.CLIENT_GROUP {
 		        if !crypto.ControlFeatureSub(words) {

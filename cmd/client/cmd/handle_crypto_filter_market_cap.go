@@ -1,19 +1,29 @@
-package main
+package cmd
 
 import(
         "log"
-	"strconv"
 	"fmt"
+	"strconv"
+
+	"github.com/spf13/cobra"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterMarketCap(cs *crypto.CryptoState, args []string) {
-        controlFilterMarketCap(cs, args)
-        list := crypto.FilterCoinCap(cs.CurrentMinMarketCap, cs.CurrentMaxMarketCap, cs.CurrentList)
-	newID := fmt.Sprintf("filter_market_cap_%f_%f", cs.CurrentMinMarketCap, cs.CurrentMaxMarketCap)
+var filterCryptoMarketCapCmd = &cobra.Command{
+	Use:   "crypto market_cap [args...]",
+	Short: "Filter coins using min and max market cap.",
+	Run:   handleCryptoFilterMarketCap,
+}
+
+func handleCryptoFilterMarketCap(cmd *cobra.Command, args []string) {
+        controlFilterMarketCap(CryptoState, args)
+        list := crypto.FilterCoinCap(CryptoState.CurrentMinMarketCap,
+		CryptoState.CurrentMaxMarketCap,
+		CryptoState.CurrentList)
+	newID := fmt.Sprintf("filter_market_cap_%f_%f", CryptoState.CurrentMinMarketCap, CryptoState.CurrentMaxMarketCap)
 	fields := []string{"MarketCapRank", "MarketCapChangePercentage"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 // min market cap

@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import(
 	"log"
@@ -11,12 +11,15 @@ import(
 	"github.com/mehmetcagriekici/blightsanest/internal/routing"
 )
 
+var fetchCryptoCmd = &cobra.Command{
+	Use:   "crypto [args...]",
+	Short: "Fetch a crypto list from the server."
+	Args:  cobra.MinimumNArgs(1),
+	Run:   handleCryptoFetch,
+}
+
 // gets data from the server
-func handleCryptoFetch(cc     *crypto.CryptoCache,
-                       cs     *crypto.CryptoState,
-		       conn   *amqp.Connection,
-		       args   []string,
-		       sm     *pubsub.SubscriptionManager) {
+func handleCryptoFetch(cmd *cobra.Command, args []string) {
 	defer log.Print("> ")
 
         // control args
@@ -29,21 +32,20 @@ func handleCryptoFetch(cc     *crypto.CryptoCache,
 	key := args[0]
 
         // check if the requested list is the current list
-	if key == cs.CurrentListID {
+	if key == CryptoState.CurrentListID {
 	        log.Println("Requested crypto list is already the list on the current client. Didn't perform the fetch request to the server.")
 		return
 	}
 
         // check client cache if the crypto list exists
-	_, ok := cc.Get(key)
-	if ok {
+	if _, ok := CryptoCache.Get(key); ok {
 	        log.Println("Requested crypto list already exists in the client cache.")
 		log.Println("To make the requested list the current client list:")
 		log.Printf("    switch crypto %s\n", key)
 		return
 	}
 
-	cancel, err := pubsub.SubscribeCrypto(conn, func(delivery routing.CryptoExchangeBody) routing.AckType {
+	cancel, err := pubsub.SubscribeCrypto(Conn, func(delivery routing.CryptoExchangeBody) routing.AckType {
 	        log.Println("Subscribing to the server crypto channel to get the requested list...")
 
 	        list := delivery.Payload
@@ -54,9 +56,8 @@ func handleCryptoFetch(cc     *crypto.CryptoCache,
 			return routing.NACK_DISCARD
 		}
 
-                cc.Add(id, list)
-		cs.UpdateCurrentList(id, list)
-
+                CryptoCache.Add(id, list)
+		CryptoState.UpdateCurrentList(id, list)
 
 		log.Printf("New crypto list <%s> is successfully added to the client cache and the state.\n", id)
 		return routing.ACK
@@ -66,6 +67,6 @@ func handleCryptoFetch(cc     *crypto.CryptoCache,
 	        log.Fatal(err)
 	}
 
-        sm.Add(cancel)
+        SubManager.Add(cancel)
 	return
 }

@@ -1,19 +1,29 @@
-package main
+package cmd
 
 import(
         "log"
-	"strconv"
 	"fmt"
+	"strconv"
+
+	"github.com/spf13/cobra"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoGroupScarcity(cs *crypto.CryptoState, args []string) {
-        controlScarcityArguments(cs, args)	
-	list := crypto.RankCoinScarcity(cs.CurrentMinCirculatingSupply, cs.CurrentMaxATHChangePercentage, cs.CurrentList)
-        newID := fmt.Sprintf("group_scarcity_%f_%f", cs.CurrentMinCirculatingSupply, cs.CurrentMaxATHChangePercentage)
+var groupCryptoScarcityCmd = &cobra.Command{
+	Use:   "crypto scarcity [args...]",
+	Short: "Find coin scarcities with ath change percentage, circulatin supply, and max supply.",
+	Run:   handleCryptoGroupScarcity,
+}
+
+func handleCryptoGroupScarcity(cmd *cobra.Command, args []string) {
+        controlScarcityArguments(CryptoState, args)
+	list := crypto.RankCoinScarcity(CryptoState.CurrentMinCirculatingSupply,
+		CryptoState.CurrentMaxATHChangePercentage,
+		CryptoState.CurrentList)
+        newID := fmt.Sprintf("group_scarcity_%f_%f", CryptoState.CurrentMinCirculatingSupply, CryptoState.CurrentMaxATHChangePercentage)
 	fields := []string{"ATH", "AthChangePercentage", "CirulatingSupply", "MaxSupply"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 // min circulatin supply

@@ -1,10 +1,12 @@
-package main
+package cmd
 
 import(
         "log"
-	"strconv"
 	"fmt"
 	"strings"
+	"strconv"
+
+	"github.com/spf13/cobra"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )

@@ -1,40 +1,43 @@
-package main
+package cmd
 
-import(
+import (
 	"log"
-	
+
+	"github.com/spf13/cobra"
+	amqp "github.com/rabbitmq/amqp091-go"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
 	"github.com/mehmetcagriekici/blightsanest/internal/routing"
-	
-	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 // gets data from the server
-func handleCryptoGet(cc     *crypto.CryptoCache,
-                     cs     *crypto.CryptoState,
-		     conn   *amqp.Connection,
-		     args   []string,
-		     sm     *pubsub.SubscriptionManager) {
+var getCryptoCmd = &cobra.Command{
+	Use:   "crypto [args...]",
+	Short: "Get a published crypto list from other clients",
+	Args:  cobra.MinimumNArgs(1),
+	Run:   handlerCryptoGet,
+}
+func handleCryptoGet(cmd *cobra.Command, args []string) {
 	defer log.Print("> ")
-	
+
         // control args
 	if len(args) != 1 {
 	        log.Println("<get crypto> command requires a key of a published crypto list as an argument.")
 		log.Println("    get crypto <id_of_a_published_crypto_list_from_the_client>")
 		return
 	}
-	
+
 	key := args[0]
-	
+
         // check if the requested list is the current list
-	if key == cs.CurrentListID {
+	if key == CryptoState.CurrentListID {
 	        log.Println("Requested crypto list is already the list on the current client.")
 		return
 	}
-	
+
         // check client cache if the crypto list exists
-	_, ok := cc.Get(key)
+	_, ok := CryptoCache.Get(key)
 	if ok {
 	        log.Println("Requested crypto list already exists in the client cache.")
 		log.Println("To make the requested list the current client list:")
@@ -52,16 +55,16 @@ func handleCryptoGet(cc     *crypto.CryptoCache,
 			return routing.NACK_REQUEUE
 		}
 
-                cc.Add(id, list)
-		cs.UpdateCurrentList(id, list)
+                CryptoCache.Add(id, list)
+		CryptoState.UpdateCurrentList(id, list)
 		log.Printf("New crypto list <%s> is successfully added to the client cache and the state.\n", id)
 		return routing.ACK
 	})
-	
+
 	if err != nil {
 	        log.Fatal(err)
 	}
-	
+
         return
-        sm.Add(cancel)	
+        SubManager.Add(cancel)
 }

@@ -1,6 +1,6 @@
-package main
+package cmd
 
-import(
+import (
         "log"
 
 	"github.com/spf13/cobra"
@@ -11,7 +11,7 @@ import(
 var switchCryptoCmd = &cobra.Command{
 	Use:   "crypto [args...]",
 	Short: "Switch current crypto list",
-	Args:  cobra.MinimumArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	Run:   handleCryptoSwitch,
 }
 

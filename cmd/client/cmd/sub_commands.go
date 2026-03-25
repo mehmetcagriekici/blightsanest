@@ -43,6 +43,34 @@ var listCmd = &cobra.Command{
 }
 
 // fetch
+var fetchCmd = &cobra.Command{
+	Use:   "fetch",
+	Short: "Fetch a published asset from the server.",
+}
+
+// get
+var getCmd = &cobra.Command{
+	Use:   "get",
+	Short: "Get a published asset from other clients.",
+}
+
+// rank
+var rankCmd = &cobra.Command{
+	Use:   "rank",
+	Short: "Rank assets by existing fields.",
+}
+
+// group
+var groupCmd = &cobra.Command{
+	Use:   "group",
+	Short: "Group assets using existing features."
+}
+
+// filter
+var filterCmd = &cobra.Command{
+	Use: "filter",
+	Short: "Filter assets for existing features."
+}
 
 func init() {
 	databaseCmd.AddCommand(createDatabaseCmd,
@@ -59,11 +87,32 @@ func init() {
 
 	listCmd.AddCommand(listCryptoCmd)
 
+	fetchCmd.AddCommand(fetchCryptoCmd)
+
+	getCmd.AddCommand(getCryptoCmd)
+
+	rankCmd.AddCommand(rankCryptoCmd)
+
+	groupCmd.AddCommand(groupCryptoLiquidityCmd, groupCryptoScarcityCmd)
+
+	filterCmd.AddCommand(filterCryptoTotalVolumeCmd,
+		filterCryptoMarketCapCmd,
+		filterCryptoPriceChangePercentageCmd,
+		filterCryptoVolatileCmd,
+		filterCryptoHighRiskCmd,
+		filterCryptoLowRiskCmd,
+	)
+
 	RootCmd.AddCommand(quitCmd,
 		databaseCmd,
-o		switchCmd,
+		switchCmd,
 		setCmd,
 		saveCmd,
 		listCmd,
+		fetchCmd,
+		getCmd,
+		rankCmd,
+		groupCmd,
+		filterCmd,
 	)
 }

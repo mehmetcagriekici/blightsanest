@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
         "log"
@@ -9,9 +9,9 @@ import (
 )
 
 var listCryptoCmd = &cobra.Command{
-	Use: "crypto",
+	Use:   "crypto",
 	Short: "Print existing crypto list ids."
-	Run: handleCryptoList,
+	Run:   handleCryptoList,
 }
 
 func handleCryptoList(cmd *cobra.Command, args []string) {

@@ -1,19 +1,30 @@
-package main
+package cmd
 
 import (
         "log"
-	"strconv"
 	"fmt"
-	
+	"strconv"
+
+	"github.com/spf13/cobra"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterTotalVolume(cs *crypto.CryptoState, args []string) {
-        controlFilterTotalVolume(cs, args)
-        list := crypto.FilterCoinVolume(cs.CurrentMinVolume, cs.CurrentMaxVolume, cs.CurrentList)
-	newID := fmt.Sprintf("filter_total_volume_%f_%f", cs.CurrentMinVolume, cs.CurrentMaxVolume)
+var filterCryptoTotalVolumeCmd = &cobra.Command{
+	Use:   "crypto total_volume [args...]",
+	Short: "Filter coins with minimum and maximum total volume values.",
+	Run:    handleCryptoFilterTotalVolume,
+}
+
+func handleCryptoFilterTotalVolume(cmd *cobra.Command, args []string) {
+        controlFilterTotalVolume(CryptoState, args)
+        list := crypto.FilterCoinVolume(CryptoState.CurrentMinVolume,
+		CryptoState.CurrentMaxVolume,
+		CryptoState.CurrentList,
+	)
+	newID := fmt.Sprintf("filter_total_volume_%f_%f", CryptoState.CurrentMinVolume, CryptoState.CurrentMaxVolume)
 	fields := []string{"TotalVolume"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 // min_volume

@@ -1,19 +1,31 @@
-package main
+package cmd
 
-import(
+import (
         "log"
-	"strconv"
 	"fmt"
+	"strconv"
+
+	"github.com/spf13/cobra"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoGroupLiquidity(cs *crypto.CryptoState, args []string) {
-        controlLiquidityArguments(cs, args)
-        list := crypto.GroupHighLiquidityCoins(cs.CurrentMinRank, cs.CurrentMaxRank, cs.CurrentMinVolume, cs.CurrentList)
-	newID := fmt.Sprintf("group_liquidity_%d_%d_%f", cs.CurrentMinRank, cs.CurrentMaxRank, cs.CurrentMinVolume)
+var groupCryptoLiquidityCmd = &cobra.Command{
+	Use:   "crypto liquidity [args...]",
+	Short: "Find crypto liquidity using market rank and total volume",
+	Run:   handleCryptoGroupLiquidity,
+}
+
+func handleCryptoGroupLiquidity(cmd *cobra.Command, args []string) {
+        controlLiquidityArguments(CryptoState, args)
+        list := crypto.GroupHighLiquidityCoins(CryptoState.CurrentMinRank,
+		CryptoState.CurrentMaxRank,
+		CryptoState.CurrentMinVolume,
+		CryptoState.CurrentList)
+
+	newID := fmt.Sprintf("group_liquidity_%d_%d_%f", CryptoState.CurrentMinRank, CryptoState.CurrentMaxRank, CryptoState.CurrentMinVolume)
 	fields := []string{"MarketCapRank", "TotalVolume"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 // min market rank int
@@ -33,12 +45,12 @@ func controlLiquidityArguments(cs *crypto.CryptoState, args []string) {
 		log.Printf("max market rank: %d\n", cs.CurrentMaxRank)
 		log.Printf("min volume: %f\n", cs.CurrentMinVolume)
 		log.Println("")
-		
+
 		minRank, err := strconv.Atoi(args[0])
 		if err != nil {
 		         log.Fatal(err)
 		}
-		
+
 		log.Println("Updating the client state, min market cap value...")
 		cs.UpdateMarketRank(minRank, cs.CurrentMaxRank)
 	case 2:
