@@ -4,13 +4,11 @@ import (
         "log"
 
 	"github.com/spf13/cobra"
-
-	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 var listCryptoCmd = &cobra.Command{
 	Use:   "crypto",
-	Short: "Print existing crypto list ids."
+	Short: "Print existing crypto list ids.",
 	Run:   handleCryptoList,
 }
 

@@ -4,16 +4,14 @@ import(
 	"log"
 
 	"github.com/spf13/cobra"
-	amqp "github.com/rabbitmq/amqp091-go"
 
-        "github.com/mehmetcagriekici/blightsanest/internal/crypto"
-	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
+        "github.com/mehmetcagriekici/blightsanest/internal/pubsub"
 	"github.com/mehmetcagriekici/blightsanest/internal/routing"
 )
 
 var fetchCryptoCmd = &cobra.Command{
 	Use:   "crypto [args...]",
-	Short: "Fetch a crypto list from the server."
+	Short: "Fetch a crypto list from the server.",
 	Args:  cobra.MinimumNArgs(1),
 	Run:   handleCryptoFetch,
 }

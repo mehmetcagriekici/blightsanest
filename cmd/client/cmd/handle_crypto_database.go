@@ -29,7 +29,7 @@ var readDatabaseCmd = &cobra.Command{
 	Use:   "read crypto [args...]",
 	Short: "Get a crypto list from the database",
 	Args:  cobra.MinimumNArgs(1),
-	Run:   handleCryptoDatabaseRead
+	Run:   handleCryptoDatabaseRead,
 }
 
 func handleCryptoDatabaseRead(cmd *cobra.Command, args []string) {

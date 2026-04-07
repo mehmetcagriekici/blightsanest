@@ -13,7 +13,7 @@ import(
 var searchCryptoPotentialRallyCmd = &cobra.Command{
 	Use:   "crypto potential_rally [args...]",
 	Short: "Find coins with a potential rally.",
-	Run:   handleCryptoPotentialRally
+	Run:   handleCryptoPotentialRally,
 }
 
 func handleCryptoFindPotentialRally(cmd *cobra.Command, args []string) {

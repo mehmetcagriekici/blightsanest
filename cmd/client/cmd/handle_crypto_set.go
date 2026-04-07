@@ -13,7 +13,7 @@ import (
 
 var setCryptoCmd = &cobra.Command{
 	Use: "crypto [args...]",
-	Short: "Set a crypto field preference."
+	Short: "Set a crypto field preference.",
 	Args: cobra.MinimumNArgs(1),
 	Run: handleCryptoSet,
 }
