@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import(
         "log"
@@ -6,15 +6,29 @@ import(
 	"strings"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFindCoinInflation(cs *crypto.CryptoState, args []string) {
-        controlFindCoinInflation(cs, args)
-        list := crypto.CoinsHighCirculatingSupply(cs.CurrentMaxRank, cs.CurrentMinSupply, cs.CurrentIgnoredCoins, cs.CurrentList)
-	newID := fmt.Sprintf("find_coin_inflation_%d_%f_%s", cs.CurrentMaxRank, cs.CurrentMinSupply, strings.Join(cs.CurrentIgnoredCoins, "_"))
+var searchCryptoCoinInflationCmd = &cobra.Command{
+	Use:   "crypto coin_inflation [args...]",
+	Short: "Find coins with high inflation.",
+	Run:   handleCryptoFindCoinInflation,
+}
+
+func handleCryptoFindCoinInflation(cmd *cobra.Command, args []string) {
+        controlFindCoinInflation(CryptoState, args)
+        list := crypto.CoinsHighCirculatingSupply(CryptoState.CurrentMaxRank,
+		CryptoState.CurrentMinSupply,
+		CryptoState.CurrentIgnoredCoins,
+		CryptoState.CurrentList)
+	newID := fmt.Sprintf("find_coin_inflation_%d_%f_%s",
+		CryptoState.CurrentMaxRank,
+		CryptoState.CurrentMinSupply,
+		strings.Join(CryptoState.CurrentIgnoredCoins, "_"))
 	fields := []string{"MaxSupply", "CirculatingSupply", "MarketCap", "MarketCapRank"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 func controlFindCoinInflation(cs *crypto.CryptoState, args []string) {

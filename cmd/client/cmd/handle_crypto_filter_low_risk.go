@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import(
         "log"
@@ -6,19 +6,36 @@ import(
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterLowRisk(cs *crypto.CryptoState, args []string) {	
-        controlFilterLowRisk(cs, args)
-	
-	list := crypto.FlagSafeCoins(cs.CurrentMaxRank, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe, cs.CurrentList)
-	newID := fmt.Sprintf("filter_low_risk_%d_%f_%v", cs.CurrentMaxRank, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe)
-	t := fmt.Sprintf("%v", cs.CurrentTimeframe)
+var filterCryptoLowRiskCmd = &cobra.Command{
+	Use:   "crypto low_risk [args...]",
+	Short: "Filter coins by market rank and price change percentage.",
+	Run:   handleCryptoFilterLowRisk,
+}
+
+func handleCryptoFilterLowRisk(cmd *cobra.Command, args []string) {
+        controlFilterLowRisk(CryptoState, args)
+
+	list := crypto.FlagSafeCoins(CryptoState.CurrentMaxRank,
+		CryptoState.CurrentMaxPriceChangePercentage,
+		CryptoState.CurrentTimeframe,
+		CryptoState.CurrentList)
+	newID := fmt.Sprintf("filter_low_risk_%d_%f_%v",
+		CryptoState.CurrentMaxRank,
+		CryptoState.CurrentMaxPriceChangePercentage,
+		CryptoState.CurrentTimeframe)
+	t := fmt.Sprintf("%v", CryptoState.CurrentTimeframe)
 	frame := fmt.Sprintf("PriceChangePercentage%s", strings.ToUpper(t))
 	fields := []string{"MarketCapRank", "MarketCap", frame}
-	crypto.PrintCryptoList(cs.CurrentList, cs.CurrentListID, cs.ClientTimeframes, fields)
-	commonCryptoHandler(cs, list, fields, newID)
+	crypto.PrintCryptoList(CryptoState.CurrentList,
+		CryptoState.CurrentListID,
+		CryptoState.ClientTimeframes,
+		fields)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 // max market rank

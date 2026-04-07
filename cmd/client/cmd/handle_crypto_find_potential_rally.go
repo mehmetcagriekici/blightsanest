@@ -1,19 +1,27 @@
-package main
+package cmd
 
 import(
         "log"
 	"strconv"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFindPotentialRally(cs *crypto.CryptoState, args []string) {
-        controlFindPotentialRally(cs, args)
-        list := crypto.CoinsGetCloseAthChange(cs.CurrentMaxATHChangePercentage, cs.CurrentList)
-	newID := fmt.Sprintf("find_potential_rally_%f", cs.CurrentMaxATHChangePercentage)
+var searchCryptoPotentialRallyCmd = &cobra.Command{
+	Use:   "crypto potential_rally [args...]",
+	Short: "Find coins with a potential rally.",
+	Run:   handleCryptoPotentialRally
+}
+
+func handleCryptoFindPotentialRally(cmd *cobra.Command, args []string) {
+        controlFindPotentialRally(CryptoState, args)
+        list := crypto.CoinsGetCloseAthChange(CryptoState.CurrentMaxATHChangePercentage, CryptoState.CurrentList)
+	newID := fmt.Sprintf("find_potential_rally_%f", CryptoState.CurrentMaxATHChangePercentage)
 	fields := []string{"ATH", "AthChangePercentage"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 // max ath change

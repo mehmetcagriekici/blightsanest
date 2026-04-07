@@ -1,20 +1,31 @@
-package main
+package cmd
 
 import(
+	"fmt"
         "log"
 	"strconv"
 
-	"fmt"
+	"github.com/spf13/cobra"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoCalcGrowthPotential(cs *crypto.CryptoState, args []string) {
-        controlCalcGrowthPotential(cs, args)
-        list := crypto.EstimateCoinUpsidePotential(cs.CurrentMinGrowthPotential, cs.CurrentMaxRank, cs.CurrentList)
-        newID := fmt.Sprintf("calc_growth_potential_%f_%d", cs.CurrentMinGrowthPotential, cs.CurrentMaxRank)
+var calcCryptoGrowthPotentialCmd = &cobra.Command{
+	Use:   "crypto growth_potential [args...]",
+	Short: "Calculate coin growth potentials, and get a rage with min growth preference, and a max market rank preference.",
+	Run:    handleCryptoCalcGrowthPotential,
+}
+
+func handleCryptoCalcGrowthPotential(cmd *cobra.Command, args []string) {
+        controlCalcGrowthPotential(CryptoState, args)
+        list := crypto.EstimateCoinUpsidePotential(CryptoState.CurrentMinGrowthPotential,
+		CryptoState.CurrentMaxRank,
+		CryptoState.CurrentList)
+        newID := fmt.Sprintf("calc_growth_potential_%f_%d",
+		CryptoState.CurrentMinGrowthPotential,
+		CryptoState.CurrentMaxRank)
 	fields := []string{"ATH", "AthChangePercentage"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 func controlCalcGrowthPotential(cs *crypto.CryptoState, args []string) {

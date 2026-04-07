@@ -1,19 +1,31 @@
-package main
+package cmd
 
 import (
         "log"
 	"strconv"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterVolatile(cs *crypto.CryptoState, args []string) {
-        controlFilterVolatile(cs, args)
-        list := crypto.FindWildSwingCoins(cs.CurrentMinSwingScore, cs.CurrentMaxSwingScore, cs.CurrentList)
-	newID := fmt.Sprintf("filter_volatile_%f_%f", cs.CurrentMinSwingScore, cs.CurrentMaxSwingScore)
+var filterCryptoVolatileCmd = &cobra.Command{
+	Use:   "crypto volatile [args...]",
+	Short: "Filter coinst by min and max swing scores.",
+	Run:   handleCryptoFilterVolatile,
+}
+
+func handleCryptoFilterVolatile(cmd *cobra.Command, args []string) {
+        controlFilterVolatile(CryptoState, args)
+        list := crypto.FindWildSwingCoins(CryptoState.CurrentMinSwingScore,
+		CryptoState.CurrentMaxSwingScore,
+		CryptoState.CurrentList)
+	newID := fmt.Sprintf("filter_volatile_%f_%f",
+		CryptoState.CurrentMinSwingScore,
+		CryptoState.CurrentMaxSwingScore)
 	fields := []string{"High24H", "Low24H"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 // max rate

@@ -1,19 +1,27 @@
-package main
+package cmd
 
 import(
+	"fmt"
         "log"
 	"strconv"
-	"fmt"
+
+	"github.com/spf13/cobra"
 
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoCalcLiquidity(cs *crypto.CryptoState, args []string) {
-        controlCalcLiquidity(cs, args)
-        list := crypto.CalcCoinLiquidity(cs.CurrentMinLiquidity, cs.CurrentList)
-	newID := fmt.Sprintf("calc_liquidity_%f", cs.CurrentMinLiquidity)
+var calcCryptoLiquidityCmd = &cobra.Command{
+	Use:   "crypto liquidity [args...]",
+	Short: "Calculate coin liquidities and get coins with min liquidity preference.",
+	Run:   handleCryptoCalcLiquidity,
+}
+
+func handleCryptoCalcLiquidity(cmd *cobra.Command, args []string) {
+        controlCalcLiquidity(CryptoState, args)
+        list := crypto.CalcCoinLiquidity(CryptoState.CurrentMinLiquidity, CryptoState.CurrentList)
+	newID := fmt.Sprintf("calc_liquidity_%f", CryptoState.CurrentMinLiquidity)
 	fields := []string{"TotalVolume", "MarketCap", "MarketCapRank"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 func controlCalcLiquidity(cs *crypto.CryptoState, args []string) {

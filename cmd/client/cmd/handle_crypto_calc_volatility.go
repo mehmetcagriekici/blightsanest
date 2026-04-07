@@ -1,19 +1,31 @@
-package main
+package cmd
 
 import(
         "log"
 	"strconv"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoCalcVolatility(cs *crypto.CryptoState, args []string) {
-        controlCalcVolatility(cs, args)
-        list := crypto.CalcCoinVolatility(cs.CurrentMinVolatility, cs.CurrentMaxVolatility, cs.CurrentList)
-	newID := fmt.Sprintf("calc_volatility_%f_%f", cs.CurrentMinVolatility, cs.CurrentMaxVolatility)
+var calcCryptoVolatilityCmd = &cobra.Command{
+	Use:   "crypto volatility [args...]",
+	Short: "Calculate coin volatilities and get coins in a range of min/max volatility preference.",
+	Run:   handleCryptoCalcVolatility,
+}
+
+func handleCryptoCalcVolatility(cmd *cobra.Command, args []string) {
+        controlCalcVolatility(CryptoState, args)
+        list := crypto.CalcCoinVolatility(CryptoState.CurrentMinVolatility,
+		CryptoState.CurrentMaxVolatility,
+		CryptoState.CurrentList)
+	newID := fmt.Sprintf("calc_volatility_%f_%f",
+		CryptoState.CurrentMinVolatility,
+		CryptoState.CurrentMaxVolatility)
         fields := []string{"High24H", "Low24H"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 func controlCalcVolatility(cs *crypto.CryptoState, args []string) {

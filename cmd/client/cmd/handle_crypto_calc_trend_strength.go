@@ -1,21 +1,29 @@
-package main
+package cmd
 
 import(
         "log"
 	"fmt"
-	
+
+	"github.com/spf13/cobra"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoCalcTrendStrength(cs *crypto.CryptoState, args []string) {
-        controlCalcTrendStrength(cs, args)
-        list, err := crypto.CheckRealTrend(cs.CurrentTimeframe, cs.CurrentList)
+var calcCryptoTrendStrengthCmd = &cobra.Command{
+	Use:   "crypto trend_strength [args...]",
+	Short: "Calcute coin strengths using price change percentage, market cap, market cap rank, and market cap rank percentage.",
+	Use:   handleCryptoCalcTrendStrength,
+}
+
+func handleCryptoCalcTrendStrength(cmd *cobra.Command, args []string) {
+        controlCalcTrendStrength(CryptoState, args)
+        list, err := crypto.CheckRealTrend(CryptoState.CurrentTimeframe, CryptoState.CurrentList)
 	if err != nil {
 	        log.Fatal(err)
 	}
-	newID := fmt.Sprintf("calc_trend_strength_%s", cs.CurrentTimeframe)
+	newID := fmt.Sprintf("calc_trend_strength_%s", CryptoState.CurrentTimeframe)
         fields := []string{"PriceChangePercentage24h", "MarketCap", "MarketCapRank", "MarketCapRankPercentage"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 func controlCalcTrendStrength(cs *crypto.CryptoState, args []string) {

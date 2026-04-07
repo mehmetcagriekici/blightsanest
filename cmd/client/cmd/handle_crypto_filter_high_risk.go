@@ -1,19 +1,31 @@
-package main
+package cmd
 
 import(
         "log"
 	"strconv"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterHighRisk(cs *crypto.CryptoState, args []string) {
-        controlFilterHighRisk(cs, args)
-        list := crypto.FlagRiskCoins(cs.CurrentMaxATHChangePercentage, cs.CurrentMaxVolume, cs.CurrentList)
-	newID := fmt.Sprintf("filter_high_risk_%f_%f", cs.CurrentMaxATHChangePercentage, cs.CurrentMaxVolume)
+var filterCryptoHighRiskCmd = &cobra.Command{
+	Use:   "crypto high_risk [args...]",
+	Short: "Filter coins by max ath change and max volume.",
+	Run:   handleCryptoFilterHighRisk,
+}
+
+func handleCryptoFilterHighRisk(cmd *cobra.Command, args []string) {
+        controlFilterHighRisk(CryptoState, args)
+        list := crypto.FlagRiskCoins(CryptoState.CurrentMaxATHChangePercentage,
+		CryptoState.CurrentMaxVolume,
+		CryptoState.CurrentList)
+	newID := fmt.Sprintf("filter_high_risk_%f_%f",
+		CryptoState.CurrentMaxATHChangePercentage,
+		CryptoState.CurrentMaxVolume)
 	fields := []string{"TotalVolume", "ATH", "AthChangePercentage"}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 // max ath change

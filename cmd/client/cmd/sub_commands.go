@@ -32,13 +32,13 @@ var setCmd = &cobra.Command{
 
 // save
 var saveCmd = &cobra.Command{
-	Use: "save",
+	Use:   "save",
 	Short: "Publish the asset to other clients.",
 }
 
 // list
 var listCmd = &cobra.Command{
-	Use: "list",
+	Use:   "list",
 	Short: "Print the list of existing asset ids",
 }
 
@@ -63,13 +63,25 @@ var rankCmd = &cobra.Command{
 // group
 var groupCmd = &cobra.Command{
 	Use:   "group",
-	Short: "Group assets using existing features."
+	Short: "Group assets using existing features.",
 }
 
 // filter
 var filterCmd = &cobra.Command{
 	Use: "filter",
-	Short: "Filter assets for existing features."
+	Short: "Filter assets for existing features.",
+}
+
+// search
+var searchCmd = &cobra.Command{
+	Use:   "search",
+	Short: "Search asset with existing aspects.",
+}
+
+// calculate
+var calcCmd = &cobra.Command{
+	Use:   "calc",
+	Short: "Calculate asset features.",
 }
 
 func init() {
@@ -103,6 +115,20 @@ func init() {
 		filterCryptoLowRiskCmd,
 	)
 
+	searchCmd.AddCommand(searchCryptoNameCmd,
+		searchCryptoNewHighPriceCmd,
+		searchCryptoNewLowPriceCmd,
+		searchCryptoNewPriceSpikeCmd,
+		searchCryptoPotentialRallyCmd,
+		searchCryptoCoinInflationCmd,
+	)
+
+	calcCmd.AddCommand(calcCryptoVolatilityCmd,
+		calcCryptoGrowthPotentialCmd,
+		calcCryptoLiquidityCmd,
+		calcCryptoTrendStrengthCmd,
+	)
+
 	RootCmd.AddCommand(quitCmd,
 		databaseCmd,
 		switchCmd,
@@ -114,5 +140,7 @@ func init() {
 		rankCmd,
 		groupCmd,
 		filterCmd,
+		searchCmd,
+		calcCmd,
 	)
 }

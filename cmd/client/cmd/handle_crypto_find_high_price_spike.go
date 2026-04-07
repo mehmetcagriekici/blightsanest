@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import(
         "log"
@@ -6,17 +6,29 @@ import(
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+
         "github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoNewPriceSpike(cs *crypto.CryptoState, args []string) {
-        controlHighPriceSpike(cs, args)
-        list := crypto.CoinsHighPriceSpike(cs.CurrentMinPriceChangePercentage, cs.CurrentTimeframe, cs.CurrentList)
-	newID := fmt.Sprintf("find_high_price_spike_%f_%v", cs.CurrentMinPriceChangePercentage, cs.CurrentTimeframe)
+var searchCryptoNewPriceSpikeCmd = &cobra.Command{
+	Use:   "crypto new_price_spike [args...]",
+	Short: "Find coins with new price spikes.",
+	Run:   handleCryptoNewPriceSpike,
+}
+
+func handleCryptoNewPriceSpike(cmd *cobra.Command, args []string) {
+        controlHighPriceSpike(CryptoState, args)
+        list := crypto.CoinsHighPriceSpike(CryptoState.CurrentMinPriceChangePercentage,
+		CryptoState.CurrentTimeframe,
+		CryptoState.CurrentList)
+	newID := fmt.Sprintf("find_high_price_spike_%f_%v",
+		CryptoState.CurrentMinPriceChangePercentage,
+		CryptoState.CurrentTimeframe)
 	t := fmt.Sprintf("%v", cs.CurrentTimeframe)
 	frame := fmt.Sprintf("PriceChangePercentage%s", strings.ToUpper(t))
 	fields := []string{frame}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 // min price change percentage
