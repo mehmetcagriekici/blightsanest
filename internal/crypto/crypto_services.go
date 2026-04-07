@@ -71,7 +71,7 @@ func CryptoFetchMarket(url, key string) ([]MarketData, error) {
 		log.Println("An error occured while trying to make a request to the CoinGecko API.")
 		return []MarketData{}, err
 	}
-        defer resp.Body.Close()
+	defer resp.Body.Close()
 
 	bytes, err := io.ReadAll(resp.Body)
 	if err != nil {
