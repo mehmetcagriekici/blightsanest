@@ -69,7 +69,6 @@ func main() {
 			words[0] != "delete" &&
 			words[0] != "help" {
 			log.Println("Invalid server command! Please continue with one of these:")
-			serverlogic.PrintServerHelp()
 			continue
 		}
 

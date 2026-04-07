@@ -53,15 +53,17 @@ func handleSearch(invertedIndex *search.InvertedIndex,
 		firstSemantic := semanticResults[0]
 
 		// check if a document exists in both
-		if _, ok := rrfScores[firstKeyword.docID]; ok {
-			rrfScores[firstKeyword.docID] += calcRRF(rank)
+		keywordScore, ok := rrfScores[firstKeyword.docID]
+		if ok {
+			rrfScores[firstKeyword.docID] = keywordScore + calcRRF(rank)
 		} else {
 			rrfScores[firstKeyword.docID] = calcRRF(rank)
 		}
 
 		// check if a document exists in both
-		if _, ok := rrfScores[firstSemantic.Document.ID]; ok {
-			rrfScores[firstSemantic.Document.ID] += calcRRF(rank)
+		semanticScore, ok := rrfScores[firstSemantic.Document.ID]
+		if ok {
+			rrfScores[firstSemantic.Document.ID] = semanticScore + calcRRF(rank)
 		} else {
 			rrfScores[firstSemantic.Document.ID] = calcRRF(rank)
 		}

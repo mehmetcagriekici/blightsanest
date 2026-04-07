@@ -1,13 +1,11 @@
 package cmd
 
 import (
-	"context"
 	"log"
 
 	"github.com/spf13/cobra"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
-	"github.com/mehmetcagriekici/blightsanest/internal/database"
 )
 
 // create

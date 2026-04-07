@@ -1,14 +1,11 @@
 package cmd
 
 import (
-	"context"
 	"log"
 	"time"
 
-	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/spf13/cobra"
 
-	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
 	"github.com/mehmetcagriekici/blightsanest/internal/routing"
 )

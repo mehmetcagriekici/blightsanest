@@ -11,14 +11,26 @@ import (
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func handleCryptoFilterPriceChangePercentage(cs *crypto.CryptoState, args []string) {
-	controlFilterPriceChangePercentage(cs, args)
-	list := crypto.FilterCoinPriceChange(cs.CurrentMinPriceChangePercentage, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe, cs.CurrentList)
-	newID := fmt.Sprintf("filter_pcp_%f_%f_%v", cs.CurrentMinPriceChangePercentage, cs.CurrentMaxPriceChangePercentage, cs.CurrentTimeframe)
-	t := fmt.Sprintf("%v", cs.CurrentTimeframe)
+var filterCryptoPriceChangePercentageCmd = &cobra.Command{
+	Use:   "crypto price_change_percentage [args...]",
+	Short: "Filter out coins my a min/max price change percentage range.",
+	Run:   handleCryptoFilterPriceChangePercentage,
+}
+
+func handleCryptoFilterPriceChangePercentage(cmd *cobra.Command, args []string) {
+	controlFilterPriceChangePercentage(CryptoState, args)
+	list := crypto.FilterCoinPriceChange(CryptoState.CurrentMinPriceChangePercentage,
+		CryptoState.CurrentMaxPriceChangePercentage,
+		CryptoState.CurrentTimeframe,
+		CryptoState.CurrentList)
+	newID := fmt.Sprintf("filter_pcp_%f_%f_%v",
+		CryptoState.CurrentMinPriceChangePercentage,
+		CryptoState.CurrentMaxPriceChangePercentage,
+		CryptoState.CurrentTimeframe)
+	t := fmt.Sprintf("%v", CryptoState.CurrentTimeframe)
 	frame := fmt.Sprintf("PriceChangePercentage%s", strings.ToUpper(t))
 	fields := []string{frame}
-	commonCryptoHandler(cs, list, fields, newID)
+	commonCryptoHandler(CryptoState, list, fields, newID)
 }
 
 // min price change

@@ -4,8 +4,6 @@ import (
 	"log"
 
 	"github.com/spf13/cobra"
-
-	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 var switchCryptoCmd = &cobra.Command{
