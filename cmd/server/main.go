@@ -57,6 +57,7 @@ func main() {
 	dbQueries := database.New(db)
 
 	// change this with cobra
+	words := []string{}
 	//REPL
 	for {
 

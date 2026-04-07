@@ -31,7 +31,7 @@ func Publish[T any](ctx context.Context,
 	} else if queueType == routing.BlightTransient {
 		ed = false
 	} else {
-		return errors.New("Invalid queue type")
+		return errors.New("invalid queue type")
 	}
 
 	// declare the exchange

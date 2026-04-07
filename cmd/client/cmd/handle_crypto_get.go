@@ -16,7 +16,7 @@ var getCryptoCmd = &cobra.Command{
 	Use:   "crypto [args...]",
 	Short: "Get a published crypto list from other clients",
 	Args:  cobra.MinimumNArgs(1),
-	Run:   handlerCryptoGet,
+	Run:   handleCryptoGet,
 }
 
 func handleCryptoGet(cmd *cobra.Command, args []string) {
@@ -46,7 +46,7 @@ func handleCryptoGet(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	cancel, err := pubsub.SubscribeClientCrypto(conn, func(delivery routing.CryptoExchangeBody) routing.AckType {
+	cancel, err := pubsub.SubscribeClientCrypto(Conn, func(delivery routing.CryptoExchangeBody) routing.AckType {
 		log.Println("Subscribing to the client publishing channel to get the requested list...")
 		list := delivery.Payload
 		id := delivery.ID

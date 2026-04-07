@@ -75,7 +75,7 @@ func CheckRealTrend(timeframe AvailableTimeframes, coins []MarketData) ([]Market
 
 	// only available for 24H timeframe
 	if timeframe != PCP_DAY {
-		return realTrendCoins, errors.New("This feature is available only for the 24H timeframe")
+		return realTrendCoins, errors.New("this feature is available only for the 24h timeframe")
 	}
 
 	// iterate over the coins and find the real trending ones

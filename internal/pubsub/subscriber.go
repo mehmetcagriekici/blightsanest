@@ -55,7 +55,7 @@ func Subscribe[T any](conn *amqp.Connection,
 		autoDelete = false
 		exclusive = false
 	} else {
-		return nil, errors.New("Invalid queue type")
+		return nil, errors.New("invalid queue type")
 	}
 
 	// declare a queue from the channel with the parameters

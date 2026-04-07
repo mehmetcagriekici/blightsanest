@@ -67,11 +67,11 @@ func CryptoFetchMarket(url, key string) ([]MarketData, error) {
 	// api header
 	req.Header.Add("x-cg-demo-api-key", key)
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
 	if err != nil {
 		log.Println("An error occured while trying to make a request to the CoinGecko API.")
 		return []MarketData{}, err
 	}
+        defer resp.Body.Close()
 
 	bytes, err := io.ReadAll(resp.Body)
 	if err != nil {

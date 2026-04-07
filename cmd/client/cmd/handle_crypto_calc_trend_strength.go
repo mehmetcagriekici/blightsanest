@@ -12,7 +12,7 @@ import (
 var calcCryptoTrendStrengthCmd = &cobra.Command{
 	Use:   "crypto trend_strength [args...]",
 	Short: "Calcute coin strengths using price change percentage, market cap, market cap rank, and market cap rank percentage.",
-	Use:   handleCryptoCalcTrendStrength,
+	Run:   handleCryptoCalcTrendStrength,
 }
 
 func handleCryptoCalcTrendStrength(cmd *cobra.Command, args []string) {

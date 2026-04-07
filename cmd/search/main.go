@@ -12,7 +12,6 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
-	"github.com/mehmetcagriekici/blightsanest/internal/logs"
 	"github.com/mehmetcagriekici/blightsanest/internal/search"
 )
 
@@ -53,7 +52,7 @@ func main() {
 
 	// REPL
 	for {
-		words := logs.GetInput()
+		words := []string{}
 		if len(words) == 0 {
 			log.Println("To use the search engine:")
 			search.PrintSearchHelp()

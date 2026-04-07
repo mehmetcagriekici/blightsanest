@@ -15,7 +15,7 @@ var searchCryptoNewHighPriceCmd = &cobra.Command{
 }
 
 func handleCryptoNewHighPrice(cmd *cobra.Command, args []string) {
-	list := findNewPrice(CryptoState, CrpyptoCache, crypto.CoinsNewHigh)
+	list := findNewPrice(CryptoState, CryptoCache, crypto.CoinsNewHigh)
 	if len(list) == 0 {
 		return
 	}

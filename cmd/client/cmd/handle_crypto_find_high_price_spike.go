@@ -25,7 +25,7 @@ func handleCryptoNewPriceSpike(cmd *cobra.Command, args []string) {
 	newID := fmt.Sprintf("find_high_price_spike_%f_%v",
 		CryptoState.CurrentMinPriceChangePercentage,
 		CryptoState.CurrentTimeframe)
-	t := fmt.Sprintf("%v", cs.CurrentTimeframe)
+	t := fmt.Sprintf("%v", CryptoState.CurrentTimeframe)
 	frame := fmt.Sprintf("PriceChangePercentage%s", strings.ToUpper(t))
 	fields := []string{frame}
 	commonCryptoHandler(CryptoState, list, fields, newID)

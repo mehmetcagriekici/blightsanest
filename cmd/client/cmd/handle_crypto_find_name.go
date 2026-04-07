@@ -15,7 +15,7 @@ var searchCryptoNameCmd = &cobra.Command{
 }
 
 func handleCryptoFindName(cmd *cobra.Command, args []string) {
-	name = args[0]
+	name := args[0]
 	if name == "" {
 		log.Fatal("Invalid usage: find crypto name <coin_name string>")
 	}
