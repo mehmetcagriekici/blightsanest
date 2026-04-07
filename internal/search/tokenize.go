@@ -1,9 +1,9 @@
 package search
 
-import(
-	"strings"
+import (
 	"regexp"
 	"slices"
+	"strings"
 
 	"github.com/caneroj1/stemmer"
 )
@@ -22,7 +22,7 @@ func Tokenize(text string) []string {
 		if _, isStop := stopwords[word]; isStop {
 			return true
 		}
-		
+
 		return false
 	})
 
@@ -54,6 +54,6 @@ func removePunc(text string) string {
 			text = strings.Replace(text, part, newPart, 1)
 		}
 	}
-	
+
 	return text
 }

@@ -1,12 +1,12 @@
 package cmd
 
 import (
-        "log"
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 
-        "github.com/mehmetcagriekici/blightsanest/internal/crypto"
+	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 var rankCryptoCmd = &cobra.Command{
@@ -16,41 +16,41 @@ var rankCryptoCmd = &cobra.Command{
 }
 
 func handleCryptoRank(cmd *cobra.Command, args []string) {
-        controlCryptoRank(CryptoState, args)
+	controlCryptoRank(CryptoState, args)
 
-        list := crypto.RankCoins(CryptoState.CurrentSortingField, CryptoState.CurrentOrder, CryptoState.CurrentList)
-        newID := fmt.Sprintf("sorted_%v_%s", CryptoState.CurrentOrder, CryptoState.CurrentSortingField)
+	list := crypto.RankCoins(CryptoState.CurrentSortingField, CryptoState.CurrentOrder, CryptoState.CurrentList)
+	newID := fmt.Sprintf("sorted_%v_%s", CryptoState.CurrentOrder, CryptoState.CurrentSortingField)
 	commonCryptoHandler(CryptoState, list, []string{CryptoState.CurrentSortingField}, newID)
 }
 
 // order
 // field
 func controlCryptoRank(cs *crypto.CryptoState, args []string) {
-        switch len(args) {
+	switch len(args) {
 	case 0:
-	        log.Println("No arguments are provided. Using the existing client preferences for the order and the sorting fieldname values.")
+		log.Println("No arguments are provided. Using the existing client preferences for the order and the sorting fieldname values.")
 		log.Printf("Current Order:         %v\n", cs.CurrentOrder)
 		log.Printf("Current Sorting Field: %v\n", cs.CurrentSortingField)
 	case 1:
-	        log.Println("One argument is passed. Using the existing client preference for the current sorting field, and updating the client current order preference...")
+		log.Println("One argument is passed. Using the existing client preference for the current sorting field, and updating the client current order preference...")
 		log.Printf("Current Sorting Field: %v\n", cs.CurrentSortingField)
 		updateOrder(cs, args[0])
 	case 2:
-	        log.Println("Updating the current order and sorting field client preferences...")
+		log.Println("Updating the current order and sorting field client preferences...")
 		updateOrder(cs, args[0])
 		updateField(cs, args[1])
 	default:
-	        log.Println("Invalid use of command. rank crypto <asc|desc> <field_name>")
+		log.Println("Invalid use of command. rank crypto <asc|desc> <field_name>")
 	}
 }
 
 func updateOrder(cs *crypto.CryptoState, order string) {
 	if order == "asc" {
-                cs.UpdateOrder(crypto.CRYPTO_ASC)
+		cs.UpdateOrder(crypto.CRYPTO_ASC)
 	} else if order == "desc" {
-	        cs.UpdateOrder(crypto.CRYPTO_DESC)
+		cs.UpdateOrder(crypto.CRYPTO_DESC)
 	} else {
-	        log.Println("Invalid sorting order. Available orders: <desc> <asc>")
+		log.Println("Invalid sorting order. Available orders: <desc> <asc>")
 	}
 }
 
@@ -71,32 +71,32 @@ func updateOrder(cs *crypto.CryptoState, order string) {
 */
 
 func updateField(cs *crypto.CryptoState, fieldName string) {
-        switch fieldName {
+	switch fieldName {
 	case "current_price":
-	        cs.UpdateCurrentSortingField("CurrentPrice")
+		cs.UpdateCurrentSortingField("CurrentPrice")
 	case "market_cap":
-	        cs.UpdateCurrentSortingField("MarketCap")
+		cs.UpdateCurrentSortingField("MarketCap")
 	case "market_cap_rank":
-	        cs.UpdateCurrentSortingField("MarketCapRank")
+		cs.UpdateCurrentSortingField("MarketCapRank")
 	case "market_cap_change_percentage":
-	        cs.UpdateCurrentSortingField("MarketCapChangePercentage")
+		cs.UpdateCurrentSortingField("MarketCapChangePercentage")
 	case "total_volume":
-	        cs.UpdateCurrentSortingField("TotalVolume")
+		cs.UpdateCurrentSortingField("TotalVolume")
 	case "high_24h":
-	        cs.UpdateCurrentSortingField("High24H")
+		cs.UpdateCurrentSortingField("High24H")
 	case "low_24h":
-	        cs.UpdateCurrentSortingField("Low24H")
+		cs.UpdateCurrentSortingField("Low24H")
 	case "ath":
-	        cs.UpdateCurrentSortingField("ATH")
+		cs.UpdateCurrentSortingField("ATH")
 	case "price_change_percentage":
-	        cs.UpdateCurrentSortingField(fmt.Sprintf("PriceChangePercentage%s", cs.CurrentTimeframe))
+		cs.UpdateCurrentSortingField(fmt.Sprintf("PriceChangePercentage%s", cs.CurrentTimeframe))
 	case "ath_change_percentage":
-	        cs.UpdateCurrentSortingField("AthChangePercentage")
+		cs.UpdateCurrentSortingField("AthChangePercentage")
 	case "max_supply":
-	        cs.UpdateCurrentSortingField("MaxSupply")
+		cs.UpdateCurrentSortingField("MaxSupply")
 	case "circulating_supply":
-	        cs.UpdateCurrentSortingField("CirculatingSupply")
+		cs.UpdateCurrentSortingField("CirculatingSupply")
 	default:
-	        log.Println("Invalid sorting field.")
+		log.Println("Invalid sorting field.")
 	}
 }

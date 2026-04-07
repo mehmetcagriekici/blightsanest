@@ -1,17 +1,17 @@
 package main
 
-import(
-	"log"
+import (
 	"context"
 	"encoding/json"
-	
-	"github.com/mehmetcagriekici/blightsanest/internal/search"
+	"log"
+
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
+	"github.com/mehmetcagriekici/blightsanest/internal/search"
 )
 
 func handle_create_semantic_index(ctx context.Context, queries *database.Queries, client *search.Client) {
 	// get all the crypto data from the database
-	// []model.Crypto 
+	// []model.Crypto
 	cryptoData, err := queries.GetAllCrypto(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -21,14 +21,14 @@ func handle_create_semantic_index(ctx context.Context, queries *database.Queries
 	docs := []search.EmbeddingDoc{}
 	for _, v := range cryptoData {
 		doc := search.EmbeddingDoc{
-			ID: v.CryptoKey,
+			ID:   v.CryptoKey,
 			Data: rawToStr(v.CryptoList),
 		}
 		docs = append(docs, doc)
 	}
 
 	// create semantic index from the client
-	n, err := client.Index(docs);
+	n, err := client.Index(docs)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,6 +41,6 @@ func rawToStr(raw json.RawMessage) string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	return string(bytes[:])
 }

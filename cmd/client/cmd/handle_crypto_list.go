@@ -1,7 +1,7 @@
 package cmd
 
 import (
-        "log"
+	"log"
 
 	"github.com/spf13/cobra"
 )
@@ -13,20 +13,20 @@ var listCryptoCmd = &cobra.Command{
 }
 
 func handleCryptoList(cmd *cobra.Command, args []string) {
-       defer log.Print(">")
+	defer log.Print(">")
 
-       if CryptoState.CurrentListID != "" {
-               log.Printf("Current Crypto List ID: %s\n", CryptoState.CurrentListID)
-       }
+	if CryptoState.CurrentListID != "" {
+		log.Printf("Current Crypto List ID: %s\n", CryptoState.CurrentListID)
+	}
 
-       if len(CryptoCache.Market) == 0 {
-               log.Println("Client Cache is empty.")
-	       return
-       }
+	if len(CryptoCache.Market) == 0 {
+		log.Println("Client Cache is empty.")
+		return
+	}
 
-       for k := range CryptoCache.Market {
-               log.Printf("List: %s\n", k)
-       }
+	for k := range CryptoCache.Market {
+		log.Printf("List: %s\n", k)
+	}
 
-       return
+	return
 }

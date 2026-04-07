@@ -1,13 +1,13 @@
 package routing
 
-import(
-        "time"
-	
-        "github.com/mehmetcagriekici/blightsanest/internal/crypto"
+import (
+	"time"
+
+	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 type CryptoExchangeBody struct {
-        ID        string
+	ID        string
 	CreatedAt time.Time
-        Payload   []crypto.MarketData
+	Payload   []crypto.MarketData
 }

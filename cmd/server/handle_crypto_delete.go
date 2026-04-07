@@ -1,8 +1,8 @@
 package cmd
 
-import(
-	"log"
+import (
 	"context"
+	"log"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 )

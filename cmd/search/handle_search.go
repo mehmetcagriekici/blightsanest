@@ -1,12 +1,12 @@
 package main
 
-import(
+import (
 	"fmt"
 	"log"
 	"slices"
-	"strings"
 	"strconv"
-	
+	"strings"
+
 	"github.com/mehmetcagriekici/blightsanest/internal/search"
 )
 
@@ -58,7 +58,7 @@ func handleSearch(invertedIndex *search.InvertedIndex,
 		} else {
 			rrfScores[firstKeyword.docID] = calcRRF(rank)
 		}
-		
+
 		// check if a document exists in both
 		if _, ok := rrfScores[firstSemantic.Document.ID]; ok {
 			rrfScores[firstSemantic.Document.ID] += calcRRF(rank)

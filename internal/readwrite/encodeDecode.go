@@ -1,36 +1,36 @@
 package readwrite
 
-import(
-        "bytes"
-        "encoding/gob"
+import (
+	"bytes"
+	"encoding/gob"
 	"encoding/json"
 )
 
 func Encode[T any](val T) ([]byte, error) {
-        var network bytes.Buffer
+	var network bytes.Buffer
 	enc := gob.NewEncoder(&network)
 	if err := enc.Encode(val); err != nil {
-	        return nil, err
+		return nil, err
 	}
 	return network.Bytes(), nil
 }
 
 func Decode[T any](data []byte) (T, error) {
-        network := bytes.NewBuffer(data)
+	network := bytes.NewBuffer(data)
 	dec := gob.NewDecoder(network)
-	
+
 	var v T
 	if err := dec.Decode(&v); err != nil {
-	        var noop T
+		var noop T
 		return noop, err
 	}
 	return v, nil
 }
 
 func DecodeJSON[T any](data []byte) (T, error) {
-        var v T
+	var v T
 	if err := json.Unmarshal(data, &v); err != nil {
-	        var noop T
+		var noop T
 		return noop, err
 	}
 	return v, nil

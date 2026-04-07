@@ -68,7 +68,7 @@ var groupCmd = &cobra.Command{
 
 // filter
 var filterCmd = &cobra.Command{
-	Use: "filter",
+	Use:   "filter",
 	Short: "Filter assets for existing features.",
 }
 

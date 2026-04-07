@@ -1,10 +1,10 @@
 package crypto
 
-import(
-	"log"
-	"time"
+import (
 	"context"
 	"encoding/json"
+	"log"
+	"time"
 
 	"github.com/google/uuid"
 
@@ -16,7 +16,7 @@ func CreateCryptoRow(ctx context.Context,
 	qr *database.Queries,
 	list []MarketData,
 	cryptoKey string) error {
-	
+
 	// encode the crypto list
 	encoded, err := json.Marshal(list)
 	if err != nil {
@@ -24,10 +24,10 @@ func CreateCryptoRow(ctx context.Context,
 	}
 
 	params := database.CreateCryptoListParams{
-		ID: uuid.New(),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-		CryptoKey: cryptoKey,
+		ID:         uuid.New(),
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+		CryptoKey:  cryptoKey,
 		CryptoList: json.RawMessage(encoded),
 	}
 
@@ -83,10 +83,10 @@ func UpdateCryptoRow(ctx context.Context,
 
 	// update crypto params
 	params := database.UpdateCryptoListParams{
-		CryptoKey: cryptoKey, // to check the match
-		UpdatedAt: time.Now(),
+		CryptoKey:   cryptoKey, // to check the match
+		UpdatedAt:   time.Now(),
 		CryptoKey_2: newCryptoKey, // to save
-		CryptoList: json.RawMessage(encoded),
+		CryptoList:  json.RawMessage(encoded),
 	}
 
 	// update the row on the database

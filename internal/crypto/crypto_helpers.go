@@ -1,76 +1,75 @@
 package crypto
 
-import(
-        "log"
-        "fmt"
-	"reflect"
-	"strings"
+import (
+	"fmt"
+	"log"
 	"math"
+	"reflect"
 	"slices"
+	"strings"
 )
 
 // function to get a field of a coin
 func GetCoinField(field string, coin MarketData) reflect.Value {
-        r := reflect.ValueOf(coin)
+	r := reflect.ValueOf(coin)
 	val := reflect.Indirect(r).FieldByName(field)
 	return val
 }
 
 // function to get a fieldname by its name - price_percentage_change_{TIMEFRAME} multiple possible fields depending on the input
 func GetPriceChange(coin MarketData, timeframe AvailableTimeframes) float64 {
-        field := fmt.Sprintf("PriceChangePercentage%s", timeframe)
+	field := fmt.Sprintf("PriceChangePercentage%s", timeframe)
 	r := reflect.ValueOf(coin)
 	val := reflect.Indirect(r).FieldByName(field)
 	if !val.CanFloat() {
-	        log.Fatal("An error occured while trying to get the price percentage field.")
+		log.Fatal("An error occured while trying to get the price percentage field.")
 	}
 	return val.Float()
 }
 
-
 // function to sort coins by their names
 func SortCoinNames(coins []MarketData, i, j int) bool {
-        return strings.Compare(coins[i].Name, coins[j].Name) < 0
+	return strings.Compare(coins[i].Name, coins[j].Name) < 0
 }
 
 // function to get crypto cache key createdAts
 func GetCryptoCacheHour(unix int64) string {
-        d := float64(3600)
-        u := float64(unix)
+	d := float64(3600)
+	u := float64(unix)
 
-        // get the unix hours and hours with reminder
+	// get the unix hours and hours with reminder
 	hours := math.Floor(u / d)
 	fullHours := u / d
 
-        // seconds
+	// seconds
 	reminder := (fullHours - hours) * d
 
-       // calc hourly unix in seconds and return the hour to be used as a cache key
-       cachedUnix := math.Floor(u - reminder) / d
-       return fmt.Sprintf("%.0f", cachedUnix)
+	// calc hourly unix in seconds and return the hour to be used as a cache key
+	cachedUnix := math.Floor(u-reminder) / d
+	return fmt.Sprintf("%.0f", cachedUnix)
 }
 
 // function to get timeframes array
 func GetInputTimeframes(frames []string) []AvailableTimeframes {
-        timeframes := []AvailableTimeframes{}
+	timeframes := []AvailableTimeframes{}
 	for frame := range slices.Values(frames) {
-	        switch frame {
+		switch frame {
 		case "1h":
-		        timeframes = append(timeframes, PCP_HOUR)
+			timeframes = append(timeframes, PCP_HOUR)
 		case "24h":
-		        timeframes = append(timeframes, PCP_DAY)
+			timeframes = append(timeframes, PCP_DAY)
 		case "7d":
-		        timeframes = append(timeframes, PCP_WEEK)
+			timeframes = append(timeframes, PCP_WEEK)
 		case "30d":
-		        timeframes = append(timeframes, PCP_MONTH)
+			timeframes = append(timeframes, PCP_MONTH)
 		case "200d":
-		        timeframes = append(timeframes, PCP_TWO_HUNDRED)
+			timeframes = append(timeframes, PCP_TWO_HUNDRED)
 		case "1y":
-		        timeframes = append(timeframes, PCP_YEAR)
+			timeframes = append(timeframes, PCP_YEAR)
 		default:
-		        log.Println("Invalid timeframe! (1h, 24h, 7d, 30d, 200d, 1y)")
+			log.Println("Invalid timeframe! (1h, 24h, 7d, 30d, 200d, 1y)")
 		}
 	}
-	
+
 	return timeframes
 }

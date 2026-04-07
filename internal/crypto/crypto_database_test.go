@@ -3,19 +3,19 @@
 package crypto
 
 import (
-	"os"
-	"log"
+	"context"
 	"database/sql"
 	"fmt"
+	"log"
+	"os"
+	"slices"
 	"testing"
 	"time"
-	"context"
-	"slices"
 
-	"github.com/pressly/goose/v3"
 	_ "github.com/lib/pq"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
+	"github.com/pressly/goose/v3"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 )
@@ -100,18 +100,18 @@ func TestCryptoDatabase(t *testing.T) {
 	ctx := context.Background()
 	sampleData := []MarketData{
 		{
-			Symbol: "BTC",
-			CurrentPrice:  42000.50,
+			Symbol:       "BTC",
+			CurrentPrice: 42000.50,
 		},
 		{
-			Symbol: "ETH",
-			CurrentPrice:  2300.75,
+			Symbol:       "ETH",
+			CurrentPrice: 2300.75,
 		},
 	}
 	newSampleData := []MarketData{
 		{
-			Symbol: "BTC",
-			CurrentPrice:  36000,
+			Symbol:       "BTC",
+			CurrentPrice: 36000,
 		},
 	}
 	sampleKey := "sample_key"
@@ -128,7 +128,7 @@ func TestCryptoDatabase(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error while reading the row from the databas: %v.\n", err)
 	}
-          
+
 	if !slices.Equal(sampleData, readSample) {
 		t.Errorf("Read and database samples do not match! Expected: %v\n Got: %v\n", sampleData, readSample)
 	}

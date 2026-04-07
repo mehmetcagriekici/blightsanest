@@ -1,47 +1,48 @@
 package search
 
-import(
-	"os"
-	"fmt"
+import (
 	"context"
+	"fmt"
+	"os"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 	"github.com/mehmetcagriekici/blightsanest/internal/readwrite"
 )
 
 // Implemented Assets:
-//   crypto:
+//
+//	crypto:
 type InvertedIndex struct {
 	// token -> doc_id -> {}
-	Index           map[string]map[string]struct{}
+	Index map[string]map[string]struct{}
 	// index path
-	PIDX            string
+	PIDX string
 	// doc_id -> doc -> bytes can be unmarshalled
-	DocMap       map[string][]byte
+	DocMap map[string][]byte
 	// docmap path
-	PDOC            string
+	PDOC string
 	// term frequencies - how many times each term appears in each document
 	// doc_id: {term: count}
 	TermFrequencies map[string]map[string]int
 	// term frequencies cache path
-	PTF             string
+	PTF string
 	// Document Lengths
-	DocLengths      map[string]int
+	DocLengths map[string]int
 	// Doc Lengths Cache Path
-	PDL             string
+	PDL string
 }
 
 // initiate inverted index
 func NewInvertedIndex() *InvertedIndex {
 	return &InvertedIndex{
-		Index: make(map[string]map[string]struct{}),
-		DocMap: make(map[string][]byte),
+		Index:           make(map[string]map[string]struct{}),
+		DocMap:          make(map[string][]byte),
 		TermFrequencies: make(map[string]map[string]int),
-		DocLengths: make(map[string]int),
-		PIDX: "../../cache/db_index.gob",
-		PDOC: "../../cache/db_docmap.gob",
-		PTF: "../../cache/db_termfreq.gob",
-		PDL: "../../cache/db_doclens.gob",
+		DocLengths:      make(map[string]int),
+		PIDX:            "../../cache/db_index.gob",
+		PDOC:            "../../cache/db_docmap.gob",
+		PTF:             "../../cache/db_termfreq.gob",
+		PDL:             "../../cache/db_doclens.gob",
 	}
 }
 
@@ -62,13 +63,13 @@ func (i *InvertedIndex) LoadDocuments() error {
 	if err != nil {
 		return err
 	}
-	
+
 	// decode the read index
 	decodedIdx, err := readwrite.Decode[map[string]map[string]struct{}](bufIdx)
 	if err != nil {
 		return err
 	}
-	
+
 	// read docmap file
 	bufDoc, err := readwrite.Read(i.PDOC)
 	if err != nil {
@@ -107,7 +108,7 @@ func (i *InvertedIndex) LoadDocuments() error {
 	i.DocMap = decodedDoc
 	i.TermFrequencies = decodedTf
 	i.DocLengths = decodedDocl
-	
+
 	return nil
 }
 
@@ -139,14 +140,14 @@ func (i *InvertedIndex) SaveDocuments() error {
 		return err
 	}
 
-        // create index file and write the current index
+	// create index file and write the current index
 	nIdx, err := readwrite.Write(i.PIDX, encodedIndex)
 	if err != nil {
 		return err
 	}
 
 	fmt.Printf("%d bytes are written for inverted index index.\n", nIdx)
-	
+
 	// create docmap file and write the docmap
 	nDoc, err := readwrite.Write(i.PDOC, encodedDocMap)
 	if err != nil {
@@ -154,7 +155,7 @@ func (i *InvertedIndex) SaveDocuments() error {
 	}
 
 	fmt.Printf("%d bytes are written for inverted index docmap.\n", nDoc)
-	
+
 	// create term frequencies file and write term frequencies
 	nTf, err := readwrite.Write(i.PTF, encodedTermFrequencies)
 	if err != nil {
@@ -214,7 +215,6 @@ func (i *InvertedIndex) GetDocuments(token string) []string {
 
 	return results
 }
-
 
 func (i *InvertedIndex) BuildCryptoIndex(ctx context.Context, queries *database.Queries) error {
 	// get the entire crypto data from the database

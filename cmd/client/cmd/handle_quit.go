@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func handleQuit (cmd *cobra.Command, args []string) {
+func handleQuit(cmd *cobra.Command, args []string) {
 	log.Println("Ending client session...")
 	SubManager.CloseAll()
 	time.Sleep(200 * time.Millisecond)

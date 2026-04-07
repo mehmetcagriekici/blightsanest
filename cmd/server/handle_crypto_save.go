@@ -1,14 +1,14 @@
 package cmd
 
-import(
-	"log"
+import (
 	"context"
 	"encoding/json"
+	"log"
 
 	"github.com/google/uuid"
 
-	"github.com/mehmetcagriekici/blightsanest/internal/database"
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
+	"github.com/mehmetcagriekici/blightsanest/internal/database"
 )
 
 // args: mandotary crypto list cache id, arbitrary custom crypto list id -> saveed as key
@@ -39,9 +39,9 @@ func handleCryptoSave(ctx context.Context, CryptoCache *crypto.CryptoCache, args
 
 	dbID := uuid.New()
 	dbParams := database.CreateCryptoListParams{
-		ID: dbID,
-		UpdatedAt: cryptoEntry.CreatedAt,
-		CryptoKey: cryptoKey,
+		ID:         dbID,
+		UpdatedAt:  cryptoEntry.CreatedAt,
+		CryptoKey:  cryptoKey,
 		CryptoList: json.RawMessage(encoded),
 	}
 

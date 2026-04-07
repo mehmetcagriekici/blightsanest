@@ -2,49 +2,49 @@ package cmd
 
 import _ "github.com/lib/pq"
 
-import(
+import (
+	"context"
+	"database/sql"
 	"log"
 	"os"
-	"time"
-	"context"
 	"strconv"
-	"database/sql"
+	"time"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 
-	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/joho/godotenv"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func main() {
-        // load environment variables
+	// load environment variables
 	if err := godotenv.Load(); err != nil {
-	        log.Fatal(err)
+		log.Fatal(err)
 	}
 
-        // environment variables
+	// environment variables
 	cryptoAPIKey := os.Getenv("COIN_GECKO_KEY")
 	rabbitURL := os.Getenv("RABBITMQ_URL")
 	cacheInterval := os.Getenv("CACHE_INTERVAL")
 	databaseURL := os.Getenv("DATABASE_URL")
 
-        // create a context for the server
+	// create a context for the server
 	ctx := context.Background()
 
-        // create a connection to the rabbitmq for the server
+	// create a connection to the rabbitmq for the server
 	conn, err := amqp.Dial(rabbitURL)
 	if err != nil {
-	        log.Fatal(err)
+		log.Fatal(err)
 	}
 	defer conn.Close()
 
-        // create the server crypto cache with 24 hours reaping interval
+	// create the server crypto cache with 24 hours reaping interval
 	interval, err := strconv.ParseFloat(cacheInterval, 64)
 	if err != nil {
-	        log.Fatal(err)
+		log.Fatal(err)
 	}
-        cryptoCache := crypto.CreateCryptoCache(time.Duration(interval) * time.Hour)
+	cryptoCache := crypto.CreateCryptoCache(time.Duration(interval) * time.Hour)
 	defer cryptoCache.Close()
 
 	// open database
@@ -57,46 +57,46 @@ func main() {
 	dbQueries := database.New(db)
 
 	// change this with cobra
-        //REPL
+	//REPL
 	for {
 
 		// valid commands
 		if words[0] != "quit" &&
-		   words[0] != "fetch" &&
-		   words[0] != "read" &&
-		   words[0] != "create" &&
-		   words[0] != "delete" &&
-		   words[0] != "help" {
-		        log.Println("Invalid server command! Please continue with one of these:")
+			words[0] != "fetch" &&
+			words[0] != "read" &&
+			words[0] != "create" &&
+			words[0] != "delete" &&
+			words[0] != "help" {
+			log.Println("Invalid server command! Please continue with one of these:")
 			serverlogic.PrintServerHelp()
 			continue
 		}
 
-                // quit
-                if words[0] == "quit" {
-		        log.Println("Exiting the BlightSanest server...")
+		// quit
+		if words[0] == "quit" {
+			log.Println("Exiting the BlightSanest server...")
 			break
 		}
 
-                if !crypto.ControlFeatureCommands(words) {
-		        continue
+		if !crypto.ControlFeatureCommands(words) {
+			continue
 		}
 
-                // fetch - from the api with cache
+		// fetch - from the api with cache
 		if words[0] == "fetch" {
 			if words[1] == "crypto" {
-			        handleCryptoFetch(ctx, conn, cryptoCache, cryptoAPIKey, words[2:])
+				handleCryptoFetch(ctx, conn, cryptoCache, cryptoAPIKey, words[2:])
 				continue
-                        }
+			}
 		}
 
-               // get - from the database
-	       if words[0] == "read" {
-	               if words[1] == "crypto" {
-		               handleCryptoGet(ctx, conn, cryptoCache, words[:2], dbQueries)
-			       continue
-		       }
-	       }
+		// get - from the database
+		if words[0] == "read" {
+			if words[1] == "crypto" {
+				handleCryptoGet(ctx, conn, cryptoCache, words[:2], dbQueries)
+				continue
+			}
+		}
 
 		// save - to the database
 		if words[0] == "create" {

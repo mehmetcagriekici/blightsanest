@@ -1,41 +1,41 @@
 package pubsub
 
-import(
-        "fmt"
+import (
+	"fmt"
 
-        "github.com/mehmetcagriekici/blightsanest/internal/routing"
 	"github.com/mehmetcagriekici/blightsanest/internal/readwrite"
-	
-        amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/mehmetcagriekici/blightsanest/internal/routing"
+
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 // function to subscribe to fresh crypto data from the server
 func SubscribeCrypto(conn *amqp.Connection,
-                     handler func(routing.CryptoExchangeBody) routing.AckType) (func() error, error) {
-        // Subscribe to the crypto list
+	handler func(routing.CryptoExchangeBody) routing.AckType) (func() error, error) {
+	// Subscribe to the crypto list
 	bindingKey := fmt.Sprintf("%s.*", routing.BlightCrypto)
-	
+
 	return Subscribe(conn,
-	                 routing.BlightDurable,
-			 routing.CryptoGet,
-			 bindingKey,
-			 routing.CryptoExchange,
-			 routing.CryptoDLX,
-			 handler,
-			 readwrite.Decode)
+		routing.BlightDurable,
+		routing.CryptoGet,
+		bindingKey,
+		routing.CryptoExchange,
+		routing.CryptoDLX,
+		handler,
+		readwrite.Decode)
 }
 
 // function to subscribe to existing crypto data from clients
 func SubscribeClientCrypto(conn *amqp.Connection,
-                           handler func(routing.CryptoExchangeBody) routing.AckType) (func() error, error) {
-        bindingKey := fmt.Sprintf("%s.*", routing.BlightClientCrypto)
+	handler func(routing.CryptoExchangeBody) routing.AckType) (func() error, error) {
+	bindingKey := fmt.Sprintf("%s.*", routing.BlightClientCrypto)
 
-        return Subscribe(conn,
-	                 routing.BlightTransient,
-			 routing.CryptoClientGet,
-			 bindingKey,
-			 routing.ClientExchange,
-			 routing.CryptoDLX,
-			 handler,
-			 readwrite.Decode)
+	return Subscribe(conn,
+		routing.BlightTransient,
+		routing.CryptoClientGet,
+		bindingKey,
+		routing.ClientExchange,
+		routing.CryptoDLX,
+		handler,
+		readwrite.Decode)
 }

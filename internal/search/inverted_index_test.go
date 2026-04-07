@@ -1,18 +1,18 @@
 package search
 
 import (
-	"os"
+	"context"
+	"database/sql"
 	"fmt"
 	"log"
-	"time"
-	"context"
+	"os"
 	"testing"
-	"database/sql"
+	"time"
 
 	_ "github.com/lib/pq"
-	"github.com/pressly/goose/v3"
 	"github.com/ory/dockertest/v3"
 	"github.com/ory/dockertest/v3/docker"
+	"github.com/pressly/goose/v3"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
@@ -97,18 +97,18 @@ func TestMain(m *testing.M) {
 
 func TestInvertedIndex(t *testing.T) {
 	ctx := context.Background()
-	
+
 	// initiate a new Inverted index
 	invertedIndex := NewInvertedIndex()
 
 	// sample data
 	sampleData := []crypto.MarketData{
 		{
-			Symbol: "BTC",
+			Symbol:       "BTC",
 			CurrentPrice: 123.456,
 		},
 		{
-			Symbol: "ETH",
+			Symbol:       "ETH",
 			CurrentPrice: 456.789,
 		},
 	}
@@ -123,7 +123,7 @@ func TestInvertedIndex(t *testing.T) {
 	if err := invertedIndex.BuildCryptoIndex(ctx, queries); err != nil {
 		t.Errorf("Unexpected error while trying to build inverted index for crypto: %v\n", err)
 	}
-	
+
 	// test get documents
 	docs := invertedIndex.GetDocuments(sampleQuery)
 	if docs == nil {

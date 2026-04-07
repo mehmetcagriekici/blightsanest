@@ -1,16 +1,16 @@
 package cmd
 
-import(
+import (
 	"fmt"
 	"strings"
 
-        "github.com/mehmetcagriekici/blightsanest/internal/crypto"
+	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
-func commonCryptoHandler(cs         *crypto.CryptoState,
-                         list       []crypto.MarketData,
-			 fields     []string,
-			 id         string) {
+func commonCryptoHandler(cs *crypto.CryptoState,
+	list []crypto.MarketData,
+	fields []string,
+	id string) {
 	baseID := strings.Split(cs.CurrentListID, "_")[0]
 	newID := fmt.Sprintf("%s_%s", baseID, id)
 

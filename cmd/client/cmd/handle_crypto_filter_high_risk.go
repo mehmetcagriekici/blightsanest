@@ -1,13 +1,13 @@
 package cmd
 
-import(
-        "log"
-	"strconv"
+import (
 	"fmt"
+	"log"
+	"strconv"
 
 	"github.com/spf13/cobra"
 
-        "github.com/mehmetcagriekici/blightsanest/internal/crypto"
+	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 var filterCryptoHighRiskCmd = &cobra.Command{
@@ -17,8 +17,8 @@ var filterCryptoHighRiskCmd = &cobra.Command{
 }
 
 func handleCryptoFilterHighRisk(cmd *cobra.Command, args []string) {
-        controlFilterHighRisk(CryptoState, args)
-        list := crypto.FlagRiskCoins(CryptoState.CurrentMaxATHChangePercentage,
+	controlFilterHighRisk(CryptoState, args)
+	list := crypto.FlagRiskCoins(CryptoState.CurrentMaxATHChangePercentage,
 		CryptoState.CurrentMaxVolume,
 		CryptoState.CurrentList)
 	newID := fmt.Sprintf("filter_high_risk_%f_%f",
@@ -31,29 +31,29 @@ func handleCryptoFilterHighRisk(cmd *cobra.Command, args []string) {
 // max ath change
 // max volume
 func controlFilterHighRisk(cs *crypto.CryptoState, args []string) {
-        switch len(args) {
+	switch len(args) {
 	case 0:
-	        log.Printf("No arguments are passed, using the client state values for max ath change percentage and the max total volume: %f %f\n", cs.CurrentMaxATHChangePercentage, cs.CurrentMaxVolume)
+		log.Printf("No arguments are passed, using the client state values for max ath change percentage and the max total volume: %f %f\n", cs.CurrentMaxATHChangePercentage, cs.CurrentMaxVolume)
 	case 1:
-	        log.Printf("Updating the max ath change percentage preference. Using the max volume value from the client state: %f\n", cs.CurrentMaxVolume)
+		log.Printf("Updating the max ath change percentage preference. Using the max volume value from the client state: %f\n", cs.CurrentMaxVolume)
 		maxAth, err := strconv.ParseFloat(args[0], 64)
 		if err != nil {
-		        log.Fatal(err)
+			log.Fatal(err)
 		}
 		cs.UpdateAthChangePercentage(maxAth)
 	case 2:
-	        log.Println("Updating the max ath change and max volume preferences...")
+		log.Println("Updating the max ath change and max volume preferences...")
 		maxAth, err := strconv.ParseFloat(args[0], 64)
 		if err != nil {
-		        log.Fatal(err)
+			log.Fatal(err)
 		}
 		maxVolume, err := strconv.ParseFloat(args[1], 64)
 		if err != nil {
-		        log.Fatal(err)
+			log.Fatal(err)
 		}
 		cs.UpdateAthChangePercentage(maxAth)
 		cs.UpdateVolume(cs.CurrentMinVolume, maxVolume)
 	default:
-	        log.Println("Incorrect use of the command: filter crypto high_risk <max_ath_change_percentage float64> <max_total_volume float64>")
+		log.Println("Incorrect use of the command: filter crypto high_risk <max_ath_change_percentage float64> <max_total_volume float64>")
 	}
 }

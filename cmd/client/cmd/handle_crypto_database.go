@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"log"
 	"context"
+	"log"
 
 	"github.com/spf13/cobra"
 
@@ -14,7 +14,7 @@ import (
 var createDatabaseCmd = &cobra.Command{
 	Use:   "create crypto",
 	Short: "Create a row for a crypto list on the database",
-	Run:    handleCryptoDatabaseCreate,
+	Run:   handleCryptoDatabaseCreate,
 }
 
 func handleCryptoDatabaseCreate(cmd *cobra.Command, args []string) {
@@ -39,7 +39,7 @@ func handleCryptoDatabaseRead(cmd *cobra.Command, args []string) {
 	}
 
 	log.Printf("Getting the crypto list from the database with the ID %s...\n", args[0])
-        list, err := crypto.ReadCryptoRow(Ctx, DbQueries, args[0])
+	list, err := crypto.ReadCryptoRow(Ctx, DbQueries, args[0])
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,6 +1,6 @@
 package search
 
-import(
+import (
 	"log"
 	"slices"
 	"testing"

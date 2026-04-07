@@ -1,14 +1,14 @@
 package cmd
 
-import(
-        "log"
-	"strconv"
+import (
 	"fmt"
+	"log"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
 
-        "github.com/mehmetcagriekici/blightsanest/internal/crypto"
+	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 var searchCryptoNewPriceSpikeCmd = &cobra.Command{
@@ -18,8 +18,8 @@ var searchCryptoNewPriceSpikeCmd = &cobra.Command{
 }
 
 func handleCryptoNewPriceSpike(cmd *cobra.Command, args []string) {
-        controlHighPriceSpike(CryptoState, args)
-        list := crypto.CoinsHighPriceSpike(CryptoState.CurrentMinPriceChangePercentage,
+	controlHighPriceSpike(CryptoState, args)
+	list := crypto.CoinsHighPriceSpike(CryptoState.CurrentMinPriceChangePercentage,
 		CryptoState.CurrentTimeframe,
 		CryptoState.CurrentList)
 	newID := fmt.Sprintf("find_high_price_spike_%f_%v",
@@ -34,28 +34,28 @@ func handleCryptoNewPriceSpike(cmd *cobra.Command, args []string) {
 // min price change percentage
 // timeframe
 func controlHighPriceSpike(cs *crypto.CryptoState, args []string) {
-        switch len(args) {
+	switch len(args) {
 	case 0:
-	        log.Println("No arguments are passed for the command. Using the ones from the client state.")
+		log.Println("No arguments are passed for the command. Using the ones from the client state.")
 		log.Printf("Current min price change percentage: %f\n", cs.CurrentMinPriceChangePercentage)
 		log.Printf("Current timeframe: %v\n", cs.CurrentTimeframe)
 	case 1:
-	        log.Printf("Only one argument is passed as the min price change percentage. Using the client state current timeframe as the second argument: %v\n", cs.CurrentTimeframe)
+		log.Printf("Only one argument is passed as the min price change percentage. Using the client state current timeframe as the second argument: %v\n", cs.CurrentTimeframe)
 		minChange, err := strconv.ParseFloat(args[0], 64)
 		if err != nil {
-		        log.Fatal(err)
+			log.Fatal(err)
 		}
 		cs.UpdatePriceChangePercentage(minChange, cs.CurrentMaxPriceChangePercentage)
 	case 2:
-	        log.Println("Updating the client state min price change percentage and current timeframe preferences...")
+		log.Println("Updating the client state min price change percentage and current timeframe preferences...")
 		minChange, err := strconv.ParseFloat(args[0], 64)
 		if err != nil {
-		        log.Fatal(err)
+			log.Fatal(err)
 		}
 		timeframes := crypto.GetInputTimeframes(args[1:])
 		cs.UpdatePriceChangePercentage(minChange, cs.CurrentMaxPriceChangePercentage)
 		cs.UpdateCurrentTimeframe(timeframes[0])
 	default:
-	        log.Println("Invalid use of command: find crypto high_price_spike <min_price_change_percentage float64> <timeframe>")
+		log.Println("Invalid use of command: find crypto high_price_spike <min_price_change_percentage float64> <timeframe>")
 	}
 }

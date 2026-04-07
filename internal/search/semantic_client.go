@@ -1,10 +1,10 @@
 package search
 
 import (
-	"fmt"
 	"bytes"
-	"net/http"
 	"encoding/json"
+	"fmt"
+	"net/http"
 )
 
 type Client struct {
@@ -39,7 +39,7 @@ func (c *Client) Index(docs []EmbeddingDoc) (*EmbeddingsResponse, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
 		return nil, err
 	}
-	
+
 	return &out, nil
 }
 

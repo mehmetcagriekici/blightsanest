@@ -1,41 +1,41 @@
 package crypto
 
-import(
-        "fmt"
-	"slices"
+import (
+	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 )
 
 func PrintCryptoList(list []MarketData, id string, frames []AvailableTimeframes, fields []string) {
-        fmt.Println("##########")
+	fmt.Println("##########")
 	fmt.Printf("# Crypto List: %s\n", id)
 	fmt.Println("")
 
-        for c := range slices.Values(list) {
-	        // base crypto information
-	        fmt.Printf("    ## Crypto Currency: %s (%s)\n", c.Symbol, c.Name)
+	for c := range slices.Values(list) {
+		// base crypto information
+		fmt.Printf("    ## Crypto Currency: %s (%s)\n", c.Symbol, c.Name)
 		fmt.Println("")
 		fmt.Printf("        ### ID: %s\n", c.ID)
 		fmt.Printf("        ### Current Price: %.4f usd\n", c.CurrentPrice)
 		fmt.Printf("        ### Highest Price of the Day usd\n: %.4f", c.High24H)
 		fmt.Printf("        ### Lowest Price of the Day: %.4f usd\n", c.Low24H)
 		fmt.Println("")
-		
+
 		// client timeframe preferences
 		for t := range slices.Values(frames) {
-		        f := GetPriceChange(c, t)
+			f := GetPriceChange(c, t)
 			fmt.Printf("        ### Price change percentage %s: %.2f\n", t, f)
 		}
-		
+
 		fmt.Println("")
 
-                // other -optional- fields
+		// other -optional- fields
 		for field := range slices.Values(fields) {
-		        val := GetCoinField(field, c)
+			val := GetCoinField(field, c)
 			fmt.Printf("%s: %v\n", ToSnakeCase(field), val)
 		}
-		
+
 		fmt.Println("")
 	}
 }
@@ -44,21 +44,21 @@ func PrintCryptoList(list []MarketData, id string, frames []AvailableTimeframes,
 // Posted by Tenusha Guruge, modified by community. See post 'Timeline' for change history
 // Retrieved 2025-11-25, License - CC BY-SA 4.0
 func ToSnakeCase(str string) string {
-        matchFirstCap := regexp.MustCompile("(.)([A-Z][a-z]+)")
-	matchAllCap   := regexp.MustCompile("([a-z0-9])([A-Z0-9])")
+	matchFirstCap := regexp.MustCompile("(.)([A-Z][a-z]+)")
+	matchAllCap := regexp.MustCompile("([a-z0-9])([A-Z0-9])")
 
-        snake := matchFirstCap.ReplaceAllString(str, "${1} ${2}")
-	
-        return matchAllCap.ReplaceAllString(snake, "${1} ${2}")
+	snake := matchFirstCap.ReplaceAllString(str, "${1} ${2}")
+
+	return matchAllCap.ReplaceAllString(snake, "${1} ${2}")
 }
 
 // Source - ChatGPT
 func ToCamelCase(str string) string {
-        re := regexp.MustCompile(`(^|_)([a-z])`)
+	re := regexp.MustCompile(`(^|_)([a-z])`)
 
-        camel := re.ReplaceAllStringFunc(str, func(sub string) string {
-                return strings.ToUpper(strings.TrimPrefix(sub, "_"))
-        })
-	
+	camel := re.ReplaceAllStringFunc(str, func(sub string) string {
+		return strings.ToUpper(strings.TrimPrefix(sub, "_"))
+	})
+
 	return camel
 }

@@ -1,11 +1,11 @@
 package cmd
 
 import (
-        "log"
+	"log"
 
 	"github.com/spf13/cobra"
 
-        "github.com/mehmetcagriekici/blightsanest/internal/crypto"
+	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 )
 
 var switchCryptoCmd = &cobra.Command{
@@ -19,21 +19,21 @@ func handleCryptoSwitch(cmd *cobra.Command, args []string) {
 	defer log.Print("> ")
 
 	if len(args) != 1 {
-	        log.Println("Please provide an ID of an existing list.")
+		log.Println("Please provide an ID of an existing list.")
 		return
 	}
 
 	key := args[0]
 
-        cryptoEntry, ok := CryptoCache.Get(key)
+	cryptoEntry, ok := CryptoCache.Get(key)
 	if !ok {
-	        log.Println("Requested list does not exist in the client cache.")
+		log.Println("Requested list does not exist in the client cache.")
 		log.Println("To make a get request to the server:")
 		log.Printf("get crypto %s\n", key)
 		return
 	}
 
-        log.Println("Updating the current list with the requested one...")
+	log.Println("Updating the current list with the requested one...")
 	CryptoState.UpdateCurrentList(key, cryptoEntry.Market)
 	return
 }

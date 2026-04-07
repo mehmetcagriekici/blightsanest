@@ -1,10 +1,10 @@
 package readwrite
 
-import(
-	"io"
-	"os"
+import (
 	"bufio"
 	"errors"
+	"io"
+	"os"
 )
 
 func Read(filePath string) ([]byte, error) {
@@ -14,19 +14,19 @@ func Read(filePath string) ([]byte, error) {
 		return nil, err
 	}
 	defer f.Close()
-	
+
 	// create a bufio reader from the file
 	r := bufio.NewReader(f)
 
 	// start reading the file into the buffer
 	buf := make([]byte, 1024)
 	for {
-		n, err := r.Read(buf)		
+		n, err := r.Read(buf)
 		if err != nil {
 			if errors.Is(err, io.EOF) {
 				break
 			}
-			
+
 			return nil, err
 		}
 

@@ -2,20 +2,18 @@ package main
 
 import _ "github.com/lib/pq"
 
-import(
-	"os"
-	"log"
+import (
 	"context"
 	"database/sql"
-
+	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 	amqp "github.com/rabbitmq/amqp091-go"
 
-
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
-	"github.com/mehmetcagriekici/blightsanest/internal/search"
 	"github.com/mehmetcagriekici/blightsanest/internal/logs"
+	"github.com/mehmetcagriekici/blightsanest/internal/search"
 )
 
 func main() {
@@ -27,13 +25,13 @@ func main() {
 	}
 
 	// get the rabbitmq and postgresql database url from .env
-	rabbitURL   := os.Getenv("RABBITMQ_URL")
+	rabbitURL := os.Getenv("RABBITMQ_URL")
 	databaseURL := os.Getenv("DATABASE_URL")
 	semanticURL := os.Getenv("SEMANTIC_API_URL")
 
 	// create context, rabbit connection, and database queries
 	ctx := context.Background()
-	
+
 	conn, err := amqp.Dial(rabbitURL)
 	if err != nil {
 		log.Fatal(err)
@@ -64,7 +62,7 @@ func main() {
 
 		switch cmd := words[0]; cmd {
 		case "search":
-			// hybrid search 
+			// hybrid search
 			handleSearch(invertedIndex, semanticClient, words[1], words[2:])
 		case "create_inverted_index":
 			log.Println("Building the inverted index for the database")
