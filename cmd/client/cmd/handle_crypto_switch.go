@@ -33,5 +33,4 @@ func handleCryptoSwitch(cmd *cobra.Command, args []string) {
 
 	log.Println("Updating the current list with the requested one...")
 	CryptoState.UpdateCurrentList(key, cryptoEntry.Market)
-	return
 }

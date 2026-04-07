@@ -15,35 +15,36 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
-	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 )
 
+
 var (
-	// client context
-	Ctx         context.Context
+	// server context
+	Ctx          context.Context
 	// rabbitmq connection
-	Conn        *amqp.Connection
-	// client crypto state
-	CryptoState *crypto.CryptoState
-	// client crypto cache
-	CryptoCache *crypto.CryptoCache
-	// subscription manager for crypto
-	SubManager  *pubsub.SubscriptionManager
+	Conn         *amqp.Connection
+	// server crypto cache
+	CryptoCache  *crypto.CryptoCache
 	// postgresql database queries
-	DbQueries   *database.Queries
+	DbQueries    *database.Queries
+	// crypto API Key
+	CryptoAPIKey string
 )
 
-// shared state and persistent prerun
+// prerun
 var RootCmd = &cobra.Command{
-	Use:   "client",
-	Short: "BlightSanest crypto client",
+	Use:   "server",
+	Short: "BlightSanest crypto server",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		// load environment variables
 		if err := godotenv.Load(); err != nil {
 			log.Fatal(err)
 
 		}
+
+		// CoinGecko API Key
+		CryptoAPIKey = os.Getenv("COIN_GECKO_KEY")
 
 		// create client context - shared
 		Ctx = context.Background()
@@ -65,9 +66,7 @@ var RootCmd = &cobra.Command{
 
 		}
 
-		// create shared crypto state, sub manager and cache
-		CryptoState = crypto.CreateCryptoState()
-		SubManager = pubsub.NewSubscriptionManager()
+		// create shared crypto cache
 		CryptoCache = crypto.CreateCryptoCache(time.Duration(interval) * time.Hour)
 
 		// create dlx for crypto

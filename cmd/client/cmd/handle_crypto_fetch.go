@@ -66,5 +66,4 @@ func handleCryptoFetch(cmd *cobra.Command, args []string) {
 	}
 
 	SubManager.Add(cancel)
-	return
 }

@@ -64,6 +64,5 @@ func handleCryptoGet(cmd *cobra.Command, args []string) {
 		log.Fatal(err)
 	}
 
-	return
 	SubManager.Add(cancel)
 }

@@ -27,6 +27,4 @@ func handleCryptoList(cmd *cobra.Command, args []string) {
 	for k := range CryptoCache.Market {
 		log.Printf("List: %s\n", k)
 	}
-
-	return
 }

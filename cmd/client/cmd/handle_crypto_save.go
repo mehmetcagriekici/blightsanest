@@ -40,5 +40,4 @@ func handleCryptoSave(cmd *cobra.Command, args []string) {
 	}
 
 	log.Println("List is successfully published.")
-	return
 }
