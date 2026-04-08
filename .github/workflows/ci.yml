@@ -3,6 +3,8 @@ name: ci
 on:
   push:
     branches: ["blight_dev"]
+  pull_request:
+     branches: ["main"]
 
 jobs:
   style:
@@ -16,7 +18,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
-        go-version: "1.25.1"
+        go-version: "1.24.5"
 
     - name: Check formatting issues
       run: |
@@ -28,3 +30,29 @@ jobs:
 
     - name: Run staticcheck
       run: staticcheck ./...
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    environment: ci
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v5
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: "1.24.5"
+
+    - name: Build and start the services
+      run: docker compose up --build -d
+
+    - name: Run the internal tests
+      run: go test -cover ./...
+
+    - name: Install gosec
+      run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+    - name: Run gosec
+      run: gosec ./...
