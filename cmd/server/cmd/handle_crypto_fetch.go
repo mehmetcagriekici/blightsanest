@@ -1,13 +1,12 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"strings"
 	"time"
 
-	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/spf13/cobra"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
@@ -41,7 +40,13 @@ var queryParameters = []string{GECKO_IDS,
 	GECKO_PRICE_CHANGE_PERCENTAGE,
 	GECKO_PERCISION}
 
-func handleCryptoFetch(ctx context.Context, conn *amqp.Connection, cc *crypto.CryptoCache, apiKey string, args []string) {
+var fetchCryptoCmd = &cobra.Command{
+	Use:   "crypto [args...]",
+	Short: "Fetch crypto data from coingecko api.",
+	Run:   handleCryptoFetch,
+}
+
+func handleCryptoFetch(cmd *cobra.Command, args []string) {
 	// create the request URL
 	queries := createCryptoFetchURLQueries(args)
 	url := "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"
@@ -51,20 +56,20 @@ func handleCryptoFetch(ctx context.Context, conn *amqp.Connection, cc *crypto.Cr
 
 	// control cache - data is cached for each hour based on the queries
 	cacheKey := createCryptoCacheKey(time.Now().Unix(), queries)
-	if _, ok := cc.Get(cacheKey); !ok {
+	if _, ok := CryptoCache.Get(cacheKey); !ok {
 		log.Println("Requested crypto list does not exists in the server cache, making a new request to the API.")
 		// make the API request
-		cryptoList, err := crypto.CryptoFetchMarket(url, apiKey)
+		cryptoList, err := crypto.CryptoFetchMarket(url, CryptoAPIKey)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		// add list to the cache
-		cc.Add(cacheKey, cryptoList)
+		CryptoCache.Add(cacheKey, cryptoList)
 	}
 
 	// get the data from the cache
-	cacheEntry, ok := cc.Get(cacheKey)
+	cacheEntry, ok := CryptoCache.Get(cacheKey)
 	if !ok {
 		log.Fatal("Requested crypto list could not be fetched.")
 	}
@@ -76,7 +81,7 @@ func handleCryptoFetch(ctx context.Context, conn *amqp.Connection, cc *crypto.Cr
 		Payload:   cacheEntry.Market,
 	}
 
-	if err := pubsub.PublishCrypto(ctx, conn, delivery); err != nil {
+	if err := pubsub.PublishCrypto(Ctx, Conn, delivery); err != nil {
 		log.Fatal(err)
 	}
 }

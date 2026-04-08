@@ -210,7 +210,7 @@ search embeddings <asset>
 Searches across the embedded data using natural language.
 
 ```
-search search <asset> <query>
+search <query>
 ```
 
 ---

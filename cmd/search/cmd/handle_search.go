@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -6,6 +6,8 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/spf13/cobra"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/search"
 )
@@ -15,10 +17,7 @@ type pair struct {
 	score float64
 }
 
-func handleSearch(invertedIndex *search.InvertedIndex,
-	client *search.Client,
-	limit string,
-	queryArray []string) {
+func handleSearch(cmd *cobra.Command, args []string) {
 	// convert limit to the integer
 	limitN, err := strconv.Atoi(limit)
 	if err != nil {
@@ -26,14 +25,14 @@ func handleSearch(invertedIndex *search.InvertedIndex,
 	}
 
 	// join the query array into a query string
-	query := strings.Join(queryArray, " ")
+	query := strings.Join(args, " ")
 
-	keywordResults, err := helpKeywordSearch(invertedIndex, query)
+	keywordResults, err := helpKeywordSearch(InvertedIndex, query)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	res, err := client.Search(query)
+	res, err := SemanticClient.Search(query)
 	if err != nil {
 		log.Fatal(err)
 	}

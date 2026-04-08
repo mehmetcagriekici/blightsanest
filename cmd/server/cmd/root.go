@@ -2,32 +2,31 @@ package cmd
 
 // import external and internal packages
 import (
-	"os"
-	"log"
-	"time"
 	"context"
-	"strconv"
 	"database/sql"
+	"log"
+	"os"
+	"strconv"
+	"time"
 
-	_ "github.com/lib/pq"
-	"github.com/spf13/cobra"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/spf13/cobra"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 )
 
-
 var (
 	// server context
-	Ctx          context.Context
+	Ctx context.Context
 	// rabbitmq connection
-	Conn         *amqp.Connection
+	Conn *amqp.Connection
 	// server crypto cache
-	CryptoCache  *crypto.CryptoCache
+	CryptoCache *crypto.CryptoCache
 	// postgresql database queries
-	DbQueries    *database.Queries
+	DbQueries *database.Queries
 	// crypto API Key
 	CryptoAPIKey string
 )

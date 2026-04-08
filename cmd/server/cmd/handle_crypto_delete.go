@@ -1,19 +1,24 @@
 package cmd
 
 import (
-	"context"
 	"log"
 
-	"github.com/mehmetcagriekici/blightsanest/internal/database"
+	"github.com/spf13/cobra"
 )
 
-func handleCryptoDelete(ctx context.Context, args []string, queries *database.Queries) {
+var deleteCryptoCmd = &cobra.Command{
+	Use:   "crypto [args...]",
+	Short: "Delete a crypto list from the database",
+	Run:   handleCryptoDelete,
+}
+
+func handleCryptoDelete(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		log.Println("To delete a crypto list from the database you need to provide the ID of the crypto list...")
 		return
 	}
 
-	deleted, err := queries.DeleteCryptoList(ctx, args[0])
+	deleted, err := DbQueries.DeleteCryptoList(ctx, args[0])
 	if err != nil {
 		log.Fatal(err)
 	}

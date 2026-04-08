@@ -1,18 +1,24 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"log"
 
 	"github.com/google/uuid"
+	"github.com/spf13/cobra"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 )
 
+var saveCryptoCmd = &cobra.Command{
+	Use:   "crypto [args...]",
+	Short: "Save crypto data to the database",
+	Run:   handleCryptoSave,
+}
+
 // args: mandotary crypto list cache id, arbitrary custom crypto list id -> saveed as key
-func handleCryptoSave(ctx context.Context, CryptoCache *crypto.CryptoCache, args []string, queries *database.Queries) {
+func handleCryptoSave(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		log.Println("To save a crypto list to the database, please provide the ID of the crypto list you want to save")
 		return
@@ -45,7 +51,7 @@ func handleCryptoSave(ctx context.Context, CryptoCache *crypto.CryptoCache, args
 		CryptoList: json.RawMessage(encoded),
 	}
 
-	if _, err := queries.CreateCryptoList(ctx, dbParams); err != nil {
+	if _, err := DbQueries.CreateCryptoList(Ctx, dbParams); err != nil {
 		log.Fatal(err)
 	}
 	log.Printf("List %s successfully saved to database as %s\n", args[0], cryptoKey)

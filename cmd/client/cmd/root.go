@@ -2,36 +2,36 @@ package cmd
 
 // import external and internal packages
 import (
-	"os"
-	"log"
-	"time"
 	"context"
-	"strconv"
 	"database/sql"
+	"log"
+	"os"
+	"strconv"
+	"time"
 
-	_ "github.com/lib/pq"
-	"github.com/spf13/cobra"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/spf13/cobra"
 
 	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
-	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
+	"github.com/mehmetcagriekici/blightsanest/internal/pubsub"
 )
 
 var (
 	// client context
-	Ctx         context.Context
+	Ctx context.Context
 	// rabbitmq connection
-	Conn        *amqp.Connection
+	Conn *amqp.Connection
 	// client crypto state
 	CryptoState *crypto.CryptoState
 	// client crypto cache
 	CryptoCache *crypto.CryptoCache
 	// subscription manager for crypto
-	SubManager  *pubsub.SubscriptionManager
+	SubManager *pubsub.SubscriptionManager
 	// postgresql database queries
-	DbQueries   *database.Queries
+	DbQueries *database.Queries
 )
 
 // shared state and persistent prerun
