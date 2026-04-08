@@ -18,7 +18,7 @@ func handleCryptoDelete(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	deleted, err := DbQueries.DeleteCryptoList(ctx, args[0])
+	deleted, err := DbQueries.DeleteCryptoList(Ctx, args[0])
 	if err != nil {
 		log.Fatal(err)
 	}

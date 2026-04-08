@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/spf13/cobra"
 
-	"github.com/mehmetcagriekici/blightsanest/internal/crypto"
 	"github.com/mehmetcagriekici/blightsanest/internal/database"
 )
 

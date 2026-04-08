@@ -1,13 +1,11 @@
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"log"
 
 	"github.com/spf13/cobra"
 
-	"github.com/mehmetcagriekici/blightsanest/internal/database"
 	"github.com/mehmetcagriekici/blightsanest/internal/search"
 )
 
@@ -19,7 +17,7 @@ var createCryptoEmbeddingsCmd = &cobra.Command{
 
 func handle_create_crypto_embeddings(cmd *cobra.Command, args []string) {
 	log.Println("Building the inverted index for the database")
-	if err := InvertedIndex.BuildCryptoIndex(ctx, dbQueries); err != nil {
+	if err := InvertedIndex.BuildCryptoIndex(Ctx, DbQueries); err != nil {
 		log.Printf("An error occured while trying to build the inverted index: %v\n", err)
 		return
 
