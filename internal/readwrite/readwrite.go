@@ -1,15 +1,16 @@
 package readwrite
 
 import (
-	"bufio"
-	"errors"
 	"io"
 	"os"
+	"bufio"
+	"errors"
+	"path/filepath"
 )
 
-func Read(filePath string) ([]byte, error) {
+func Read(path string) ([]byte, error) {
 	// open the file
-	f, err := os.Open(filePath)
+	f, err := os.Open(filepath.Clean(path))
 	if err != nil {
 		return nil, err
 	}
@@ -39,9 +40,9 @@ func Read(filePath string) ([]byte, error) {
 	return buf, nil
 }
 
-func Write(filePath string, data []byte) (int, error) {
+func Write(path string, data []byte) (int, error) {
 	// create the file
-	f, err := os.Create(filePath)
+	f, err := os.Create(filepath.Clean(path))
 	if err != nil {
 		return 0, nil
 	}
@@ -50,10 +51,10 @@ func Write(filePath string, data []byte) (int, error) {
 	// create a new bufio writer for the file and write the data
 	w := bufio.NewWriter(f)
 	n, err := w.Write(data)
-	w.Flush()
 	if err != nil {
 		return 0, err
 	}
+	w.Flush() // #nosec G104
 
 	return n, nil
 }

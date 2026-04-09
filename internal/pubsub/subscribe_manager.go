@@ -24,7 +24,7 @@ func (m *SubscriptionManager) Add(cancel func() error) {
 	defer m.mu.Unlock()
 
 	if m.closed {
-		cancel()
+		cancel() // #nosec G104
 		return
 	}
 

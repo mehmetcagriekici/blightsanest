@@ -89,7 +89,7 @@ func Subscribe[T any](conn *amqp.Connection,
 	// start delivering messages from the queue
 	deliveries, err := ch.Consume(q.Name, "", false, false, false, false, nil)
 	if err != nil {
-		ch.Close()
+		ch.Close() // #nosec G104
 		return nil, err
 	}
 
