@@ -1,10 +1,10 @@
 package readwrite
 
 import (
-	"io"
-	"os"
 	"bufio"
 	"errors"
+	"io"
+	"os"
 	"path/filepath"
 )
 
