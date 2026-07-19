@@ -31,5 +31,5 @@ def createEmbeddings(req: EmbeddingsRequest):
 def search(req: SearchRequest):
     results = ss.search(req.query)
     # turn tuples into JSON-serializable objects
-    out = [{"score": score, "document": doc} for score, doc in results]
+    out = [{"score": float(score), "document": doc} for score, doc in results]
     return {"results": out}

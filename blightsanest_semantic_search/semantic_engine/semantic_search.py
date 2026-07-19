@@ -28,8 +28,8 @@ class SemanticSearch:
         # list of dictionaries {id: string, data: string}
         self.documents = documents
         for doc in self.documents:
-            doc_id = doc["id"]
-            doc_data = doc["data"]
+            doc_id = doc.id
+            doc_data = doc.data
             self.document_map[doc_id] = doc_data
             data_list.append(doc_data)
         # embed the documents
@@ -46,7 +46,7 @@ class SemanticSearch:
         # populate the self.documents and self.document_map
         self.documents = documents
         for doc in self.documents:
-            self.document_map[doc["id"]] = doc["data"]
+            self.document_map[doc.id] = doc.data
 
         # check if embeddings already exists locally
         if os.path.exists("cache/db_embeddings.npy"):

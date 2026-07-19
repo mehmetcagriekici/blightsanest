@@ -1,5 +1,7 @@
 # Disclaimer: This code is directly taken from a Boot.dev lesson.
 # Boot.dev -> learn RAG -> CH4 (Semantic Search) -> L14 (Implementing Semantic Search)
+import numpy as np
+
 def cosine_similarity(vec1, vec2):
     dot_product = np.dot(vec1, vec2)
     norm1 = np.linalg.norm(vec1)
