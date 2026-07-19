@@ -21,9 +21,9 @@ import(
 func main() {
 	log.Println("Welcome to BlightSanest Search Engine...")
 
-	// load environment variables
+	// load environment variables from .env if present (optional in containers)
 	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// get the rabbitmq and postgresql database url from .env

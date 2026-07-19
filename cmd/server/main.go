@@ -20,9 +20,9 @@ import(
 )
 
 func main() {
-        // load environment variables
+        // load environment variables from .env if present (optional in containers)
 	if err := godotenv.Load(); err != nil {
-	        log.Fatal(err)
+	        log.Println(err)
 	}
 
         // environment variables
