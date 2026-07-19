@@ -11,6 +11,17 @@ RUN go mod download
 COPY . .
 
 # 3) Build binaries for each cmd
-RUN go build -o server ./cmd/server
-RUN go build -o search ./cmd/search
-RUN go build -o client ./cmd/client
+ENV CGO_ENABLED=0
+RUN go build -o /out/server ./cmd/server
+RUN go build -o /out/search ./cmd/search
+RUN go build -o /out/client ./cmd/client
+RUN go build -o /out/migrate ./cmd/migrate
+
+# ----- runtime stage -----
+# distroless: no package manager needed, ships CA certs and a non-root user already
+FROM gcr.io/distroless/static-debian12:nonroot AS runtime
+
+WORKDIR /app
+COPY --from=build /out/server /out/search /out/client /out/migrate ./
+
+USER nonroot:nonroot

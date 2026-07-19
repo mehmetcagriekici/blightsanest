@@ -1,0 +1,12 @@
+.git
+.gitignore
+.env
+*.env
+!*.env.example
+cache/
+CHANGELOG.md
+COMMANDS.md
+README.md
+blightsanest_semantic_search/
+k8s/
+.claude/
