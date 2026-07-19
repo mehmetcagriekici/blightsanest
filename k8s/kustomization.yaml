@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: blightsanest
+
+resources:
+  - namespace.yaml
+  - postgres.yaml
+  - rabbitmq.yaml
+  - semantic-api.yaml
+  - migrate-job.yaml
+  - server.yaml
+  - search.yaml
+  - client.yaml
+
+configMapGenerator:
+  - name: blightsanest-config
+    literals:
+      - CACHE_INTERVAL=24
+      - SUBSCRIBER_PREFETCH=10
+      - SEMANTIC_API_URL=http://semantic-api:8000
+
+secretGenerator:
+  - name: blightsanest-secrets
+    envs:
+      - secret.env
+
+generatorOptions:
+  disableNameSuffixHash: true

@@ -8,3 +8,4 @@
 
 # cache folder
 cache/
+k8s/secret.env

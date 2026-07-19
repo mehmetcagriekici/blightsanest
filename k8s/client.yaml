@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  labels:
+    app: client
+spec:
+  # blightsanest client is meant to be run "from separate terminals" by each
+  # user (see README.md) - it's not a singleton service like server/search.
+  # Starts at 0 replicas; scale up one replica per concurrent interactive
+  # session and `kubectl exec -it` into the pod you want, e.g.:
+  #   kubectl -n blightsanest scale deploy/client --replicas=2
+  #   kubectl -n blightsanest exec -it <pod-name> -- ./client
+  replicas: 0
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      initContainers:
+        - name: wait-for-rabbitmq
+          image: busybox:1.36
+          command: ["sh", "-c", "until nc -z rabbitmq 5672; do echo waiting for rabbitmq...; sleep 2; done"]
+      containers:
+        - name: client
+          image: blightsanest-go:local
+          imagePullPolicy: Never
+          command: ["./client"]
+          stdin: true
+          tty: true
+          env:
+            - name: RABBITMQ_URL
+              valueFrom:
+                secretKeyRef: {name: blightsanest-secrets, key: RABBITMQ_URL}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef: {name: blightsanest-secrets, key: DATABASE_URL}
+            - name: CACHE_INTERVAL
+              valueFrom:
+                configMapKeyRef: {name: blightsanest-config, key: CACHE_INTERVAL}
+            - name: SUBSCRIBER_PREFETCH
+              valueFrom:
+                configMapKeyRef: {name: blightsanest-config, key: SUBSCRIBER_PREFETCH}
+          resources:
+            requests: {cpu: 50m, memory: 64Mi}
+            limits: {cpu: 500m, memory: 256Mi}

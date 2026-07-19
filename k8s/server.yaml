@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    app: server
+spec:
+  # blightsanest server is an interactive REPL (reads commands from stdin),
+  # not an HTTP/TCP service - keep this at 1 replica and drive it with
+  # `kubectl attach -it deploy/server` or `kubectl exec -it <pod> -- ./server`.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      initContainers:
+        - name: wait-for-rabbitmq
+          image: busybox:1.36
+          command: ["sh", "-c", "until nc -z rabbitmq 5672; do echo waiting for rabbitmq...; sleep 2; done"]
+      containers:
+        - name: server
+          image: blightsanest-go:local
+          imagePullPolicy: Never
+          command: ["./server"]
+          stdin: true
+          tty: true
+          env:
+            - name: COIN_GECKO_KEY
+              valueFrom:
+                secretKeyRef: {name: blightsanest-secrets, key: COIN_GECKO_KEY}
+            - name: RABBITMQ_URL
+              valueFrom:
+                secretKeyRef: {name: blightsanest-secrets, key: RABBITMQ_URL}
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef: {name: blightsanest-secrets, key: DATABASE_URL}
+            - name: CACHE_INTERVAL
+              valueFrom:
+                configMapKeyRef: {name: blightsanest-config, key: CACHE_INTERVAL}
+            - name: SUBSCRIBER_PREFETCH
+              valueFrom:
+                configMapKeyRef: {name: blightsanest-config, key: SUBSCRIBER_PREFETCH}
+          resources:
+            requests: {cpu: 50m, memory: 64Mi}
+            limits: {cpu: 500m, memory: 256Mi}
